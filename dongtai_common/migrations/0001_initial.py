@@ -9,6 +9,7 @@ from django.db import migrations, models
 import dongtai_common.models.agent
 import dongtai_common.models.user
 import dongtai_common.utils.db
+from shortuuid import shortuuid
 
 
 class Migration(migrations.Migration):
@@ -2225,5 +2226,461 @@ class Migration(migrations.Migration):
         migrations.AlterUniqueTogether(
             name="iastapimethodhttpmethodrelation",
             unique_together={("api_method_id", "http_method_id")},
+        ),
+        migrations.CreateModel(
+            name="IastLicense",
+            fields=[
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("key", models.CharField(max_length=100)),
+                ("value", models.CharField(blank=True, max_length=1000, null=True)),
+            ],
+            options={
+                "db_table": "iast_license",
+            },
+        ),
+        migrations.CreateModel(
+            name="IastRole",
+            fields=[
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("name", models.CharField(default="", max_length=255)),
+                ("state", models.IntegerField(default=0)),
+            ],
+            options={
+                "db_table": "web_role",
+            },
+        ),
+        migrations.CreateModel(
+            name="WebAPIRoute",
+            fields=[
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("name", models.CharField(default="", max_length=255)),
+                ("path", models.CharField(default="", max_length=255)),
+                ("method", models.CharField(default="", max_length=255)),
+            ],
+            options={
+                "db_table": "webapi_api_site",
+            },
+        ),
+        migrations.CreateModel(
+            name="WebURLRoute",
+            fields=[
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("name", models.CharField(default="", max_length=255)),
+                ("path", models.CharField(default="", max_length=255)),
+                ("component", models.CharField(default="", max_length=255)),
+                ("meta_keepAlive", models.CharField(default="", max_length=255)),
+                ("meta_disabled", models.CharField(default="", max_length=255)),
+                ("meta_i18n", models.CharField(default="", max_length=255)),
+                ("meta_isMenu", models.CharField(default="", max_length=255)),
+                ("meta_name", models.CharField(default="", max_length=255)),
+                ("redirect", models.CharField(default="", max_length=255)),
+                ("name_i18n", models.CharField(default="", max_length=255)),
+                ("parent", models.IntegerField(default=0)),
+            ],
+            options={
+                "db_table": "web_url_route",
+            },
+        ),
+        migrations.CreateModel(
+            name="WebButtonRoute",
+            fields=[
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("name", models.CharField(default="", max_length=255)),
+                (
+                    "webroute",
+                    models.ForeignKey(
+                        db_constraint=False,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="dongtai_common.weburlroute",
+                    ),
+                ),
+            ],
+            options={
+                "db_table": "web_button",
+            },
+        ),
+        migrations.CreateModel(
+            name="IastVulInegration",
+            fields=[
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("jira_url", models.CharField(blank=True, default="", max_length=255, null=True)),
+                ("jira_id", models.CharField(blank=True, default="", max_length=255, null=True)),
+                ("jira_state", models.CharField(blank=True, default="", max_length=20, null=True)),
+                ("gitlab_url", models.CharField(blank=True, default="", max_length=255, null=True)),
+                ("gitlab_id", models.CharField(blank=True, default="", max_length=255, null=True)),
+                ("gitlab_state", models.CharField(blank=True, default="", max_length=20, null=True)),
+                ("zendao_url", models.CharField(blank=True, default="", max_length=255, null=True)),
+                ("zendao_id", models.CharField(blank=True, default="", max_length=255, null=True)),
+                ("zendao_state", models.CharField(blank=True, default="", max_length=20, null=True)),
+                (
+                    "asset_vul",
+                    models.ForeignKey(
+                        blank=True,
+                        default=-1,
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        to="dongtai_common.iastassetvul",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "vul",
+                    models.ForeignKey(
+                        blank=True,
+                        default=-1,
+                        null=True,
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        to="dongtai_common.iastvulnerabilitymodel",
+                    ),
+                ),
+            ],
+            options={
+                "db_table": "iast_vul_integration",
+                "managed": True,
+            },
+        ),
+        migrations.CreateModel(
+            name="IastShareToken",
+            fields=[
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "token",
+                    shortuuid.django_fields.ShortUUIDField(
+                        alphabet="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+                        length=22,
+                        max_length=22,
+                        prefix="",
+                    ),
+                ),
+                ("title", models.CharField(blank=True, max_length=255)),
+                (
+                    "expire_at",
+                    models.DateTimeField(
+                        blank=True, help_text="When this time is null, it means indefinitely", null=True
+                    ),
+                ),
+                ("create_at", models.DateTimeField(auto_now_add=True)),
+                ("update_at", models.DateTimeField(auto_now=True)),
+                (
+                    "token_type",
+                    models.IntegerField(choices=[(1, "Sca"), (2, "Vul")], default=2, help_text=" Sca: 1  Vul: 2 "),
+                ),
+                (
+                    "status",
+                    models.IntegerField(
+                        choices=[(1, "ENABLE"), (2, "EXPIRE"), (0, "DISABLE")],
+                        default=1,
+                        help_text=" ENABLE: 1  EXPIRE: 2  DISABLE: 0 ",
+                    ),
+                ),
+                ("target_url", models.CharField(max_length=255)),
+                (
+                    "create_user",
+                    models.ForeignKey(
+                        blank=True, default=-1, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
+                    ),
+                ),
+                (
+                    "project",
+                    models.ForeignKey(
+                        blank=True,
+                        default=-1,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="dongtai_common.iastproject",
+                    ),
+                ),
+                (
+                    "project_version",
+                    models.ForeignKey(
+                        blank=True,
+                        default=-1,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="dongtai_common.iastprojectversion",
+                    ),
+                ),
+                (
+                    "sca",
+                    models.ForeignKey(
+                        blank=True,
+                        default="",
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        to="dongtai_common.assetv2global",
+                        to_field="aql",
+                    ),
+                ),
+                (
+                    "vul",
+                    models.ForeignKey(
+                        blank=True,
+                        default=-1,
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        to="dongtai_common.iastvulnerabilitymodel",
+                    ),
+                ),
+            ],
+            options={
+                "db_table": "iast_share_token",
+                "managed": True,
+            },
+        ),
+        migrations.CreateModel(
+            name="IastRoleUserRelation",
+            fields=[
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "role",
+                    models.ForeignKey(
+                        db_constraint=False, on_delete=django.db.models.deletion.CASCADE, to="dongtai_common.iastrole"
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        db_constraint=False, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
+                    ),
+                ),
+            ],
+            options={
+                "db_table": "web_role_user_relation",
+            },
+        ),
+        migrations.CreateModel(
+            name="IastRoleURlRelation",
+            fields=[
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "role",
+                    models.ForeignKey(
+                        db_constraint=False, on_delete=django.db.models.deletion.CASCADE, to="dongtai_common.iastrole"
+                    ),
+                ),
+                (
+                    "url",
+                    models.ForeignKey(
+                        db_constraint=False,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="dongtai_common.weburlroute",
+                    ),
+                ),
+            ],
+            options={
+                "db_table": "web_role_url_relation",
+            },
+        ),
+        migrations.CreateModel(
+            name="IastRoleButtonRelation",
+            fields=[
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "button",
+                    models.ForeignKey(
+                        db_constraint=False,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="dongtai_common.webbuttonroute",
+                    ),
+                ),
+                (
+                    "role",
+                    models.ForeignKey(
+                        db_constraint=False, on_delete=django.db.models.deletion.CASCADE, to="dongtai_common.iastrole"
+                    ),
+                ),
+            ],
+            options={
+                "db_table": "web_role_button_relation",
+            },
+        ),
+        migrations.CreateModel(
+            name="IastRoleAPIRelation",
+            fields=[
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("state", models.IntegerField(default=2)),
+                (
+                    "api",
+                    models.ForeignKey(
+                        db_constraint=False,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="dongtai_common.webapiroute",
+                    ),
+                ),
+                (
+                    "role",
+                    models.ForeignKey(
+                        db_constraint=False, on_delete=django.db.models.deletion.CASCADE, to="dongtai_common.iastrole"
+                    ),
+                ),
+            ],
+            options={
+                "db_table": "web_api_role_relation",
+            },
+        ),
+        migrations.CreateModel(
+            name="IastButtonAPIRelation",
+            fields=[
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "api",
+                    models.ForeignKey(
+                        db_constraint=False,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="dongtai_common.webapiroute",
+                    ),
+                ),
+                (
+                    "button",
+                    models.ForeignKey(
+                        db_constraint=False,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="dongtai_common.webbuttonroute",
+                    ),
+                ),
+            ],
+            options={
+                "db_table": "web_api_button_relation",
+            },
+        ),
+        migrations.CreateModel(
+            name="IastApiRouteV2",
+            fields=[
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("path", models.CharField(blank=True, max_length=255)),
+                ("method", models.CharField(blank=True, max_length=100)),
+                ("from_where", models.IntegerField(choices=[(1, "From Agent")], default=1)),
+                ("is_cover", models.IntegerField(default=0)),
+                ("api_info", models.JSONField(blank=True, default=dict, null=True)),
+                ("create_at", models.DateTimeField(auto_now_add=True, null=True)),
+                ("update_at", models.DateTimeField(auto_now=True, null=True)),
+                (
+                    "project",
+                    models.ForeignKey(
+                        blank=True,
+                        default=-1,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="dongtai_common.iastproject",
+                    ),
+                ),
+                (
+                    "project_version",
+                    models.ForeignKey(
+                        blank=True,
+                        default=-1,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="dongtai_common.iastprojectversion",
+                    ),
+                ),
+            ],
+            options={
+                "db_table": "iast_api_route_v2",
+                "managed": True,
+            },
+        ),
+        migrations.CreateModel(
+            name="IastAgentRequestChainsVulContext",
+            fields=[
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("vul_id", models.IntegerField(blank=True, default=0)),
+                ("method_pool_id", models.IntegerField(blank=True, default=0)),
+                ("level_id", models.IntegerField(blank=True, default=0)),
+                ("request_hash", models.CharField(blank=True, max_length=255, null=True)),
+                ("stack", models.TextField(blank=True, null=True)),
+                ("project_path", models.CharField(blank=True, default="", max_length=255, null=True)),
+                ("parent_project_id", models.IntegerField(blank=True, default=-1)),
+                ("url", models.CharField(blank=True, max_length=255, null=True)),
+                ("request", models.TextField(blank=True, null=True)),
+                ("response", models.TextField(blank=True, null=True)),
+                (
+                    "project",
+                    models.ForeignKey(
+                        blank=True,
+                        db_constraint=False,
+                        default=-1,
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        to="dongtai_common.iastproject",
+                    ),
+                ),
+            ],
+            options={
+                "db_table": "iast_request_chains_vul_context",
+                "managed": True,
+            },
+        ),
+        migrations.CreateModel(
+            name="IastAgentRequestChains",
+            fields=[
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("request_hash", models.CharField(blank=True, max_length=255, null=True)),
+                ("span_id", models.CharField(blank=True, max_length=255, null=True)),
+                ("parent_span_id", models.CharField(blank=True, max_length=255, null=True)),
+                ("protocol", models.CharField(blank=True, max_length=255, null=True)),
+                ("level_id", models.IntegerField(blank=True, default=0)),
+                ("dt", models.IntegerField(blank=True, default=dongtai_common.utils.db.get_timestamp)),
+                (
+                    "project",
+                    models.ForeignKey(
+                        blank=True,
+                        db_constraint=False,
+                        default=-1,
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        to="dongtai_common.iastproject",
+                    ),
+                ),
+                (
+                    "source",
+                    models.ForeignKey(
+                        blank=True,
+                        db_constraint=False,
+                        default=-1,
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="source",
+                        to="dongtai_common.methodpool",
+                    ),
+                ),
+                (
+                    "source_agent",
+                    models.ForeignKey(
+                        blank=True,
+                        db_constraint=False,
+                        default=-1,
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="source_agent",
+                        to="dongtai_common.iastagent",
+                    ),
+                ),
+                (
+                    "target",
+                    models.ForeignKey(
+                        blank=True,
+                        db_constraint=False,
+                        default=-1,
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="target",
+                        to="dongtai_common.methodpool",
+                    ),
+                ),
+                (
+                    "target_agent",
+                    models.ForeignKey(
+                        blank=True,
+                        db_constraint=False,
+                        default=-1,
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="target_agent",
+                        to="dongtai_common.iastagent",
+                    ),
+                ),
+            ],
+            options={
+                "db_table": "iast_request_chains",
+                "managed": True,
+            },
         ),
     ]

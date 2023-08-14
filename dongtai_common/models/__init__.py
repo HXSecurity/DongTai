@@ -5,6 +5,13 @@ from .user import User  # noqa: I001, F401
 from . import api_route  # noqa: F401
 from .project_group import IastProjectGroup  # noqa: F401
 from .project_metadata import IastProjectMetaData  # noqa: F401
+from .api_route_v2 import *
+from .role import *
+from .integration import *
+from .license import *
+from .request_chains import *
+from .share_token import *
+
 
 LANGUAGE_DICT = {"JAVA": 1, "PYTHON": 2, "PHP": 3, "GO": 4}
 # aggregation
