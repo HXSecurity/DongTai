@@ -7,12 +7,12 @@
 ######################################################################
 
 from django.db import models
-from dongtai_common.utils.settings import get_managed
-from dongtai_common.models.agent import IastAgent
+
+from dongtai_common.models.agent_method_pool import MethodPool
 from dongtai_common.models.project import IastProject
 from dongtai_common.models.project_version import IastProjectVersion
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-from dongtai_common.models.agent_method_pool import MethodPool
+from dongtai_common.utils.settings import get_managed
 
 
 class FromWhereChoices(models.IntegerChoices):
@@ -41,7 +41,7 @@ class IastApiRouteV2(models.Model):
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_api_route_v2'
+        db_table = "iast_api_route_v2"
 
     def get_relation_vulns(self):
         return IastVulnerabilityModel.objects.filter(

@@ -1,13 +1,15 @@
-from django.db import models
-from dongtai_common.utils.settings import get_managed
-from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-from dongtai_common.models.project import IastProject
-from dongtai_common.models.project_version import IastProjectVersion
-from dongtai_common.models.assetv2 import AssetV2Global
-from dongtai_common.models.user import User
-from shortuuid.django_fields import ShortUUIDField
 import string
 from datetime import datetime
+
+from django.db import models
+from shortuuid.django_fields import ShortUUIDField
+
+from dongtai_common.models.assetv2 import AssetV2Global
+from dongtai_common.models.project import IastProject
+from dongtai_common.models.project_version import IastProjectVersion
+from dongtai_common.models.user import User
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
+from dongtai_common.utils.settings import get_managed
 
 
 class IastShareTokenStatusChoices(models.IntegerChoices):

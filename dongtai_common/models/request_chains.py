@@ -6,14 +6,14 @@
 # @description :
 ######################################################################
 
+
 from django.db import models
-from django.utils.translation import gettext_lazy as _
-from dongtai_common.utils.settings import get_managed
+
+from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.agent_method_pool import MethodPool
 from dongtai_common.models.project import IastProject
-from dongtai_common.models.agent import IastAgent
-import time
 from dongtai_common.utils.db import get_timestamp
+from dongtai_common.utils.settings import get_managed
 
 
 class IastAgentRequestChains(models.Model):
@@ -48,8 +48,6 @@ class IastAgentRequestChainsVulContext(models.Model):
     method_pool_id = models.IntegerField(blank=True, default=0)
     level_id = models.IntegerField(blank=True, default=0)
     request_hash = models.CharField(max_length=255, blank=True, null=True)
-    #    span_id = models.CharField(max_length=255, blank=True, null=True)
-    #    parent_span_id = models.CharField(max_length=255, blank=True, null=True)
     stack = models.TextField(blank=True, null=True)  # This field type is a guess.
     project_path = models.CharField(max_length=255, blank=True, null=True, default="")
     parent_project_id = models.IntegerField(blank=True, default=-1)

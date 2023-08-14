@@ -1,8 +1,9 @@
-from dongtai_common.models import User
 from django.db import models
+
+from dongtai_common.models import User
+from dongtai_common.models.asset_vul import IastAssetVul
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from dongtai_common.utils.settings import get_managed
-from dongtai_common.models.asset_vul import IastAssetVul
 
 
 class IastVulInegration(models.Model):
@@ -31,4 +32,4 @@ class IastVulInegration(models.Model):
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_vul_integration'
+        db_table = "iast_vul_integration"
