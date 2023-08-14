@@ -9,7 +9,8 @@ from django.db import migrations, models
 import dongtai_common.models.agent
 import dongtai_common.models.user
 import dongtai_common.utils.db
-from shortuuid import shortuuid
+
+import shortuuid.django_fields
 
 
 class Migration(migrations.Migration):
@@ -2239,67 +2240,6 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name="IastRole",
-            fields=[
-                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
-                ("name", models.CharField(default="", max_length=255)),
-                ("state", models.IntegerField(default=0)),
-            ],
-            options={
-                "db_table": "web_role",
-            },
-        ),
-        migrations.CreateModel(
-            name="WebAPIRoute",
-            fields=[
-                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
-                ("name", models.CharField(default="", max_length=255)),
-                ("path", models.CharField(default="", max_length=255)),
-                ("method", models.CharField(default="", max_length=255)),
-            ],
-            options={
-                "db_table": "webapi_api_site",
-            },
-        ),
-        migrations.CreateModel(
-            name="WebURLRoute",
-            fields=[
-                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
-                ("name", models.CharField(default="", max_length=255)),
-                ("path", models.CharField(default="", max_length=255)),
-                ("component", models.CharField(default="", max_length=255)),
-                ("meta_keepAlive", models.CharField(default="", max_length=255)),
-                ("meta_disabled", models.CharField(default="", max_length=255)),
-                ("meta_i18n", models.CharField(default="", max_length=255)),
-                ("meta_isMenu", models.CharField(default="", max_length=255)),
-                ("meta_name", models.CharField(default="", max_length=255)),
-                ("redirect", models.CharField(default="", max_length=255)),
-                ("name_i18n", models.CharField(default="", max_length=255)),
-                ("parent", models.IntegerField(default=0)),
-            ],
-            options={
-                "db_table": "web_url_route",
-            },
-        ),
-        migrations.CreateModel(
-            name="WebButtonRoute",
-            fields=[
-                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
-                ("name", models.CharField(default="", max_length=255)),
-                (
-                    "webroute",
-                    models.ForeignKey(
-                        db_constraint=False,
-                        on_delete=django.db.models.deletion.CASCADE,
-                        to="dongtai_common.weburlroute",
-                    ),
-                ),
-            ],
-            options={
-                "db_table": "web_button",
-            },
-        ),
-        migrations.CreateModel(
             name="IastVulInegration",
             fields=[
                 ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
@@ -2428,122 +2368,6 @@ class Migration(migrations.Migration):
             options={
                 "db_table": "iast_share_token",
                 "managed": True,
-            },
-        ),
-        migrations.CreateModel(
-            name="IastRoleUserRelation",
-            fields=[
-                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
-                (
-                    "role",
-                    models.ForeignKey(
-                        db_constraint=False, on_delete=django.db.models.deletion.CASCADE, to="dongtai_common.iastrole"
-                    ),
-                ),
-                (
-                    "user",
-                    models.ForeignKey(
-                        db_constraint=False, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
-                    ),
-                ),
-            ],
-            options={
-                "db_table": "web_role_user_relation",
-            },
-        ),
-        migrations.CreateModel(
-            name="IastRoleURlRelation",
-            fields=[
-                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
-                (
-                    "role",
-                    models.ForeignKey(
-                        db_constraint=False, on_delete=django.db.models.deletion.CASCADE, to="dongtai_common.iastrole"
-                    ),
-                ),
-                (
-                    "url",
-                    models.ForeignKey(
-                        db_constraint=False,
-                        on_delete=django.db.models.deletion.CASCADE,
-                        to="dongtai_common.weburlroute",
-                    ),
-                ),
-            ],
-            options={
-                "db_table": "web_role_url_relation",
-            },
-        ),
-        migrations.CreateModel(
-            name="IastRoleButtonRelation",
-            fields=[
-                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
-                (
-                    "button",
-                    models.ForeignKey(
-                        db_constraint=False,
-                        on_delete=django.db.models.deletion.CASCADE,
-                        to="dongtai_common.webbuttonroute",
-                    ),
-                ),
-                (
-                    "role",
-                    models.ForeignKey(
-                        db_constraint=False, on_delete=django.db.models.deletion.CASCADE, to="dongtai_common.iastrole"
-                    ),
-                ),
-            ],
-            options={
-                "db_table": "web_role_button_relation",
-            },
-        ),
-        migrations.CreateModel(
-            name="IastRoleAPIRelation",
-            fields=[
-                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
-                ("state", models.IntegerField(default=2)),
-                (
-                    "api",
-                    models.ForeignKey(
-                        db_constraint=False,
-                        on_delete=django.db.models.deletion.CASCADE,
-                        to="dongtai_common.webapiroute",
-                    ),
-                ),
-                (
-                    "role",
-                    models.ForeignKey(
-                        db_constraint=False, on_delete=django.db.models.deletion.CASCADE, to="dongtai_common.iastrole"
-                    ),
-                ),
-            ],
-            options={
-                "db_table": "web_api_role_relation",
-            },
-        ),
-        migrations.CreateModel(
-            name="IastButtonAPIRelation",
-            fields=[
-                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
-                (
-                    "api",
-                    models.ForeignKey(
-                        db_constraint=False,
-                        on_delete=django.db.models.deletion.CASCADE,
-                        to="dongtai_common.webapiroute",
-                    ),
-                ),
-                (
-                    "button",
-                    models.ForeignKey(
-                        db_constraint=False,
-                        on_delete=django.db.models.deletion.CASCADE,
-                        to="dongtai_common.webbuttonroute",
-                    ),
-                ),
-            ],
-            options={
-                "db_table": "web_api_button_relation",
             },
         ),
         migrations.CreateModel(

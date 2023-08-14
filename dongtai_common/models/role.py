@@ -105,6 +105,6 @@ class IastRoleURlRelation(models.Model):
         db_table = "web_role_url_relation"
 
 
-# @register(WebURLRoute)
-# class WebURLRouteOptions(TranslationOptions):
-#    fields = ("name_i18n",)
+@register(WebURLRoute)
+class WebURLRouteOptions(TranslationOptions):
+    fields = ("name_i18n",)

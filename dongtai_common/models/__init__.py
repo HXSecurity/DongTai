@@ -6,7 +6,6 @@ from . import api_route  # noqa: F401
 from .project_group import IastProjectGroup  # noqa: F401
 from .project_metadata import IastProjectMetaData  # noqa: F401
 from .api_route_v2 import *
-from .role import *
 from .integration import *
 from .license import *
 from .request_chains import *
