@@ -22,18 +22,9 @@ class FromWhereChoices(models.IntegerChoices):
 class IastApiRouteV2(models.Model):
     path = models.CharField(max_length=255, blank=True)
     method = models.CharField(max_length=100, blank=True)
-    from_where = models.IntegerField(default=FromWhereChoices.FROM_AGENT,
-                                     choices=FromWhereChoices.choices)
-    project = models.ForeignKey(IastProject,
-                                on_delete=models.CASCADE,
-                                blank=True,
-                                null=True,
-                                default=-1)
-    project_version = models.ForeignKey(IastProjectVersion,
-                                        on_delete=models.CASCADE,
-                                        blank=True,
-                                        null=True,
-                                        default=-1)
+    from_where = models.IntegerField(default=FromWhereChoices.FROM_AGENT, choices=FromWhereChoices.choices)
+    project = models.ForeignKey(IastProject, on_delete=models.CASCADE, blank=True, null=True, default=-1)
+    project_version = models.ForeignKey(IastProjectVersion, on_delete=models.CASCADE, blank=True, null=True, default=-1)
     is_cover = models.IntegerField(default=0)
     api_info = models.JSONField(blank=True, null=True, default=dict)
     create_at = models.DateTimeField(blank=True, null=True, auto_now_add=True)
