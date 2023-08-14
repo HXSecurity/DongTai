@@ -125,7 +125,7 @@ six==1.15.0
 sqlparse==0.4.4 ; python_version >= '3.5'
 tablib[html,ods,xls,xlsx,yaml]==3.5.0 ; python_version >= '3.8'
 tomli==2.0.1 ; python_version < '3.11'
-tornado==6.3.2 ; python_version >= '3.8'
+tornado==6.3.3 ; python_version >= '3.8'
 types-awscrt==0.16.23 ; python_version >= '3.7' and python_version < '4.0'
 types-pymysql==1.1.0.0
 types-pyopenssl==23.2.0.1
