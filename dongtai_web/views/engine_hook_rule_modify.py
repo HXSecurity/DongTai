@@ -44,6 +44,7 @@ class _EngineHookRuleModifySerializer(serializers.Serializer):
         help_text=format_lazy("{}\n{}", _("Target of taint"), SINK_POSITION_HELP_TEXT),
         max_length=255,
         allow_blank=True,
+        default="",
     )
     inherit = serializers.CharField(
         help_text=_(
@@ -196,5 +197,5 @@ class EngineHookRuleModifyEndPoint(UserEndPoint):
             strategy.stack_blacklist = ser.validated_data["stack_blacklist"]
             strategy.save()
 
-            return R.success(msg=_("strategy has been created successfully"))
+            return R.success(msg="策略更新成功")
         return R.failure(msg=_("Failed to create strategy"))
