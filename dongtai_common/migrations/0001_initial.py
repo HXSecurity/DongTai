@@ -3,14 +3,13 @@
 import django.contrib.auth.validators
 import django.db.models.deletion
 import django.utils.timezone
+import shortuuid.django_fields
 from django.conf import settings
 from django.db import migrations, models
 
 import dongtai_common.models.agent
 import dongtai_common.models.user
 import dongtai_common.utils.db
-
-import shortuuid.django_fields
 
 
 class Migration(migrations.Migration):
