@@ -96,7 +96,7 @@ class EndPoint(APIView):
         self.request = request
         self.headers = self.default_response_headers  # deprecate?
 
-        if not request.user.is_active:
+        if not request.user.is_active and not request.user.is_anonymous:
             logout(request)
             request.session.delete()
             response = R.failure(msg="用户已经禁用", status_code=403)
