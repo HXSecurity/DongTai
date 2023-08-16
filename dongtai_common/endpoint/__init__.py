@@ -94,6 +94,10 @@ class EndPoint(APIView):
         self.request = request
         self.headers = self.default_response_headers  # deprecate?
 
+        if not request.user.is_active:
+            request.session.delete()
+            return R.failure(msg="用户已经禁用")
+
         try:
             self.initial(request, *args, **kwargs)
 
