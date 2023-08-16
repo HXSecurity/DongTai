@@ -6,6 +6,7 @@ from functools import reduce
 from operator import ior
 from typing import TYPE_CHECKING
 
+from django.contrib.auth import logout
 from django.core.paginator import EmptyPage, Paginator
 from django.db.models import Count
 from django.http import JsonResponse
@@ -30,6 +31,7 @@ from dongtai_common.permissions import (
 )
 from dongtai_common.utils import const
 from dongtai_common.utils.init_schema import VIEW_CLASS_TO_SCHEMA
+from dongtai_conf import settings
 
 if TYPE_CHECKING:
     from django.core.paginator import _SupportsPagination
@@ -95,8 +97,13 @@ class EndPoint(APIView):
         self.headers = self.default_response_headers  # deprecate?
 
         if not request.user.is_active:
+            logout(request)
             request.session.delete()
-            return R.failure(msg="用户已经禁用")
+            response = R.failure(msg="用户已经禁用")
+            request.session.delete()
+            response.delete_cookie(key=settings.CSRF_COOKIE_NAME, domain=settings.SESSION_COOKIE_DOMAIN)
+            response.delete_cookie(key="sessionid", domain=settings.SESSION_COOKIE_DOMAIN)
+            return response
 
         try:
             self.initial(request, *args, **kwargs)
