@@ -7686,7 +7686,7 @@
                 "stack_blacklist": [],
                 "system_type": 1,
                 "tags": [
-                    "http-token-limited-chars"
+                    "cross-site"
                 ],
                 "target": "R",
                 "track": "false",

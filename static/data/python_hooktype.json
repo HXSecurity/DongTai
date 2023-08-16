@@ -25,6 +25,28 @@
         "created_by": 1,
         "enable": 1,
         "language": 2,
+        "name": "\u6587\u4ef6\u5199\u5165",
+        "name_en": null,
+        "name_zh": "\u6587\u4ef6\u5199\u5165",
+        "system_type": 1,
+        "type": 3,
+        "value": "FileWrite"
+    },
+    {
+        "created_by": 1,
+        "enable": 1,
+        "language": 2,
+        "name": "\u4efb\u610f\u6587\u4ef6\u5199\u5165",
+        "name_en": null,
+        "name_zh": "\u4efb\u610f\u6587\u4ef6\u5199\u5165",
+        "system_type": 1,
+        "type": 3,
+        "value": "FileWrite"
+    },
+    {
+        "created_by": 1,
+        "enable": 1,
+        "language": 2,
         "name": "\u547d\u4ee4\u6267\u884c ",
         "name_en": "OS Command Injection",
         "name_zh": "\u547d\u4ee4\u6267\u884c ",
@@ -41,6 +63,17 @@
         "name_zh": "\u4ee3\u7801\u6267\u884c",
         "system_type": 1,
         "type": 4,
+        "value": "code-execution"
+    },
+    {
+        "created_by": 1,
+        "enable": 1,
+        "language": 2,
+        "name": "\u4ee3\u7801\u6267\u884c",
+        "name_en": null,
+        "name_zh": "\u4ee3\u7801\u6267\u884c",
+        "system_type": 1,
+        "type": 3,
         "value": "code-execution"
     },
     {
@@ -113,11 +146,33 @@
         "created_by": 1,
         "enable": 1,
         "language": 2,
+        "name": "exec-code",
+        "name_en": null,
+        "name_zh": "exec-code",
+        "system_type": 1,
+        "type": 3,
+        "value": "exec-code"
+    },
+    {
+        "created_by": 1,
+        "enable": 1,
+        "language": 2,
         "name": "exec-command",
         "name_en": null,
         "name_zh": "exec-command",
         "system_type": 1,
         "type": 4,
+        "value": "exec-command"
+    },
+    {
+        "created_by": 1,
+        "enable": 1,
+        "language": 2,
+        "name": "exec-command",
+        "name_en": null,
+        "name_zh": "exec-command",
+        "system_type": 1,
+        "type": 3,
         "value": "exec-command"
     },
     {
@@ -158,7 +213,7 @@
         "enable": 1,
         "language": 2,
         "name": "general-rules",
-        "name_en": "general-rules",
+        "name_en": null,
         "name_zh": "general-rules",
         "system_type": 1,
         "type": 3,
@@ -289,6 +344,17 @@
         "created_by": 1,
         "enable": 1,
         "language": 2,
+        "name": "\u53cd\u5c04\u578bXSS\u8fc7\u6ee4\u7c7b\u578b",
+        "name_en": "Cross-Site Scripting Filter",
+        "name_zh": "\u53cd\u5c04\u578bXSS\u8fc7\u6ee4\u7c7b\u578b",
+        "system_type": 1,
+        "type": 3,
+        "value": "reflected-xss-filter"
+    },
+    {
+        "created_by": 1,
+        "enable": 1,
+        "language": 2,
         "name": "\u53cd\u5c04\u6ce8\u5165",
         "name_en": "Reflection Injection",
         "name_zh": "\u53cd\u5c04\u6ce8\u5165",
@@ -322,6 +388,17 @@
         "created_by": 1,
         "enable": 1,
         "language": 2,
+        "name": "SpringCloudConfigServer",
+        "name_en": "SpringCloudConfigServer",
+        "name_zh": "SpringCloudConfigServer",
+        "system_type": 1,
+        "type": 3,
+        "value": "spring-cloud-config-server"
+    },
+    {
+        "created_by": 1,
+        "enable": 1,
+        "language": 2,
         "name": "sql-injection",
         "name_en": null,
         "name_zh": "sql-injection",
@@ -349,6 +426,17 @@
         "name_zh": "SQL\u8d8a\u6743\u7c7b\u578b",
         "system_type": 1,
         "type": 4,
+        "value": "sql-over-power"
+    },
+    {
+        "created_by": 1,
+        "enable": 1,
+        "language": 2,
+        "name": "SQL\u8d8a\u6743\u7c7b\u578b",
+        "name_en": "Over Power",
+        "name_zh": "SQL\u8d8a\u6743\u7c7b\u578b",
+        "system_type": 1,
+        "type": 3,
         "value": "sql-over-power"
     },
     {
@@ -471,6 +559,17 @@
         "system_type": 1,
         "type": 4,
         "value": "xxe"
+    },
+    {
+        "created_by": 1,
+        "enable": 1,
+        "language": 2,
+        "name": "XXE\u8fc7\u6ee4\u7c7b\u578b",
+        "name_en": "XML External Entity Injection (XXE) Filter",
+        "name_zh": "XXE\u8fc7\u6ee4\u7c7b\u578b",
+        "system_type": 1,
+        "type": 3,
+        "value": "xxe-filter"
     },
     {
         "created_by": 1,
