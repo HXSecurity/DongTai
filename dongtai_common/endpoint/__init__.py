@@ -99,7 +99,7 @@ class EndPoint(APIView):
         if not request.user.is_active:
             logout(request)
             request.session.delete()
-            response = R.failure(msg="用户已经禁用")
+            response = R.failure(msg="用户已经禁用", status_code=403)
             request.session.delete()
             response.delete_cookie(key=settings.CSRF_COOKIE_NAME, domain=settings.SESSION_COOKIE_DOMAIN)
             response.delete_cookie(key="sessionid", domain=settings.SESSION_COOKIE_DOMAIN)
