@@ -25,11 +25,44 @@
         "created_by": 1,
         "enable": 1,
         "language": 4,
+        "name": "\u6587\u4ef6\u5199\u5165",
+        "name_en": null,
+        "name_zh": "\u6587\u4ef6\u5199\u5165",
+        "system_type": 1,
+        "type": 3,
+        "value": "FileWrite"
+    },
+    {
+        "created_by": 1,
+        "enable": 1,
+        "language": 4,
+        "name": "\u4efb\u610f\u6587\u4ef6\u5199\u5165",
+        "name_en": null,
+        "name_zh": "\u4efb\u610f\u6587\u4ef6\u5199\u5165",
+        "system_type": 1,
+        "type": 3,
+        "value": "FileWrite"
+    },
+    {
+        "created_by": 1,
+        "enable": 1,
+        "language": 4,
         "name": "JNDI\u6ce8\u5165",
         "name_en": null,
         "name_zh": "JNDI\u6ce8\u5165",
         "system_type": 1,
         "type": 4,
+        "value": "JNDI\u6ce8\u5165"
+    },
+    {
+        "created_by": 1,
+        "enable": 1,
+        "language": 4,
+        "name": "JNDI\u6ce8\u5165",
+        "name_en": null,
+        "name_zh": "JNDI\u6ce8\u5165",
+        "system_type": 1,
+        "type": 3,
         "value": "JNDI\u6ce8\u5165"
     },
     {
@@ -201,6 +234,17 @@
         "created_by": 1,
         "enable": 1,
         "language": 4,
+        "name": "\u53cd\u5c04\u578bXSS\u8fc7\u6ee4\u7c7b\u578b",
+        "name_en": "Cross-Site Scripting Filter",
+        "name_zh": "\u53cd\u5c04\u578bXSS\u8fc7\u6ee4\u7c7b\u578b",
+        "system_type": 1,
+        "type": 3,
+        "value": "reflected-xss-filter"
+    },
+    {
+        "created_by": 1,
+        "enable": 1,
+        "language": 4,
         "name": "\u53cd\u5c04\u6ce8\u5165",
         "name_en": "Reflection Injection",
         "name_zh": "\u53cd\u5c04\u6ce8\u5165",
@@ -234,6 +278,17 @@
         "created_by": 1,
         "enable": 1,
         "language": 4,
+        "name": "SpringCloudConfigServer",
+        "name_en": "SpringCloudConfigServer",
+        "name_zh": "SpringCloudConfigServer",
+        "system_type": 1,
+        "type": 3,
+        "value": "spring-cloud-config-server"
+    },
+    {
+        "created_by": 1,
+        "enable": 1,
+        "language": 4,
         "name": "Sql\u6ce8\u5165",
         "name_en": "SQL Injection",
         "name_zh": "Sql\u6ce8\u5165",
@@ -261,6 +316,17 @@
         "name_zh": "SQL\u8d8a\u6743\u7c7b\u578b",
         "system_type": 1,
         "type": 4,
+        "value": "sql-over-power"
+    },
+    {
+        "created_by": 1,
+        "enable": 1,
+        "language": 4,
+        "name": "SQL\u8d8a\u6743\u7c7b\u578b",
+        "name_en": "Over Power",
+        "name_zh": "SQL\u8d8a\u6743\u7c7b\u578b",
+        "system_type": 1,
+        "type": 3,
         "value": "sql-over-power"
     },
     {
@@ -361,6 +427,17 @@
         "system_type": 1,
         "type": 4,
         "value": "xxe"
+    },
+    {
+        "created_by": 1,
+        "enable": 1,
+        "language": 4,
+        "name": "XXE\u8fc7\u6ee4\u7c7b\u578b",
+        "name_en": "XML External Entity Injection (XXE) Filter",
+        "name_zh": "XXE\u8fc7\u6ee4\u7c7b\u578b",
+        "system_type": 1,
+        "type": 3,
+        "value": "xxe-filter"
     },
     {
         "created_by": 1,
