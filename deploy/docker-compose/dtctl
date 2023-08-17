@@ -1251,7 +1251,7 @@ if [ ! 0 == $# ]; then # If options provided then
         # fi
       done
 
-      if [[ $(first_gt_second $TO_VERSION 1.14.0) == true ]]; then
+      if [[ $(first_gt_second $TO_VERSION 1.13.9) == true ]]; then
         Info "reinstall:[$TO_VERSION]"
         docker run -i --name dongtai-server-update -v $PWD/config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini --rm \
           --link `docker ps | grep dongtai-mysql | awk '{print $1}'`:dongtai-mysql \
