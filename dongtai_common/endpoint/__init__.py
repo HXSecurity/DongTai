@@ -96,7 +96,15 @@ class EndPoint(APIView):
         self.request = request
         self.headers = self.default_response_headers  # deprecate?
 
-        if not request.user.is_active and not request.user.is_anonymous:
+        is_protocol_api = False
+        try:
+            if self.request.method is not None:
+                _path, _path_regex, _schema, filepath = VIEW_CLASS_TO_SCHEMA[self.__class__][self.request.method]
+                is_protocol_api = "dongtai_protocol" in filepath
+        except Exception:
+            pass
+
+        if not is_protocol_api and not request.user.is_active and not request.user.is_anonymous:
             logout(request)
             request.session.delete()
             response = R.failure(msg="用户已经禁用", status_code=403)
