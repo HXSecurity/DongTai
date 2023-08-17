@@ -49,11 +49,6 @@ def add_preset_admin_role(apps, schema_editor):
                 "account",
                 "dashboard",
                 "Dashboard",
-                "deployment",
-                "project",
-                "integrationManagement",
-                "strategyBox",
-                "center",
             ],
             "buttons": [
                 {"label": "新增项目", "id": 1},
@@ -153,11 +148,6 @@ def add_preset_admin_role(apps, schema_editor):
                 "authority",
                 "dashboard",
                 "Dashboard",
-                "deployment",
-                "project",
-                "integrationManagement",
-                "strategyBox",
-                "center",
             ],
             "buttons": [
                 {"label": "新增项目", "id": 1},
