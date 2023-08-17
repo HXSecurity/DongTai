@@ -47,6 +47,8 @@ def add_preset_admin_role(apps, schema_editor):
                 "roleSetting",
                 "team",
                 "account",
+                "dashboard",
+                "Dashboard",
             ],
             "buttons": [
                 {"label": "新增项目", "id": 1},
@@ -144,6 +146,8 @@ def add_preset_admin_role(apps, schema_editor):
                 "about",
                 "knowledge",
                 "authority",
+                "dashboard",
+                "Dashboard",
             ],
             "buttons": [
                 {"label": "新增项目", "id": 1},
