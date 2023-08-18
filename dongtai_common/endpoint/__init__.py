@@ -96,14 +96,7 @@ class EndPoint(APIView):
         self.request = request
         self.headers = self.default_response_headers  # deprecate?
 
-        is_protocol_api = False
-        try:
-            if self.request.method is not None:
-                _path, _path_regex, _schema, filepath = VIEW_CLASS_TO_SCHEMA[self.__class__][self.request.method]
-                is_protocol_api = "dongtai_protocol" in filepath
-        except Exception:
-            pass
-
+        is_protocol_api = self.is_protocol_api()
         if not is_protocol_api and not request.user.is_active and not request.user.is_anonymous:
             logout(request)
             request.session.delete()
@@ -130,48 +123,62 @@ class EndPoint(APIView):
             response = self.handle_exception(exc)
 
         self.response = self.finalize_response(request, response, *args, **kwargs)
-        if self.request.user is not None:
-            try:
-                method = self.request.method
-                if method is None:
-                    raise ValueError("can not get request method")
-                operate_method = method
-                path, _path_regex, schema, filepath = VIEW_CLASS_TO_SCHEMA[self.__class__][method]
-                if "dongtai" not in filepath or "dongtai_protocol" in filepath:
-                    return self.response
-                if schema is None:
-                    raise ValueError("can not get schema")
-                tags: list[str] = schema["tags"]
-                summary: str = schema["summary"]
-                module_name = tags[0]
-                operate_tag = list(filter(lambda x: x.startswith("operate-"), tags))
-                if operate_tag:
-                    operate_method = operate_tag[0].removeprefix("operate-")
 
-                if operate_method == "GET":
-                    operate_type = OperateType.GET
-                    return self.response
-                if operate_method == "POST":
-                    operate_type = OperateType.ADD
-                elif operate_method == "PUT":
-                    operate_type = OperateType.CHANGE
-                elif operate_method == "DELETE":
-                    operate_type = OperateType.DELETE
-                else:
-                    raise ValueError("unknown request method")
+        if not is_protocol_api and self.request.user is not None:
+            self.log_api()
 
-                IastLog.objects.create(
-                    url=path,
-                    raw_url=self.request.get_full_path(),
-                    module_name=module_name,
-                    function_name=summary,
-                    operate_type=operate_type,
-                    user_id=self.request.user.id,
-                    access_ip=get_client_ip(self.request),
-                )
-            except Exception as e:
-                logger.warning(f"get log info failed: {e}")
         return self.response
+
+    def is_protocol_api(self) -> bool:
+        try:
+            if self.request.method is not None:
+                _path, _path_regex, _schema, filepath = VIEW_CLASS_TO_SCHEMA[self.__class__][self.request.method]
+                return "dongtai_protocol" in filepath
+        except Exception:
+            pass
+        return False
+
+    def log_api(self) -> None:
+        try:
+            method = self.request.method
+            if method is None:
+                raise ValueError("can not get request method")
+            operate_method = method
+            path, _path_regex, schema, filepath = VIEW_CLASS_TO_SCHEMA[self.__class__][method]
+            if "dongtai" not in filepath or "dongtai_protocol" in filepath:
+                return
+            if schema is None:
+                raise ValueError("can not get schema")
+            tags: list[str] = schema["tags"]
+            summary: str = schema["summary"]
+            module_name = tags[0]
+            operate_tag = list(filter(lambda x: x.startswith("operate-"), tags))
+            if operate_tag:
+                operate_method = operate_tag[0].removeprefix("operate-")
+
+            if operate_method == "GET":
+                operate_type = OperateType.GET
+                return
+            if operate_method == "POST":
+                operate_type = OperateType.ADD
+            elif operate_method == "PUT":
+                operate_type = OperateType.CHANGE
+            elif operate_method == "DELETE":
+                operate_type = OperateType.DELETE
+            else:
+                raise ValueError("unknown request method")
+
+            IastLog.objects.create(
+                url=path,
+                raw_url=self.request.get_full_path(),
+                module_name=module_name,
+                function_name=summary,
+                operate_type=operate_type,
+                user_id=self.request.user.id,
+                access_ip=get_client_ip(self.request),
+            )
+        except Exception as e:
+            logger.warning(f"get log info failed: {e}")
 
     def handle_exception(self, exc):
         """
