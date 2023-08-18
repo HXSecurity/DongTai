@@ -104,14 +104,12 @@ class GetAppVulsList(UserEndPoint):
                     "status_id",
                     "first_time",
                     "latest_time",
-                    "strategy__vul_name",
                     "language",
                     "project__name",
                     "server__container",
                     "project_id",
                     "strategy_id",
                     "project_version_id",
-                    "project_version__version_name",
                 ]
                 if keywords:
                     es_query["search_keyword"] = keywords
