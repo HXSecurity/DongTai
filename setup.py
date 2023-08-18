@@ -14,7 +14,9 @@ if "-j" not in sys.argv:
     sys.argv.append(str(CPU_COUNT))
 
 dir_set = set(glob.glob("**/*.py", recursive=True))
+migrations_dir_set = set(glob.glob("**/migrations/**/*.py", recursive=True))
 
+dir_set -= migrations_dir_set
 dir_set.remove("manage.py")
 dir_set.remove("setup.py")
 

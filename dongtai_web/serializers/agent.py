@@ -1,22 +1,16 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-webapi
-import time
-from dongtai_common.models.heartbeat import IastHeartbeat
+from collections import defaultdict
 
+from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from dongtai_common.models.agent import IastAgent
-from django.utils.translation import gettext_lazy as _
-from dongtai_common.models.agent_method_pool import MethodPool
-from collections import defaultdict
+from dongtai_common.models.heartbeat import IastHeartbeat
 
 
 class AgentSerializer(serializers.ModelSerializer):
-    USER_MAP = dict()
-    SERVER_MAP = dict()
+    USER_MAP = {}
+    SERVER_MAP = {}
     system_load = serializers.SerializerMethodField()
     running_status = serializers.SerializerMethodField()
     server = serializers.SerializerMethodField()
@@ -32,18 +26,33 @@ class AgentSerializer(serializers.ModelSerializer):
     class Meta:
         model = IastAgent
         fields = [
-            'id', 'token', 'server', 'running_status', 'system_load', 'owner',
-            'latest_time', 'project_name', 'is_core_running', 'language',
-            'flow', 'is_control', 'report_queue', 'method_queue',
-            'replay_queue', 'alias', 'register_time', 'startup_time', 'is_audit'
+            "id",
+            "token",
+            "server",
+            "running_status",
+            "system_load",
+            "owner",
+            "latest_time",
+            "project_name",
+            "is_core_running",
+            "language",
+            "flow",
+            "is_control",
+            "report_queue",
+            "method_queue",
+            "replay_queue",
+            "alias",
+            "register_time",
+            "startup_time",
+            "is_audit",
         ]
 
     def get_latest_heartbeat(self, obj):
         try:
-            latest_heartbeat = getattr(obj, 'latest_heartbeat')
-        except Exception as heartbeat_not_found:
-            latest_heartbeat = obj.heartbeats.values('dt', 'cpu').order_by('-dt').first()
-            setattr(obj, 'latest_heartbeat', latest_heartbeat)
+            latest_heartbeat = obj.latest_heartbeat
+        except Exception:
+            latest_heartbeat = obj.heartbeats.values("dt", "cpu").order_by("-dt").first()
+            obj.latest_heartbeat = latest_heartbeat
         return latest_heartbeat
 
     def get_running_status(self, obj):
@@ -58,23 +67,21 @@ class AgentSerializer(serializers.ModelSerializer):
         """
         heartbeat = self.get_latest_heartbeat(obj)
         if heartbeat:
-            return heartbeat['cpu']
-        else:
-            return _("Load data is not uploaded")
+            return heartbeat["cpu"]
+        return _("Load data is not uploaded")
 
     def get_server(self, obj):
         def get_server_addr():
             if obj.server_id not in self.SERVER_MAP:
                 if obj.server.ip and obj.server.port and obj.server.port != 0:
-                    self.SERVER_MAP[
-                        obj.server_id] = f'{obj.server.ip}:{obj.server.port}'
+                    self.SERVER_MAP[obj.server_id] = f"{obj.server.ip}:{obj.server.port}"
                 else:
-                    return _('No flow is detected by the probe')
+                    return _("No flow is detected by the probe")
             return self.SERVER_MAP[obj.server_id]
 
         if obj.server_id:
             return get_server_addr()
-        return _('No flow is detected by the probe')
+        return _("No flow is detected by the probe")
 
     def get_user(self, obj):
         if obj.user_id not in self.USER_MAP:
@@ -85,24 +92,20 @@ class AgentSerializer(serializers.ModelSerializer):
         return self.get_user(obj)
 
     def get_flow(self, obj):
-        heartbeat = IastHeartbeat.objects.values('req_count').filter(
-            agent=obj).first()
-        return heartbeat['req_count'] if heartbeat else 0
+        heartbeat = IastHeartbeat.objects.values("req_count").filter(agent=obj).first()
+        return heartbeat["req_count"] if heartbeat else 0
 
     def get_method_queue(self, obj):
-        heartbeat = IastHeartbeat.objects.values('method_queue').filter(
-            agent_id=obj.id).order_by('-dt').first()
-        return heartbeat['method_queue'] if heartbeat is not None else 0
+        heartbeat = IastHeartbeat.objects.values("method_queue").filter(agent_id=obj.id).order_by("-dt").first()
+        return heartbeat["method_queue"] if heartbeat is not None else 0
 
     def get_report_queue(self, obj):
-        heartbeat = IastHeartbeat.objects.values('report_queue').filter(
-            agent_id=obj.id).order_by('-dt').first()
-        return heartbeat['report_queue'] if heartbeat is not None else 0
+        heartbeat = IastHeartbeat.objects.values("report_queue").filter(agent_id=obj.id).order_by("-dt").first()
+        return heartbeat["report_queue"] if heartbeat is not None else 0
 
     def get_replay_queue(self, obj):
-        heartbeat = IastHeartbeat.objects.values('replay_queue').filter(
-            agent_id=obj.id).order_by('-dt').first()
-        return heartbeat['replay_queue'] if heartbeat is not None else 0
+        heartbeat = IastHeartbeat.objects.values("replay_queue").filter(agent_id=obj.id).order_by("-dt").first()
+        return heartbeat["replay_queue"] if heartbeat is not None else 0
 
     def get_register_time(self, obj):
         if obj.register_time == 0:
@@ -110,13 +113,12 @@ class AgentSerializer(serializers.ModelSerializer):
         return obj.register_time
 
     def get_alias(self, obj):
-        if obj.alias == '':
+        if obj.alias == "":
             return obj.token
         return obj.alias
 
     def get_latest_time(self, obj):
-        latest_heartbeat = obj.heartbeats.values_list(
-            'dt', flat=True).order_by('-dt').first()
+        latest_heartbeat = obj.heartbeats.values_list("dt", flat=True).order_by("-dt").first()
         if latest_heartbeat:
             return latest_heartbeat
         return obj.latest_time
@@ -125,16 +127,13 @@ class AgentSerializer(serializers.ModelSerializer):
 class ProjectEngineSerializer(serializers.ModelSerializer):
     class Meta:
         model = IastAgent
-        fields = ['id', 'token', 'is_core_running']
+        fields = ["id", "token", "is_core_running"]
 
 
 class AgentToggleArgsSerializer(serializers.Serializer):
-    id = serializers.IntegerField(help_text=_(
-        'The id corresponding to the agent.'))
-    ids = serializers.CharField(help_text=_(
-        'The id corresponding to the agent, use"," for segmentation.'))
+    id = serializers.IntegerField(help_text=_("The id corresponding to the agent."))
+    ids = serializers.CharField(help_text=_('The id corresponding to the agent, use"," for segmentation.'))
 
 
 class AgentInstallArgsSerializer(serializers.Serializer):
-    id = serializers.IntegerField(help_text=_(
-        'The id corresponding to the agent.'))
+    id = serializers.IntegerField(help_text=_("The id corresponding to the agent."))

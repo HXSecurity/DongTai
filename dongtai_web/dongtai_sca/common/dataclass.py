@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
-from dataclasses_json import dataclass_json, config
 from datetime import datetime
+
+from dataclasses_json import config, dataclass_json
 from dateutil.parser import parse
 
 # those Union[tuple[str], tuple[()]] = () is not working
@@ -10,9 +11,17 @@ from dateutil.parser import parse
 
 @dataclass_json
 @dataclass
+class I18nStr:
+    en: str = ""
+    zh: str = ""
+
+
+@dataclass_json
+@dataclass
 class Reference:
     type: str = ""
     url: str = ""
+    language: str = ""
 
 
 @dataclass_json
@@ -28,8 +37,8 @@ class VulInfo:
     vul_id: str = ""
     cvss_v3: str = ""
     cwe: tuple[str, ...] = ()
-    title: str = ""
-    description: str = ""
+    title: I18nStr = field(default_factory=I18nStr)
+    description: I18nStr = field(default_factory=I18nStr)
     references: tuple[Reference, ...] = ()
     severity: str = ""
     published_time: datetime | None = field(
@@ -95,4 +104,4 @@ class PackageVulResponse:
 class PackageResponse:
     status: int
     msg: str
-    data: tuple[PackageInfo, ...] = tuple()
+    data: tuple[PackageInfo, ...] = ()

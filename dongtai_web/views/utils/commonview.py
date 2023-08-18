@@ -6,10 +6,10 @@
 # @description :
 ######################################################################
 
-from dongtai_common.models.sensitive_info import IastPatternType, IastSensitiveInfoRule
 from rest_framework import serializers
-from dongtai_common.endpoint import UserEndPoint, R
 from rest_framework.serializers import ValidationError
+
+from dongtai_common.endpoint import R, UserEndPoint
 
 
 class BatchStatusUpdateSerializer(serializers.Serializer):
@@ -19,27 +19,26 @@ class BatchStatusUpdateSerializer(serializers.Serializer):
 
 class BatchStatusUpdateSerializerView(UserEndPoint):
     serializer = BatchStatusUpdateSerializer
-    status_field = ''
+    status_field = ""
 
     def post(self, request):
         data = self.get_params(request.data)
         self.update_model(request, data)
-        return R.success(msg='update success')
+        return R.success(msg="update success")
 
     def get_params(self, data):
         ser = self.serializer(data=data)
         try:
             if ser.is_valid(True):
                 pass
-        except ValidationError as e:
-            return {'ids': [], 'status': 0}
+        except ValidationError:
+            return {"ids": [], "status": 0}
         return ser.validated_data
 
     def update_model(self, request, validated_data):
-        self.model.objects.filter(
-            pk__in=validated_data['ids'], user__in=[
-                request.user
-            ]).update(**{self.status_field: validated_data['status']})
+        self.model.objects.filter(pk__in=validated_data["ids"], user__in=[request.user]).update(
+            **{self.status_field: validated_data["status"]}
+        )
 
 
 class AllStatusUpdateSerializer(serializers.Serializer):
@@ -48,22 +47,21 @@ class AllStatusUpdateSerializer(serializers.Serializer):
 
 class AllStatusUpdateSerializerView(UserEndPoint):
     serializer = AllStatusUpdateSerializer
-    status_field = 'status'
+    status_field = "status"
 
     def post(self, request):
         data = self.get_params(request.data)
         self.update_model(request, data)
-        return R.success(msg='update success')
+        return R.success(msg="update success")
 
     def get_params(self, data):
         ser = self.serializer(data=data)
         try:
             if ser.is_valid(True):
                 pass
-        except ValidationError as e:
-            return {'status': 0}
+        except ValidationError:
+            return {"status": 0}
         return ser.validated_data
 
     def update_model(self, request, validated_data):
-        self.model.objects.filter(user__in=[request.user]).update(
-            **{self.status_field: validated_data['status']})
+        self.model.objects.filter(user__in=[request.user]).update(**{self.status_field: validated_data["status"]})

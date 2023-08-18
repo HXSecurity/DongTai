@@ -12,23 +12,26 @@ class ScaLibError(Exception):
 
 
 def get_packge_from_sca_lib(**kwargs):
-    return get_from_sca_lib('/package/', **kwargs)
+    return get_from_sca_lib("/package/", **kwargs)
 
 
 def get_packge_vul_from_sca_lib(**kwargs):
-    return get_from_sca_lib('/package_vul/', **kwargs)
+    return get_from_sca_lib("/package_vul/", **kwargs)
 
 
 def get_from_sca_lib(url, **kwargs):
-    from urllib.parse import urljoin
-    from dongtai_conf.settings import SCA_BASE_URL
     import json
+    from urllib.parse import urljoin
+
     import requests
+
+    from dongtai_conf.settings import SCA_BASE_URL
+
     finalurl = urljoin(SCA_BASE_URL, url)
     try:
         resp = requests.get(url=finalurl, params=kwargs)
         if resp.status_code == 200:
             json = json.loads(resp.content.decode())
     except Exception as e:
-        raise ScaLibError('read from sca lib failure')
+        raise ScaLibError("read from sca lib failure") from e
     return json

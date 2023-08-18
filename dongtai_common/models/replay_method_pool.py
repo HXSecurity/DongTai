@@ -1,8 +1,5 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
-# author: owefsad@huoxian.cn
 # datetime: 2021/7/3 下午2:34
-# project: dongtai-engine
 
 from django.db import models
 
@@ -34,4 +31,4 @@ class IastAgentMethodPoolReplay(models.Model):
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_agent_method_pool_replay'
+        db_table = "iast_agent_method_pool_replay"

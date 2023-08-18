@@ -1,4 +1,5 @@
 from django.db import models
+
 from dongtai_common.models.project import IastProject
 from dongtai_common.utils.settings import get_managed
 
@@ -9,12 +10,14 @@ class RuleTypeChoices(models.IntegerChoices):
 
 
 class IastRecognizeRule(models.Model):
-    project = models.ForeignKey(IastProject,
-                                on_delete=models.DO_NOTHING,
-                                blank=True,
-                                null=True,
-                                default=-1,
-                                db_constraint=False)
+    project = models.ForeignKey(
+        IastProject,
+        on_delete=models.DO_NOTHING,
+        blank=True,
+        null=True,
+        default=-1,
+        db_constraint=False,
+    )
     rule_detail = models.CharField(max_length=255, blank=True)
     rule_type = models.IntegerField(choices=RuleTypeChoices.choices)
     created = models.DateTimeField(auto_now_add=True)
@@ -22,4 +25,4 @@ class IastRecognizeRule(models.Model):
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_recoginze_rule'
+        db_table = "iast_recoginze_rule"

@@ -1,17 +1,12 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2020/5/25 15:03
-# software: PyCharm
-# project: webapi
 import logging
 
-from dongtai_common.endpoint import R
-from dongtai_common.endpoint import UserEndPoint
-from rest_framework.authtoken.models import Token
-from drf_spectacular.utils import extend_schema
 from django.utils.translation import gettext_lazy as _
-from dongtai_web.projecttemplate.update_department_data import update_department_data
+from drf_spectacular.utils import extend_schema
+from rest_framework.authtoken.models import Token
+
+from dongtai_common.endpoint import R, UserEndPoint
 
 logger = logging.getLogger("django")
 
@@ -27,23 +22,18 @@ class UserToken(UserEndPoint):
     def get(self, request):
         token, success = Token.objects.get_or_create(user=request.user)
 
-        return R.success(data={'token': token.key})
+        return R.success(data={"token": token.key})
 
 
 class UserDepartmentToken(UserEndPoint):
     name = "iast-v1-user-department-token"
     description = _("获取部门部署 token")
 
-    @extend_schema(
-        summary=_("获取部门部署 token"),
-        tags=[_("User")],
-    )
+    @extend_schema(summary=_("获取部门部署 token"), tags=[_("User")], deprecated=True)
     def get(self, request):
         departments = request.user.get_relative_department()
-        department = request.user.get_department()
-        if not department.token:
-            update_department_data()
-        tokens = departments.values('id', 'token', 'name').all()
+        tokens = departments.values("id", "token", "name").all()
         for token in tokens:
-            token['token'] = 'GROUP' + token['token']
+            if token["token"] is not None:
+                token["token"] = "GROUP" + token["token"]
         return R.success(data=list(tokens))

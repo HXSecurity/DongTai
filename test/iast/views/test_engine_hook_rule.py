@@ -6,14 +6,15 @@
 # @description :
 ######################################################################
 
-from rest_framework.test import APITestCase
-from dongtai_common.models.user import User
 import json
+
+from rest_framework.test import APITestCase
+
 from dongtai_common.models.hook_strategy import HookStrategy
+from dongtai_common.models.user import User
 
 
 class EngineHookRuleTestCase(APITestCase):
-
     def setUp(self):
         self.user = User.objects.filter(pk=1).first()
         assert self.user is not None
@@ -31,10 +32,10 @@ class EngineHookRuleTestCase(APITestCase):
             "ignore_blacklist": True,
             "ignore_internal": True,
         }
-        response = self.client.post('/api/v1/engine/hook/rule/add', data=data)
+        response = self.client.post("/api/v1/engine/hook/rule/add", data=data)
         self.assertEqual(response.status_code, 200)
         respdata = json.loads(response.content)
-        self.assertEqual(respdata['status'], 201)
+        self.assertEqual(respdata["status"], 201)
 
     def test_create_1(self):
         data = {
@@ -48,10 +49,10 @@ class EngineHookRuleTestCase(APITestCase):
             "ignore_blacklist": False,
             "ignore_internal": True,
         }
-        response = self.client.post('/api/v1/engine/hook/rule/add', data=data)
+        response = self.client.post("/api/v1/engine/hook/rule/add", data=data)
         self.assertEqual(response.status_code, 200)
         respdata = json.loads(response.content)
-        self.assertEqual(respdata['status'], 201)
+        self.assertEqual(respdata["status"], 201)
 
     def test_create_2(self):
         data = {
@@ -65,10 +66,10 @@ class EngineHookRuleTestCase(APITestCase):
             "ignore_blacklist": False,
             "ignore_internal": False,
         }
-        response = self.client.post('/api/v1/engine/hook/rule/add', data=data)
+        response = self.client.post("/api/v1/engine/hook/rule/add", data=data)
         self.assertEqual(response.status_code, 200)
         respdata = json.loads(response.content)
-        self.assertEqual(respdata['status'], 201)
+        self.assertEqual(respdata["status"], 201)
 
     def test_legacy_modify_1(self):
         data = {
@@ -80,10 +81,10 @@ class EngineHookRuleTestCase(APITestCase):
             "track": "false",
             "language_id": 1,
         }
-        response = self.client.post('/api/v1/engine/hook/rule/add', data=data)
+        response = self.client.post("/api/v1/engine/hook/rule/add", data=data)
         self.assertEqual(response.status_code, 200)
         respdata = json.loads(response.content)
-        self.assertEqual(respdata['status'], 201)
+        self.assertEqual(respdata["status"], 201)
         hook_rule = HookStrategy.objects.filter(value="1231231231").first()
         self.assertNotEqual(hook_rule, None)
         data2 = {
@@ -96,10 +97,10 @@ class EngineHookRuleTestCase(APITestCase):
             "track": "false",
             "language_id": 1,
         }
-        response = self.client.post('/api/v1/engine/hook/rule/add', data=data2)
+        response = self.client.post("/api/v1/engine/hook/rule/add", data=data2)
         self.assertEqual(response.status_code, 200)
         respdata = json.loads(response.content)
-        self.assertEqual(respdata['status'], 201)
+        self.assertEqual(respdata["status"], 201)
 
     def test_modify_2(self):
         data = {
@@ -113,10 +114,10 @@ class EngineHookRuleTestCase(APITestCase):
             "ignore_blacklist": False,
             "ignore_internal": False,
         }
-        response = self.client.post('/api/v1/engine/hook/rule/add', data=data)
+        response = self.client.post("/api/v1/engine/hook/rule/add", data=data)
         self.assertEqual(response.status_code, 200)
         respdata = json.loads(response.content)
-        self.assertEqual(respdata['status'], 201)
+        self.assertEqual(respdata["status"], 201)
         hook_rule = HookStrategy.objects.filter(value="1231231231").first()
         self.assertNotEqual(hook_rule, None)
         data2 = {
@@ -131,10 +132,10 @@ class EngineHookRuleTestCase(APITestCase):
             "ignore_blacklist": False,
             "ignore_internal": False,
         }
-        response = self.client.post('/api/v1/engine/hook/rule/add', data=data2)
+        response = self.client.post("/api/v1/engine/hook/rule/add", data=data2)
         self.assertEqual(response.status_code, 200)
         respdata = json.loads(response.content)
-        self.assertEqual(respdata['status'], 201)
+        self.assertEqual(respdata["status"], 201)
 
     def test_create_legacy(self):
         data = {
@@ -146,7 +147,7 @@ class EngineHookRuleTestCase(APITestCase):
             "track": "false",
             "language_id": 1,
         }
-        response = self.client.post('/api/v1/engine/hook/rule/add', data=data)
+        response = self.client.post("/api/v1/engine/hook/rule/add", data=data)
         self.assertEqual(response.status_code, 200)
         respdata = json.loads(response.content)
-        self.assertEqual(respdata['status'], 201)
+        self.assertEqual(respdata["status"], 201)

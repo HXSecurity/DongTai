@@ -1,9 +1,5 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2020/5/22 18:21
-# software: PyCharm
-# project: dongtai-models
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -25,11 +21,11 @@ class IastHeartbeat(models.Model):
     agent = models.ForeignKey(
         to=IastAgent,
         on_delete=models.DO_NOTHING,
-        related_name='heartbeats',
-        related_query_name='heartbeat',
-        verbose_name=_('agent')
+        related_name="heartbeats",
+        related_query_name="heartbeat",
+        verbose_name=_("agent"),
     )
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_heartbeat'
+        db_table = "iast_heartbeat"

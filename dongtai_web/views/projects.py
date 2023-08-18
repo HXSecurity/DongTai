@@ -1,24 +1,21 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-webapi
 
 import logging
 
-from dongtai_common.endpoint import R
-from dongtai_common.endpoint import UserEndPoint
-from dongtai_common.models.project import IastProject, ProjectStatus
-from dongtai_web.serializers.project import (
-    ProjectSerializer,
-    get_vul_levels_dict,
-    get_project_language,
-    get_agent_count,
-)
 from django.utils.translation import gettext_lazy as _
-from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
+
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models.project import ProjectStatus
+from dongtai_common.utils.request_type import Request
+from dongtai_web.serializers.project import (
+    ProjectSerializer,
+    get_agent_count,
+    get_project_language,
+    get_vul_levels_dict,
+)
+from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 
 logger = logging.getLogger("django")
 
@@ -43,6 +40,7 @@ class _ProjectsArgsSerializer(serializers.Serializer):
         max_value=10,
         help_text=_("The exclude vulnerability status."),
     )
+    project_group_name = serializers.CharField(default=None, help_text="项目组名称")
 
 
 _SuccessSerializer = get_response_serializer(ProjectSerializer(many=True))
@@ -56,12 +54,10 @@ class Projects(UserEndPoint):
         [_ProjectsArgsSerializer],
         tags=[_("Project")],
         summary=_("Projects List"),
-        description=_(
-            "Get the item corresponding to the user, support fuzzy search based on name."
-        ),
+        description=_("Get the item corresponding to the user, support fuzzy search based on name."),
         response_schema=_SuccessSerializer,
     )
-    def get(self, request):
+    def get(self, request: Request):
         ser = _ProjectsArgsSerializer(data=request.GET)
         try:
             if ser.is_valid(True):
@@ -69,28 +65,23 @@ class Projects(UserEndPoint):
                 page_size: int = ser.validated_data.get("pageSize", 20)
                 name: str = ser.validated_data.get("name")
                 status: int | None = ser.validated_data.get("status")
-                exclude_vul_status: int | None = ser.validated_data.get(
-                    "exclude_vul_status"
-                )
+                exclude_vul_status: int | None = ser.validated_data.get("exclude_vul_status")
+                project_group_name: str | None = ser.validated_data.get("project_group_name")
             else:
                 return R.failure(data="Can not validation data.")
         except ValidationError as e:
             return R.failure(data=e.detail)
 
-        # users = self.get_auth_users(request.user)
-        department = request.user.get_relative_department()
-        queryset = IastProject.objects.filter(department__in=department).order_by(
-            "-latest_time"
-        )
+        queryset = request.user.get_projects().order_by("-latest_time")
         if name:
             queryset = queryset.filter(name__icontains=name)
         if status is not None:
             queryset = queryset.filter(status=status)
-        queryset = queryset.select_related("user")
+        if project_group_name is not None:
+            queryset = queryset.filter(iastprojectgroup__name__icontains=project_group_name)
+        queryset = queryset.select_related("user").prefetch_related("iastprojectgroup_set")
         page_summary, page_data = self.get_paginator(queryset, page, page_size)
-        vul_levels_dict = get_vul_levels_dict(
-            page_data, exclude_vul_status=exclude_vul_status
-        )
+        vul_levels_dict = get_vul_levels_dict(page_data, exclude_vul_status=exclude_vul_status)
         project_language_dict = get_project_language(page_data)
         agent_count_dict = get_agent_count(page_data)
         return R.success(

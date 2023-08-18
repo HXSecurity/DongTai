@@ -1,0 +1,261 @@
+[{
+	"source": false,
+	"invokeId": 666,
+	"objValue": "[*/*]*3",
+	"retValue": "[*/*]*3",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.substring(int)",
+	"methodName": "substring",
+	"sourceHash": [179792344601065],
+	"targetHash": [179792344601065],
+	"callerClass": "org.springframework.util.MimeTypeUtils",
+	"targetRange": [{
+		"hash": 179792344601065,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 3,
+			"start": 0
+		}, {
+			"name": "cross-site",
+			"stop": 3,
+			"start": 0
+		}]
+	}],
+	"callerMethod": "tokenize",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 328
+}, {
+	"source": false,
+	"invokeId": 665,
+	"objValue": "[org.apache.tomcat.util.http.ValuesEnumerator@7137f12e]*53",
+	"retValue": "[*/*]*3",
+	"className": "java.util.Enumeration",
+	"signature": "java.util.Enumeration.nextElement()",
+	"methodName": "nextElement",
+	"sourceHash": [1899491630],
+	"targetHash": [179792344601065],
+	"callerClass": "java.util.Collections",
+	"targetRange": [{
+		"hash": 179792344601065,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 3,
+			"start": 0
+		}, {
+			"name": "cross-site",
+			"stop": 3,
+			"start": 0
+		}]
+	}],
+	"callerMethod": "list",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "org.apache.tomcat.util.http.ValuesEnumerator",
+	"callerLineNumber": 5294
+}, {
+	"source": true,
+	"invokeId": 664,
+	"objValue": "[org.apache.catalina.connector.RequestFacade@140193c]51",
+	"retValue": "[org.apache.tomcat.util.http.ValuesEnumerator@7137f12e]*53",
+	"className": "javax.servlet.http.HttpServletRequest",
+	"signature": "javax.servlet.http.HttpServletRequest.getHeaders(java.lang.String)",
+	"methodName": "getHeaders",
+	"sourceHash": [],
+	"targetHash": [1899491630],
+	"callerClass": "org.springframework.web.context.request.ServletWebRequest",
+	"targetRange": [{
+		"hash": 1899491630,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 53,
+			"start": 0
+		}, {
+			"name": "cross-site",
+			"stop": 53,
+			"start": 0
+		}]
+	}],
+	"callerMethod": "getHeaderValues",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["R"]
+	},
+	"originClassName": "org.apache.catalina.connector.RequestFacade",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[Accept]*6"
+	}],
+	"callerLineNumber": 135
+}, {
+	"source": false,
+	"stacks": ["java.lang.Class.forName(Class.java)", "iast.vuln.vul.ReflectionInjection.forName(ReflectionInjection.java:6)", "iast.vuln.controller.sink.ReflectionInjectionController.safeForName(ReflectionInjectionController.java:27)", "sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)", "sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)", "sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)", "java.lang.reflect.Method.invoke(Method.java:498)", "org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205)", "org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150)", "org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)", "org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895)", "org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:808)", "org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)", "org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1070)", "org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:963)", "org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006)", "org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:898)", "javax.servlet.http.HttpServlet.service(HttpServlet.java:655)", "org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883)", "javax.servlet.http.HttpServlet.service(HttpServlet.java:764)", "org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227)", "org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)", "org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)", "org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)", "org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)", "org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)", "org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)", "org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)", "org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)", "org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)", "org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)", "org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)", "org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)", "org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)", "org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)", "org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)", "org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)", "org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197)", "org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)", "org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:541)", "org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135)", "org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)", "org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)", "org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:360)", "org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399)", "org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)", "org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:890)", "org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1789)", "org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)", "org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)", "org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)", "org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)", "java.lang.Thread.run(Thread.java:748)"],
+	"invokeId": 663,
+	"objValue": "",
+	"className": "java.lang.Class",
+	"signature": "java.lang.Class.forName(java.lang.String)",
+	"methodName": "forName",
+	"sourceHash": [5208945537306729516],
+	"targetHash": [],
+	"callerClass": "iast.vuln.vul.ReflectionInjection",
+	"callerMethod": "forName",
+	"taintPosition": {
+		"source": ["P1"]
+	},
+	"originClassName": "java.lang.Class",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[java.lang.Thread]*16"
+	}],
+	"callerLineNumber": 6
+}, {
+	"source": false,
+	"invokeId": 662,
+	"objValue": "[java.lang.Stringjava.lang.Thread]*32",
+	"retValue": "[java.lang.Thread]*16",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.substring(int)",
+	"methodName": "substring",
+	"sourceHash": [-333072018805396876],
+	"targetHash": [5208945537306729516],
+	"callerClass": "iast.vuln.controller.sink.ReflectionInjectionController",
+	"targetRange": [{
+		"hash": 5208945537306729516,
+		"ranges": []
+	}],
+	"callerMethod": "safeForName",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 26
+}, {
+	"source": false,
+	"invokeId": 661,
+	"objValue": "[java.lang.Stringjava.lang.Thread]*32",
+	"retValue": "[java.lang.Stringjava.lang.Thread]*32",
+	"className": "java.lang.StringBuilder",
+	"signature": "java.lang.StringBuilder.toString()",
+	"methodName": "toString",
+	"sourceHash": [695720120],
+	"targetHash": [-333072018805396876],
+	"callerClass": "iast.vuln.controller.sink.ReflectionInjectionController",
+	"targetRange": [{
+		"hash": -333072018805396876,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 16,
+			"start": 0
+		}, {
+			"name": "cross-site",
+			"stop": 16,
+			"start": 0
+		}]
+	}],
+	"callerMethod": "safeForName",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.StringBuilder",
+	"callerLineNumber": 25
+}, {
+	"source": false,
+	"invokeId": 660,
+	"objValue": "[java.lang.String]*16",
+	"className": "java.lang.StringBuilder",
+	"signature": "java.lang.StringBuilder.append(java.lang.String)",
+	"methodName": "append",
+	"sourceHash": [5133600433450760202],
+	"targetHash": [695720120],
+	"callerClass": "iast.vuln.controller.sink.ReflectionInjectionController",
+	"targetRange": [{
+		"hash": 695720120,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 16,
+			"start": 0
+		}, {
+			"name": "cross-site",
+			"stop": 16,
+			"start": 0
+		}]
+	}],
+	"callerMethod": "safeForName",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuilder",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[java.lang.String]*16"
+	}],
+	"callerLineNumber": 25
+}, {
+	"source": true,
+	"invokeId": 659,
+	"objValue": "[org.apache.catalina.connector.RequestFacade@140193c]51",
+	"retValue": "[java.lang.String ]*17",
+	"className": "javax.servlet.http.HttpServletRequest",
+	"signature": "javax.servlet.http.HttpServletRequest.getParameterValues(java.lang.String)",
+	"methodName": "getParameterValues",
+	"sourceHash": [],
+	"targetHash": [5133600433450760202],
+	"callerClass": "org.springframework.web.context.request.ServletWebRequest",
+	"targetRange": [{
+		"hash": 5133600433450760202,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 16,
+			"start": 0
+		}, {
+			"name": "cross-site",
+			"stop": 16,
+			"start": 0
+		}]
+	}],
+	"callerMethod": "getParameterValues",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["R"]
+	},
+	"originClassName": "org.apache.catalina.connector.RequestFacade",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[cls]*3"
+	}],
+	"callerLineNumber": 153
+}, {
+	"source": true,
+	"invokeId": 658,
+	"objValue": "[/sink/reflection-injection/safe/for-name]*40",
+	"retValue": "[/sink/reflection-injection/safe/for-name]*40",
+	"className": "org.springframework.web.util.pattern.PathPattern",
+	"signature": "org.springframework.web.util.pattern.PathPattern.getPatternString()",
+	"methodName": "getPatternString",
+	"sourceHash": [],
+	"targetHash": [6165731785042106668],
+	"callerClass": "org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMapping",
+	"targetRange": [{
+		"hash": 6165731785042106668,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 40,
+			"start": 0
+		}]
+	}],
+	"callerMethod": "extractMatchDetails",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "org.springframework.web.util.pattern.PathPattern",
+	"callerLineNumber": 174
+}]

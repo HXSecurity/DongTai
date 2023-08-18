@@ -1,14 +1,14 @@
 from django.db import models
-from dongtai_common.models import User
-from dongtai_common.utils.settings import get_managed
 from django.db.models import IntegerChoices
 from django.utils.translation import gettext_lazy as _
-from typing import List, Dict
+
+from dongtai_common.models import User
 from dongtai_common.models.project import (
     IastProject,
     IastProjectTemplate,
-    VulValidation,
 )
+from dongtai_common.utils.settings import get_managed
+
 
 class TargetOperator(IntegerChoices):
     EQUAL = 1, _("等于")
@@ -53,12 +53,10 @@ class IastAgentBlackRule(models.Model):
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_agent_black_rule'
+        db_table = "iast_agent_black_rule"
 
-    def to_full_rule(self) -> List[Dict]:
-        return list(
-            map(lambda x: x.to_agent_rule(),
-                self.iastagentblackruledetail_set.all()))
+    def to_full_rule(self) -> list[dict]:
+        return [x.to_agent_rule() for x in self.iastagentblackruledetail_set.all()]
 
 
 class IastAgentBlackRuleDetail(models.Model):
@@ -71,29 +69,38 @@ class IastAgentBlackRuleDetail(models.Model):
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_agent_black_rule_detail'
+        db_table = "iast_agent_black_rule_detail"
 
-    def to_agent_rule(self) -> Dict:
+    def to_agent_rule(self) -> dict:
         return {
-            'target_type': TargetType(self.target_type).name,
-            'operator': TargetOperator(self.operator).name,
-            'value': self.value,
+            "target_type": TargetType(self.target_type).name,
+            "operator": TargetOperator(self.operator).name,
+            "value": self.value,
         }
 
 
-def create_blacklist_rule(target_type: TargetType, operator: TargetOperator,
-                          value: str, state: State, **kwargs):
-    ruledetail = IastAgentBlackRuleDetail.objects.create(
-        target_type=target_type, operator=operator, value=value)
+def create_blacklist_rule(
+    target_type: TargetType,
+    operator: TargetOperator,
+    value: str,
+    state: State,
+    **kwargs,
+):
+    ruledetail = IastAgentBlackRuleDetail.objects.create(target_type=target_type, operator=operator, value=value)
     rule = IastAgentBlackRule.objects.create(state=state, **kwargs)
     ruledetail.rule = rule
     ruledetail.save()
 
-def update_blacklist_rule(target_type: TargetType, operator: TargetOperator,
-                          value: str, user_id: int, state: State,
-                          rule_id: int):
-    ruledetail = IastAgentBlackRuleDetail.objects.create(
-        target_type=target_type, operator=operator, value=value)
+
+def update_blacklist_rule(
+    target_type: TargetType,
+    operator: TargetOperator,
+    value: str,
+    user_id: int,
+    state: State,
+    rule_id: int,
+):
+    ruledetail = IastAgentBlackRuleDetail.objects.create(target_type=target_type, operator=operator, value=value)
     rule = IastAgentBlackRule.objects.filter(user_id=user_id, pk=rule_id).first()
     rule.state = state
     rule.save()
