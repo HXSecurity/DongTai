@@ -408,7 +408,9 @@ function create_docker_compose_file() {
   if [ $SKIP_MYSQL == false ]; then
     export MYSQL_STR=$(
       cat <<EOF
-dongtai-mysql: 
+dongtai-mysql:
+    networks:
+      - dongtainetwork
     image: $registry/$MYSQL_IMAGE_NAME:$DONGTAI_MYSQL_VER
     restart: always
     volumes:
@@ -431,6 +433,8 @@ EOF
     export REDIS_STR=$(
       cat <<EOF
 dongtai-redis:
+    networks:
+      - dongtainetwork
     image: $registry/dongtai-redis:$DONGTAI_REDIS_VER
     restart: always
     logging:
@@ -596,10 +600,18 @@ EOM
   elif [[ $(first_gt_second $CHANGE_THIS_VERSION 1.7.9) == true ]]; then
      read -r -d '' DOCKER_COMPOSE_FILE <<EOM
 version: "2"
+networks:
+  dongtainetwork:
+    name: dongtainetwork
+    ipam:
+      config:
+        - subnet: 172.31.200.0/24
 services:
   $MYSQL_STR
   $REDIS_STR
   dongtai-web:
+    networks:
+      - dongtainetwork
     image: $registry/dongtai-web:$DONGTAI_WEB_VER
     restart: always
     ports:
@@ -613,6 +625,8 @@ services:
       options:
         max-size: "10m"
   dongtai-server:
+    networks:
+      - dongtainetwork
     image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
     restart: always
     sysctls:
@@ -625,6 +639,8 @@ services:
       options:
         max-size: "10m"
   dongtai-worker-task:
+    networks:
+      - dongtainetwork
     image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
     restart: always
     entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "beat"]
@@ -635,6 +651,8 @@ services:
       options:
         max-size: "10m"
   dongtai-worker-beat:
+    networks:
+      - dongtainetwork
     image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
     restart: always
     entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-beat"]
@@ -645,6 +663,8 @@ services:
       options:
         max-size: "10m"
   dongtai-worker-other:
+    networks:
+      - dongtainetwork
     image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
     restart: always
     entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-other"]
@@ -655,6 +675,8 @@ services:
       options:
         max-size: "10m"
   dongtai-worker-high-freq:
+    networks:
+      - dongtainetwork
     image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
     restart: always
     entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-high-freq"]
@@ -665,6 +687,8 @@ services:
       options:
         max-size: "10m"
   dongtai-logrotate:
+    networks:
+      - dongtainetwork
     image: "$registry/dongtai-logrotate:$DONGTAI_SERVER_VER"
     restart: always
     user: root
@@ -675,6 +699,8 @@ services:
       options:
         max-size: "10m"
   dongtai-logstash:
+    networks:
+      - dongtainetwork
     image: "$registry/dongtai-logstash:$DONGTAI_SERVER_VER"
     restart: always
     user: root
@@ -695,10 +721,18 @@ EOM
   elif [[ $(first_gt_second $CHANGE_THIS_VERSION 1.3.1) == true ]]; then
      read -r -d '' DOCKER_COMPOSE_FILE <<EOM
 version: "2"
+networks:
+  dongtainetwork:
+    name: dongtainetwork
+    ipam:
+      config:
+        - subnet: 172.31.200.0/24
 services:
   $MYSQL_STR
   $REDIS_STR
   dongtai-web:
+    networks:
+      - dongtainetwork
     image: $registry/dongtai-web:$DONGTAI_WEB_VER
     restart: always
     ports:
@@ -712,6 +746,8 @@ services:
       options:
         max-size: "10m"
   dongtai-engine:
+    networks:
+      - dongtainetwork
     image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
     restart: always
     entrypoint: ["/opt/dongtai/webapi/docker/entrypoint.sh", "worker"]
@@ -722,6 +758,8 @@ services:
       options:
         max-size: "10m"
   dongtai-server:
+    networks:
+      - dongtainetwork
     image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
     restart: always
     volumes:
@@ -731,6 +769,8 @@ services:
       options:
         max-size: "10m"
   dongtai-engine-task:
+    networks:
+      - dongtainetwork
     image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
     restart: always
     entrypoint: ["/opt/dongtai/webapi/docker/entrypoint.sh", "beat"]
@@ -748,10 +788,18 @@ EOM
   else
   read -r -d '' DOCKER_COMPOSE_FILE <<EOM
 version: "2"
+networks:
+  dongtainetwork:
+    name: dongtainetwork
+    ipam:
+      config:
+        - subnet: 172.31.200.0/24
 services:
   $MYSQL_STR
   $REDIS_STR
   dongtai-webapi:
+    networks:
+      - dongtainetwork
     image: "$registry/dongtai-webapi:$CHANGE_THIS_VERSION"
     restart: always
     volumes:
@@ -763,6 +811,8 @@ services:
     depends_on:
       - dongtai-mysql
   dongtai-web:
+    networks:
+      - dongtainetwork
     image: "$registry/dongtai-web:$CHANGE_THIS_VERSION"
     restart: always
     ports:
@@ -776,6 +826,8 @@ services:
       options:
         max-size: "10m"
   dongtai-openapi:
+    networks:
+      - dongtainetwork
     image: "$registry/dongtai-openapi:$CHANGE_THIS_VERSION"
     restart: always
     volumes:
@@ -787,6 +839,8 @@ services:
     depends_on:
       - dongtai-mysql
   dongtai-engine:
+    networks:
+      - dongtainetwork
     image: "$registry/dongtai-engine:$CHANGE_THIS_VERSION"
     restart: always
     volumes:
@@ -798,6 +852,8 @@ services:
     depends_on:
       - dongtai-mysql
   dongtai-engine-task:
+    networks:
+      - dongtainetwork
     image: "$registry/dongtai-engine:$CHANGE_THIS_VERSION"
     restart: always
     command: ["/opt/dongtai/engine/docker/entrypoint.sh", "task"]
