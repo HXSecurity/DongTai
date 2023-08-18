@@ -1,9 +1,5 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2020/5/22 18:21
-# software: PyCharm
-# project: dongtai-models
 from django.db import models
 
 from dongtai_common.models.agent import IastAgent
@@ -18,4 +14,4 @@ class IastErrorlog(models.Model):
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_errorlog'
+        db_table = "iast_errorlog"

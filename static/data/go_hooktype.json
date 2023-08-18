@@ -146,6 +146,17 @@
         "created_by": 1,
         "enable": 1,
         "language": 4,
+        "name": "general-rules",
+        "name_en": "general-rules",
+        "name_zh": "general-rules",
+        "system_type": 1,
+        "type": 3,
+        "value": "general-rules"
+    },
+    {
+        "created_by": 1,
+        "enable": 1,
+        "language": 4,
         "name": "Header\u5934\u6ce8\u5165",
         "name_en": "Header Injection",
         "name_zh": "Header\u5934\u6ce8\u5165",

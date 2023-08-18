@@ -1,11 +1,11 @@
 from django.db import models
-
-from dongtai_common.utils.settings import get_managed
 from django.db.models import IntegerChoices
+
+from dongtai_common.models.asset_vul import IastAssetVul
 from dongtai_common.models.user import User
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-from time import time
-from dongtai_common.models.asset_vul import IastAssetVul
+from dongtai_common.utils.db import get_timestamp
+from dongtai_common.utils.settings import get_managed
 
 
 class MessageTypeChoices(IntegerChoices):
@@ -19,17 +19,11 @@ class IastVulLog(models.Model):
     msg_type = models.IntegerField()
     msg = models.TextField()
     meta_data = models.JSONField()
-    datetime = models.IntegerField(default=lambda: int(time()))
-    vul = models.ForeignKey(IastVulnerabilityModel,
-                            models.DO_NOTHING,
-                            default=-1,
-                            db_constraint=False)
-    asset_vul = models.ForeignKey(IastAssetVul,
-                                  models.DO_NOTHING,
-                                  default=-1,
-                                  db_constraint=False)
+    datetime = models.IntegerField(default=get_timestamp)
+    vul = models.ForeignKey(IastVulnerabilityModel, models.DO_NOTHING, default=-1, db_constraint=False)
+    asset_vul = models.ForeignKey(IastAssetVul, models.DO_NOTHING, default=-1, db_constraint=False)
     user = models.ForeignKey(User, models.DO_NOTHING, db_constraint=False)
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_vul_log'
+        db_table = "iast_vul_log"

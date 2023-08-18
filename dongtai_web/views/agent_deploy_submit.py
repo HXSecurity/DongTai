@@ -1,16 +1,14 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2020/6/3 11:36
-# software: PyCharm
-# project: webapi
 
 import time
-from dongtai_common.endpoint import UserEndPoint, R
+
+from django.utils.translation import gettext_lazy as _
+from rest_framework.authtoken.models import Token
+
+from dongtai_common.endpoint import R, UserEndPoint
 from dongtai_common.models.deploy import IastDeployDesc
 from dongtai_common.models.system import IastSystem
-from rest_framework.authtoken.models import Token
-from django.utils.translation import gettext_lazy as _
 
 
 class AgentDeploySave(UserEndPoint):
@@ -23,29 +21,29 @@ class AgentDeploySave(UserEndPoint):
             "msg": "success",
             "user_token": "",
             "desc": "",
-            "data": {}
+            "data": {},
         }
         systemInfo = IastSystem.objects.filter(id__gt=0).order_by("-id").first()
         if not systemInfo:
             step = 1
         else:
             token, success = Token.objects.get_or_create(user=request.user)
-            end['user_token'] = token.key
+            end["user_token"] = token.key
             if systemInfo.system:
                 step = 3
                 desInfo = IastDeployDesc.objects.filter(middleware=systemInfo.middleware, os=systemInfo.system).first()
                 if desInfo:
-                    end['desc'] = desInfo.desc
+                    end["desc"] = desInfo.desc
             else:
                 step = 2
-            end['data'] = {
+            end["data"] = {
                 "agent_value": systemInfo.agent_value,
                 "java_version": systemInfo.java_version,
                 "middleware": systemInfo.middleware,
                 "system": systemInfo.system,
             }
-        end['step'] = step
-        return R.success(step=step, data=end['data'], user_token=end['user_token'], desc=end['desc'])
+        end["step"] = step
+        return R.success(step=step, data=end["data"], user_token=end["user_token"], desc=end["desc"])
 
     def post(self, request):
         user = request.user
@@ -54,12 +52,7 @@ class AgentDeploySave(UserEndPoint):
         java_version = request.data.get("java_version", 0)
         middleware = request.data.get("middleware", 0)
         system = request.data.get("system", 0)
-        result = {
-            "user_token": "",
-            "status": 201,
-            "msg": "success",
-            "desc": ""
-        }
+        result = {"user_token": "", "status": 201, "msg": "success", "desc": ""}
         systemInfo = IastSystem.objects.filter(id__gt=0).order_by("-id").first()
         if not systemInfo:
             systemInfo = IastSystem.objects.create()
@@ -73,11 +66,11 @@ class AgentDeploySave(UserEndPoint):
         if system:
             systemInfo.system = system
             systemInfo.deploy_status = 2
-            result['user_token'] = token.key
+            result["user_token"] = token.key
             desInfo = IastDeployDesc.objects.filter(middleware=systemInfo.middleware, os=systemInfo.system).first()
             if desInfo:
-                result['desc'] = desInfo.desc
+                result["desc"] = desInfo.desc
         systemInfo.user = user
         systemInfo.update_at = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         systemInfo.save()
-        return R.success(user_token=result['user_token'], desc=result['desc'])
+        return R.success(user_token=result["user_token"], desc=result["desc"])

@@ -7,44 +7,32 @@
 ######################################################################
 
 
-from functools import reduce
-
 from django.db.models import Q
-from dongtai_common.endpoint import R, AnonymousAndUserEndPoint
-from dongtai_common.models.agent import IastAgent
-from dongtai_common.models.agent_method_pool import MethodPool
-from dongtai_common.models.project import IastProject
-from dongtai_common.models.user import User
-from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-from dongtai_common.models.hook_type import HookType
-
-from dongtai_web.utils import get_model_field, assemble_query
-from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
-from django.utils.translation import gettext_lazy
-from django.db.utils import OperationalError
-import re
-import operator
-import time
-from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
-from django.utils.translation import gettext_lazy
+from rest_framework import serializers
+
+from dongtai_common.endpoint import AnonymousAndUserEndPoint, R
+from dongtai_common.models.agent_method_pool import MethodPool
+from dongtai_web.utils import (
+    extend_schema_with_envcheck,
+    get_response_serializer,
+)
 
 _GetResponseSerializer = get_response_serializer(
-    serializers.IntegerField(help_text=_('the eariest time of method_pool')))
+    serializers.IntegerField(help_text=_("the eariest time of method_pool"))
+)
 
 
 class MethodPoolTimeRangeProxy(AnonymousAndUserEndPoint):
-    @extend_schema_with_envcheck(tags=[_('Method Pool')],
-                                 summary=_('Method Pool Time Range'),
-                                 description=_("get method_pool eariest time"),
-                                 response_schema=_GetResponseSerializer)
+    @extend_schema_with_envcheck(
+        tags=[_("Method Pool")],
+        summary=_("Method Pool Time Range"),
+        description=_("get method_pool eariest time"),
+        response_schema=_GetResponseSerializer,
+    )
     def get(self, request):
-        q = Q(agent_id__in=[
-            item['id'] for item in list(
-                self.get_auth_agents_with_user(request.user).values('id'))
-        ])
-        mintime = MethodPool.objects.filter(q).values_list(
-            'update_time').order_by('-update_time').first()
+        q = Q(agent_id__in=[item["id"] for item in list(self.get_auth_agents_with_user(request.user).values("id"))])
+        mintime = MethodPool.objects.filter(q).values_list("update_time").order_by("-update_time").first()
         if mintime is None:
             return R.failure()
         return R.success(data=mintime)

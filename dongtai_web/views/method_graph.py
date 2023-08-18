@@ -1,76 +1,70 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
-# author: owefsad@huoxian.cn
-# project: dongtai-webapi
 
 import json
 import logging
 
-from dongtai_common.endpoint import R, AnonymousAndUserEndPoint
+from django.utils.translation import gettext_lazy as _
+from drf_spectacular.utils import extend_schema
+
+from dongtai_common.endpoint import AnonymousAndUserEndPoint, R
 from dongtai_common.engine.vul_engine import VulEngine
 from dongtai_common.engine.vul_engine_v2 import VulEngineV2
 from dongtai_common.models.agent_method_pool import MethodPool
 from dongtai_common.models.replay_method_pool import IastAgentMethodPoolReplay
 from dongtai_common.utils import const
 from dongtai_common.utils.validate import Validate
-from django.utils.translation import gettext_lazy as _
-from drf_spectacular.utils import extend_schema
 
-logger = logging.getLogger('dongtai-webapi')
+logger = logging.getLogger("dongtai-webapi")
 
 
 class MethodGraph(AnonymousAndUserEndPoint):
-    @extend_schema(
-        summary="调用链图",
-        tags=["Method Pool"]
-    )
+    @extend_schema(summary="调用链图", tags=["Method Pool"])
     def get(self, request):
         try:
-            method_pool_id = int(request.query_params.get('method_pool_id'))
-            method_pool_type = request.query_params.get('method_pool_type')
-            replay_id = request.query_params.get('method_pool_replay_id', None)
-            replay_type = request.query_params.get('replay_type', None)
+            method_pool_id = int(request.query_params.get("method_pool_id"))
+            method_pool_type = request.query_params.get("method_pool_type")
+            replay_id = request.query_params.get("method_pool_replay_id", None)
+            replay_type = request.query_params.get("replay_type", None)
             if replay_type is not None and int(replay_type) not in [
-                    const.API_REPLAY, const.REQUEST_REPLAY
+                const.API_REPLAY,
+                const.REQUEST_REPLAY,
             ]:
                 return R.failure(msg="replay_type error")
-            replay_type = const.REQUEST_REPLAY if replay_type is None else int(
-                replay_type)
+            replay_type = const.REQUEST_REPLAY if replay_type is None else int(replay_type)
             if Validate.is_empty(method_pool_id) and replay_id is None:
-                return R.failure(msg=_('Method pool ID is empty'))
+                return R.failure(msg=_("Method pool ID is empty"))
 
-            auth_agents = self.get_auth_and_anonymous_agents(request.user).values('id')
-            auth_agent_ids = auth_agents.values_list('id', flat=True)
+            auth_agents = self.get_auth_and_anonymous_agents(request.user).values("id")
+            auth_agent_ids = auth_agents.values_list("id", flat=True)
 
-            cur_ids = []
-            for item in auth_agent_ids:
-                cur_ids.append(int(item))
+            cur_ids = [int(item) for item in auth_agent_ids]
 
-            if method_pool_type == 'normal' and MethodPool.objects.filter(
-                    agent_id__in=cur_ids, id=method_pool_id).exists():
-                method_pool = MethodPool.objects.filter(
-                    id=method_pool_id).first()
-            elif method_pool_type == 'replay' and replay_id:
+            if (
+                method_pool_type == "normal"
+                and MethodPool.objects.filter(agent_id__in=cur_ids, id=method_pool_id).exists()
+            ):
+                method_pool = MethodPool.objects.filter(id=method_pool_id).first()
+            elif method_pool_type == "replay" and replay_id:
+                method_pool = IastAgentMethodPoolReplay.objects.filter(id=replay_id, replay_type=replay_type).first()
+            elif (
+                method_pool_type == "replay"
+                and MethodPool.objects.filter(agent_id__in=cur_ids, id=method_pool_id).exists()
+            ):
                 method_pool = IastAgentMethodPoolReplay.objects.filter(
-                    id=replay_id, replay_type=replay_type).first()
-            elif method_pool_type == 'replay' and MethodPool.objects.filter(
-                    agent_id__in=cur_ids,
-                    id=method_pool_id).exists():
-                method_pool = IastAgentMethodPoolReplay.objects.filter(
-                    relation_id=method_pool_id,
-                    replay_type=replay_type).first()
+                    relation_id=method_pool_id, replay_type=replay_type
+                ).first()
             else:
-                return R.failure(msg=_('Stain call map type does not exist'))
+                return R.failure(msg=_("Stain call map type does not exist"))
 
             if method_pool is None:
-                return R.failure(msg=_('Data does not exist or no permission to access'))
+                return R.failure(msg=_("Data does not exist or no permission to access"))
 
             data, link_count, method_count = self.search_all_links(method_pool.method_pool)
             return R.success(data=data)
 
         except Exception as e:
             logger.error(e, exc_info=True)
-            return R.failure(msg=_('Page and PageSize can only be numeric'))
+            return R.failure(msg=_("Page and PageSize can only be numeric"))
 
     def get_method_pool(self, user, method_pool_id):
         """
@@ -78,14 +72,11 @@ class MethodGraph(AnonymousAndUserEndPoint):
         :param method_pool_id:
         :return:
         """
-        return MethodPool.objects.filter(
-            agent__in=self.get_auth_and_anonymous_agents(user),
-            id=method_pool_id
-        ).first()
+        return MethodPool.objects.filter(agent__in=self.get_auth_and_anonymous_agents(user), id=method_pool_id).first()
 
     def search_all_links(self, method_pool):
         engine = VulEngineV2()
-        engine.prepare(method_pool=json.loads(method_pool), vul_method_signature='')
+        engine.prepare(method_pool=json.loads(method_pool), vul_method_signature="")
         engine.search_all_link()
         return engine.get_taint_links()
 
@@ -98,24 +89,28 @@ class MethodGraph(AnonymousAndUserEndPoint):
         :return:
         """
         engine = VulEngine()
-        links = list()
+        links = []
         if sinks:
-            for sink in sinks:
+            for sink_ in sinks:
+                sink = sink_
                 engine.search(
                     method_pool=json.loads(method_pool.method_pool),
-                    vul_method_signature=sink
+                    vul_method_signature=sink,
                 )
                 status, stack, source, sink = engine.result()
                 if status is False:
                     continue
 
                 method_caller_set = MethodGraph.convert_to_set(stack)
-                if self.check_match(
+                if (
+                    self.check_match(
                         method_caller_set=method_caller_set,
                         source_set=sources,
                         propagator_set=propagators,
-                        sink_set=sinks
-                ) is False:
+                        sink_set=sinks,
+                    )
+                    is False
+                ):
                     continue
 
                 links.append(stack)
@@ -130,22 +125,22 @@ class MethodGraph(AnonymousAndUserEndPoint):
             for links in taint_links:
                 for link in links:
                     left = None
-                    edges = list()
+                    edges = []
                     for node in link:
-                        if node['source']:
-                            left = node['invokeId']
+                        if node["source"]:
+                            left = node["invokeId"]
                         elif left is not None:
-                            right = node['invokeId']
-                            edges.append({
-                                'source': str(left),
-                                'target': str(right)
-                            })
+                            right = node["invokeId"]
+                            edges.append({"source": str(left), "target": str(right)})
                             left = right
                     for edge in edges:
-                        for _edge in all_links['edges']:
-                            if 'selected' not in _edge and _edge['source'] == edge['source'] and _edge['target'] == \
-                                    edge['target']:
-                                _edge['selected'] = True
+                        for _edge in all_links["edges"]:
+                            if (
+                                "selected" not in _edge
+                                and _edge["source"] == edge["source"]
+                                and _edge["target"] == edge["target"]
+                            ):
+                                _edge["selected"] = True
 
     def convert_method_pool_to_set(self, method_pool):
         method_callers = json.loads(method_pool)

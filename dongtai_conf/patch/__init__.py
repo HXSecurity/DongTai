@@ -3,10 +3,11 @@ import inspect
 import logging
 import pkgutil
 from collections import defaultdict
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
 from types import CodeType
-from typing import Any, Callable, TypeVar, overload
+from typing import Any, TypeVar, overload
 
 from typing_extensions import TypeVarTuple, Unpack
 
@@ -21,13 +22,11 @@ class PatchConfig:
 
 
 is_init_patch = False
-PATCH_HANDLER: dict[CodeType, dict[int, tuple[Callable, PatchConfig]]] = defaultdict(
-    dict
-)
+PATCH_HANDLER: dict[CodeType, dict[int, tuple[Callable, PatchConfig]]] = defaultdict(dict)
 
 
 def init_patch() -> None:
-    global is_init_patch
+    global is_init_patch  # noqa: PLW0603
     if not is_init_patch:
         PATCH_ROOT_PATH = Path(BASE_DIR) / "dongtai_conf" / "patch"
         for module_info in pkgutil.iter_modules([str(PATCH_ROOT_PATH.resolve())]):
@@ -72,13 +71,10 @@ def patch_point(*args: Any, patch_id: int = 0) -> Any:
             if name in caller_frame.f_locals:
                 local_value = caller_frame.f_locals[name]
                 if patch_config.type_check:
-                    # 如果启用类型检查，进行类型检查
+                    # 如果启用类型检查,进行类型检查
                     type_ = annotations.get(name, None)
                     if type(type_) is type and not isinstance(local_value, type_):
-                        logger.error(
-                            "type check error, "
-                            f"name {name}, expect {type_}, get{type(local_value)}"
-                        )
+                        logger.error(f"type check error, name {name}, expect {type_}, get{type(local_value)}")
                 patch_func_args[name] = local_value
             else:
                 logger.error(f"can not call patch function, miss local var {name}")
@@ -86,20 +82,15 @@ def patch_point(*args: Any, patch_id: int = 0) -> Any:
         return_value = func(**patch_func_args)
         if return_value is None:
             return _return_args(*args)
-        elif len(args) == 1:
+        if len(args) == 1:
             return return_value
-        elif not isinstance(return_value, tuple):
-            logger.error(
-                f"return value type error: expect tuple, get {type(return_value)}"
-            )
+        if not isinstance(return_value, tuple):
+            logger.error(f"return value type error: expect tuple, get {type(return_value)}")
             return _return_args(*args)
-        elif len(return_value) != len(args):
-            logger.error(
-                f"return value len error: expect {len(args)}, get {len(return_value)}"
-            )
+        if len(return_value) != len(args):
+            logger.error(f"return value len error: expect {len(args)}, get {len(return_value)}")
             return _return_args(*args)
-        else:
-            return _return_args(*return_value)
+        return _return_args(*return_value)
     return _return_args(*args)
 
 
@@ -125,6 +116,4 @@ def check_patch() -> None:
     for code, func in PATCH_HANDLER.items():
         args, _, _, _, kwonlyargs, _, _ = inspect.getfullargspec(func)
         if not set(args + kwonlyargs).issubset(set(code.co_varnames)):
-            logger.error(
-                f"error: expect args {args + kwonlyargs}, varnames {code.co_varnames}"
-            )
+            logger.error(f"error: expect args {args + kwonlyargs}, varnames {code.co_varnames}")

@@ -4835,6 +4835,19 @@
                 "command": "",
                 "ignore_blacklist": false,
                 "ignore_internal": false,
+                "inherit": "all",
+                "source": "O",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "P1",
+                "track": "false",
+                "untags": [],
+                "value": "java.io.Reader.read(char[])"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1",
                 "stack_blacklist": [],
@@ -5151,7 +5164,9 @@
                 "inherit": "true",
                 "source": "O",
                 "stack_blacklist": [],
-                "tags": [],
+                "tags": [
+                    "cross-site"
+                ],
                 "target": "R",
                 "track": "false",
                 "untags": [],
@@ -5164,7 +5179,9 @@
                 "inherit": "true",
                 "source": "P1",
                 "stack_blacklist": [],
-                "tags": [],
+                "tags": [
+                    "cross-site"
+                ],
                 "target": "R",
                 "track": "false",
                 "untags": [],
@@ -5177,7 +5194,9 @@
                 "inherit": "true",
                 "source": "O",
                 "stack_blacklist": [],
-                "tags": [],
+                "tags": [
+                    "cross-site"
+                ],
                 "target": "R",
                 "track": "false",
                 "untags": [],
@@ -5190,7 +5209,9 @@
                 "inherit": "true",
                 "source": "P1",
                 "stack_blacklist": [],
-                "tags": [],
+                "tags": [
+                    "cross-site"
+                ],
                 "target": "R",
                 "track": "false",
                 "untags": [],
@@ -5203,7 +5224,9 @@
                 "inherit": "true",
                 "source": "O",
                 "stack_blacklist": [],
-                "tags": [],
+                "tags": [
+                    "cross-site"
+                ],
                 "target": "R",
                 "track": "false",
                 "untags": [],
@@ -5262,7 +5285,7 @@
                 "source": "O",
                 "stack_blacklist": [],
                 "tags": [
-                    "http-token-limited-chars"
+                    "cross-site"
                 ],
                 "target": "R",
                 "track": "false",
@@ -5476,7 +5499,9 @@
                 "inherit": "true",
                 "source": "P1",
                 "stack_blacklist": [],
-                "tags": [],
+                "tags": [
+                    "cross-site"
+                ],
                 "target": "R",
                 "track": "false",
                 "untags": [],
@@ -5504,7 +5529,9 @@
                 "inherit": "true",
                 "source": "P1",
                 "stack_blacklist": [],
-                "tags": [],
+                "tags": [
+                    "cross-site"
+                ],
                 "target": "R",
                 "track": "false",
                 "untags": [],
@@ -5532,7 +5559,9 @@
                 "inherit": "true",
                 "source": "O",
                 "stack_blacklist": [],
-                "tags": [],
+                "tags": [
+                    "cross-site"
+                ],
                 "target": "R",
                 "track": "false",
                 "untags": [],
@@ -5586,7 +5615,9 @@
                 "inherit": "true",
                 "source": "O",
                 "stack_blacklist": [],
-                "tags": [],
+                "tags": [
+                    "http-token-limited-chars"
+                ],
                 "target": "R",
                 "track": "false",
                 "untags": [],
@@ -5606,81 +5637,6 @@
                 "track": "false",
                 "untags": [],
                 "value": "javax.servlet.http.HttpServletRequest.getHeaders(java.lang.String)"
-            },
-            {
-                "command": "",
-                "ignore_blacklist": false,
-                "ignore_internal": false,
-                "inherit": "true",
-                "source": "O",
-                "stack_blacklist": [],
-                "tags": [
-                    "cross-site"
-                ],
-                "target": "R",
-                "track": "false",
-                "untags": [],
-                "value": "javax.servlet.http.HttpServletRequest.getInputStream()"
-            },
-            {
-                "command": "",
-                "ignore_blacklist": false,
-                "ignore_internal": false,
-                "inherit": "true",
-                "source": "P1",
-                "stack_blacklist": [],
-                "tags": [
-                    "cross-site"
-                ],
-                "target": "R",
-                "track": "false",
-                "untags": [],
-                "value": "javax.servlet.http.HttpServletRequest.getParameter(java.lang.String)"
-            },
-            {
-                "command": "",
-                "ignore_blacklist": false,
-                "ignore_internal": false,
-                "inherit": "true",
-                "source": "O",
-                "stack_blacklist": [],
-                "tags": [
-                    "cross-site"
-                ],
-                "target": "R",
-                "track": "false",
-                "untags": [],
-                "value": "javax.servlet.http.HttpServletRequest.getParameterMap()"
-            },
-            {
-                "command": "",
-                "ignore_blacklist": false,
-                "ignore_internal": false,
-                "inherit": "true",
-                "source": "O",
-                "stack_blacklist": [],
-                "tags": [
-                    "cross-site"
-                ],
-                "target": "R",
-                "track": "false",
-                "untags": [],
-                "value": "javax.servlet.http.HttpServletRequest.getParameterNames()"
-            },
-            {
-                "command": "",
-                "ignore_blacklist": false,
-                "ignore_internal": false,
-                "inherit": "true",
-                "source": "P1",
-                "stack_blacklist": [],
-                "tags": [
-                    "cross-site"
-                ],
-                "target": "R",
-                "track": "false",
-                "untags": [],
-                "value": "javax.servlet.http.HttpServletRequest.getParameterValues(java.lang.String)"
             },
             {
                 "command": "",
@@ -5736,21 +5692,6 @@
                 "source": "O",
                 "stack_blacklist": [],
                 "tags": [
-                    "cross-site"
-                ],
-                "target": "R",
-                "track": "false",
-                "untags": [],
-                "value": "javax.servlet.http.HttpServletRequest.getReader()"
-            },
-            {
-                "command": "",
-                "ignore_blacklist": false,
-                "ignore_internal": false,
-                "inherit": "true",
-                "source": "O",
-                "stack_blacklist": [],
-                "tags": [
                     "http-token-limited-chars",
                     "xss-encoded"
                 ],
@@ -5779,7 +5720,9 @@
                 "inherit": "true",
                 "source": "P1",
                 "stack_blacklist": [],
-                "tags": [],
+                "tags": [
+                    "cross-site"
+                ],
                 "target": "R",
                 "track": "false",
                 "untags": [],
@@ -5807,7 +5750,9 @@
                 "inherit": "true",
                 "source": "P1",
                 "stack_blacklist": [],
-                "tags": [],
+                "tags": [
+                    "cross-site"
+                ],
                 "target": "R",
                 "track": "false",
                 "untags": [],
@@ -5835,7 +5780,9 @@
                 "inherit": "true",
                 "source": "O",
                 "stack_blacklist": [],
-                "tags": [],
+                "tags": [
+                    "cross-site"
+                ],
                 "target": "R",
                 "track": "false",
                 "untags": [],

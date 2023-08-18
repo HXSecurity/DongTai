@@ -5,10 +5,10 @@ name: "Nightly"
 on:
   schedule:
     - cron: '0 0 * * *'
+  workflow_dispatch:
     
 jobs:
-  # This workflow contains a single job called "build"
-  Run-API-TEST:
+  Run-Unit-TEST-In-Cython:
     runs-on: ubuntu-latest
     services:
       mysql:
@@ -40,7 +40,63 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: "3.10"
-          ref: main
+          cache: "pip"
+      
+      - name: Install dependencies
+        run: |
+          sudo apt-get install build-essential cmake ninja-build python3-dev cython3 pybind11-dev libre2-dev -y
+          python -m pip install --upgrade pip
+          pip install wheel
+          pip install coverage
+          pip install -r requirements.txt
+          
+      - name: Django Unit Testing
+        run: |
+          export CELERY_EAGER_TEST=TRUE
+          cp dongtai_conf/conf/config.ini.test dongtai_conf/conf/config.ini
+          mkdir -p /tmp/logstash/report/{img,word,pdf,excel} && mkdir -p /tmp/iast_cache/package && mkdir -p /tmp/logstash/batchagent 
+          python3 ./deploy/docker/version_update.py || true
+          python3 manage.py migrate
+          pip install Cython==3.0.0
+          python setup.py build_ext --inplace
+          find . -name "*.so"  | grep test | xargs rm
+          coverage run --source='.' manage.py test
+          coverage report
+
+  Run-API-TEST-With-Cython:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: dongtai/dongtai-mysql-unittest:latest
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping --silent"
+          --health-interval 10s
+          --health-timeout 180s
+          --health-retries 10
+      redis:
+        image: dongtai/dongtai-redis:latest
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: ["3.10"]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+          cache: "pip"
+      
       - name: Install dependencies
         run: |
           sudo apt-get install build-essential cmake ninja-build python3-dev cython3 pybind11-dev libre2-dev -y
@@ -49,28 +105,22 @@ jobs:
           pip install -r requirements.txt
           pip install schemathesis
           pip install httpx
-      
-      - name: Install dependencies
-        run: |
-          curl -X GET "https://iast.io/openapi/api/v1/agent/download?url=https://iast.io/openapi&language=python&projectName=WEBAPI${{ github.repository_owner }}.${{github.run_number}}" -H "Authorization: Token a303ab4bedc93f96808335d023d7ac4d2ba00773" -o dongtai-agent-python.tar.gz -k
-          pip install dongtai-agent-python.tar.gz
-
-      
+          
       - name: Django Api Testing
         run: |
           mysql --host=127.0.0.1 -uroot -p'dongtai-iast' -D dongtai_webapi < /home/runner/work/DongTai/DongTai/test/init.sql
           cp dongtai_conf/conf/config.ini.test dongtai_conf/conf/config.ini
-          export PROJECT_NAME=DONGTAI-SERVER.${{ github.repository_owner }}
-          export PROJECT_VERSION=${{github.run_number}}
           export DOC=TRUE
-          export PYTHONAGENT=TRUE
           mkdir -p /tmp/logstash/report/{img,word,pdf,excel} && mkdir -p /tmp/iast_cache/package && mkdir -p /tmp/logstash/batchagent 
           python3 ./deploy/docker/version_update.py || true
-          python3 manage.py updatedepartmenttoken
-          python3 manage.py runserver 0.0.0.0:8000  &
-          sleep 60
-          schemathesis   run --base-url "http://localhost:8000/"  -H 'Authorization: Token 67aebd78e700ad36a82a152276196b5f49fafeb0' http://localhost:8000/api/XZPcGFKoxYXScwGjQtJx8u/schema/  --hypothesis-suppress-health-check=data_too_large,filter_too_much,too_slow,large_base_example,function_scoped_fixture --validate-schema=false  --hypothesis-verbosity normal 
-  
+          python3 manage.py migrate
+          pip install Cython==3.0.0
+          python setup.py build_ext --inplace
+          python setup.py build_ext --inplace
+          python3 manage.py runserver 0.0.0.0:8000 > webapi.log &
+          sleep 15
+          schemathesis run --rate-limit=28/s --base-url "http://localhost:8000/"  -H 'Authorization: Token 67aebd78e700ad36a82a152276196b5f49fafeb0' http://localhost:8000/api/XZPcGFKoxYXScwGjQtJx8u/schema/  --hypothesis-suppress-health-check=data_too_large,filter_too_much,too_slow,large_base_example,function_scoped_fixture --validate-schema=false  --hypothesis-verbosity normal 
+
   Run-BuildCheck:
     if: ${{ github.repository_owner == 'HXSecurity' }}
     runs-on: ubuntu-latest

@@ -227,17 +227,17 @@ Create the name of the service account to use
 
 {{- define "config.ini" -}}
     [mysql]
-    host = {{.Values.mysql.host}}
-    port = {{.Values.mysql.port}}
-    name = {{.Values.mysql.name}}
-    user = {{.Values.mysql.user}}
-    password = {{.Values.mysql.password}}
+    host ={{.Values.mysql.host}}
+    port ={{.Values.mysql.port}}
+    name ={{.Values.mysql.name}}
+    user ={{.Values.mysql.user}}
+    password ={{.Values.mysql.password}}
 
     [redis]
-    host = {{.Values.redis.host}}
-    port = {{.Values.redis.port}}
-    password = {{.Values.redis.password}}
-    db = {{.Values.redis.db}}
+    host ={{.Values.redis.host}}
+    port ={{.Values.redis.port}}
+    password ={{.Values.redis.password}}
+    db ={{.Values.redis.db}}
 
     [engine]
     url = http://dongtai-engine:8000
@@ -246,27 +246,27 @@ Create the name of the service account to use
     url = http://dongtai-server:8000
 
     [security]
-    csrf_trust_origins = {{.Values.csrfTrustOrigins}}
-    secret_key = {{.Values.secretKey}}
+    csrf_trust_origins ={{.Values.csrfTrustOrigins}}
+    secret_key ={{.Values.secretKey}}
 
     [smtp]
-    server = {{.Values.smtp.server}}
-    user = {{.Values.smtp.user}}
-    password = {{.Values.smtp.password}}
-    from_addr = {{.Values.smtp.from_addr}}
-    ssl = {{.Values.smtp.ssl}}
-    cc_addr = {{.Values.smtp.cc_addr}}
-    port = {{.Values.smtp.port}}
+    server ={{.Values.smtp.server}}
+    user ={{.Values.smtp.user}}
+    password ={{.Values.smtp.password}}
+    from_addr ={{.Values.smtp.from_addr}}
+    ssl ={{.Values.smtp.ssl}}
+    cc_addr ={{.Values.smtp.cc_addr}}
+    port ={{.Values.smtp.port}}
 
     [sca]
-    base_url = {{.Values.sca.sca_url}}
-    timeout = 5
-    token = {{.Values.sca.sca_token}}
+    base_url ={{.Values.sca.sca_url}}
+    timeout =5
+    token ={{.Values.sca.sca_token}}
 
     [task]
     retryable = true
     max_retries = 3
-    async_send = true
+    async_send = {{.Values.logstash}}
     async_send_delay = 5
 
     [log_service]
@@ -290,10 +290,11 @@ Create the name of the service account to use
     asset_vul_index = dongtai-iast-alias-dongtai-v1-asset-vul
 
     [other]
-    logging_level = {{.Values.logging_level}}
-    cache_preheat = True
-    domain_vul = {{.Values.Dongtai_url}}
-    dast_token = {{.Values.usb.usb_token}}
+    logging_level ={{.Values.logging_level}}
+    cache_preheat =True
+    domain ={{.Values.Dongtai_url}}
+    domain_vul ={{.Values.Dongtai_url}}
+    dast_token ={{.Values.usb.usb_token}}
 {{- end -}}
 
 {{/*

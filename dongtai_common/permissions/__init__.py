@@ -1,10 +1,9 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
-# author: owefsad@huoxian.cn
 # datetime: 2021/7/21 下午4:04
-# project: dongtai-engine
 
 from rest_framework import permissions
+
+from dongtai_conf.patch import patch_point
 
 
 class ScopedPermission(permissions.BasePermission):
@@ -18,7 +17,14 @@ class ScopedPermission(permissions.BasePermission):
     - APIKeys specify their scope, and work as expected.
     """
 
-    scope_map = {"HEAD": (), "GET": (), "POST": (), "PUT": (), "PATCH": (), "DELETE": ()}
+    scope_map = {
+        "HEAD": (),
+        "GET": (),
+        "POST": (),
+        "PUT": (),
+        "PATCH": (),
+        "DELETE": (),
+    }
 
     def has_permission(self, request, view):
         # session-based auth has all scopes for a logged in user
@@ -35,17 +41,24 @@ class ScopedPermission(permissions.BasePermission):
 
 class UserPermission(ScopedPermission):
     """
-    用户权限验证类，验证是否为有效用户
+    用户权限验证类,验证是否为有效用户
     """
 
     def has_permission(self, request, view):
         user = request.user
+        from dongtai_common.endpoint import OpenApiEndPoint
+
+        if user is not None and user.is_active and issubclass(view.__class__, OpenApiEndPoint):
+            return True
+        extend_permission = None
+        _, _, extend_permission = patch_point(request, view, extend_permission)
+        if extend_permission is not None:
+            return extend_permission
         if user is not None and user.is_active:
             return True
         return False
 
     def has_object_permission(self, request, view, obj):
-        print('enter has object permission')
         return super().has_object_permission(request, view, obj)
 
 
@@ -61,7 +74,6 @@ class TalentAdminPermission(ScopedPermission):
         return False
 
     def has_object_permission(self, request, view, obj):
-        print('enter has object permission')
         return super().has_object_permission(request, view, obj)
 
 
@@ -77,5 +89,4 @@ class SystemAdminPermission(ScopedPermission):
         return False
 
     def has_object_permission(self, request, view, obj):
-        print('enter has object permission')
         return super().has_object_permission(request, view, obj)

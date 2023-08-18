@@ -28,6 +28,22 @@ DONGTAI_SERVER_VER=""
 DONGTAI_REDIS_VER=""
 DONGTAI_MYSQL_VER=""
 
+function latest_code() {
+    read -r -p "Please confirm to pull the latest code ? [Y/n] " code
+    case $code in
+        [yY][eE][sS]|[yY])
+            Info "continue"
+            ;;
+        [nN][oO]|[nN])
+            Info "Cancel"
+            exit
+            ;;
+        *)
+            Info "Cancel"
+            exit
+            ;;
+    esac
+}
 Info() {
   echo -e "[Info] $1" >&2
 }
@@ -88,6 +104,7 @@ sha=sha1sum
 if [ $machine == "Mac" ]; then
   sha=shasum
 fi
+
 
 trim() {
   local trimmed="$1"
@@ -428,10 +445,18 @@ EOF
   if [[ $(first_gt_second $CHANGE_THIS_VERSION 1.8.1) == true ]]; then
      read -r -d '' DOCKER_COMPOSE_FILE <<EOM
 version: "2"
+networks:
+  dongtainetwork:
+    name: dongtainetwork
+    ipam:
+      config:
+        - subnet: 172.31.200.0/24
 services:
   $MYSQL_STR
   $REDIS_STR
   dongtai-web:
+    networks:
+      - dongtainetwork
     image: $registry/dongtai-web:$DONGTAI_WEB_VER
     restart: always
     ports:
@@ -445,6 +470,8 @@ services:
       options:
         max-size: "10m"
   dongtai-server:
+    networks:
+      - dongtainetwork
     image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
     restart: always
     sysctls:
@@ -457,6 +484,8 @@ services:
       options:
         max-size: "10m"
   dongtai-worker-task:
+    networks:
+      - dongtainetwork
     image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
     restart: always
     entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "beat"]
@@ -467,6 +496,8 @@ services:
       options:
         max-size: "10m"
   dongtai-worker-beat:
+    networks:
+      - dongtainetwork
     image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
     restart: always
     entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-beat"]
@@ -477,6 +508,8 @@ services:
       options:
         max-size: "10m"
   dongtai-worker-other:
+    networks:
+      - dongtainetwork
     image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
     restart: always
     entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-other"]
@@ -487,6 +520,8 @@ services:
       options:
         max-size: "10m"
   dongtai-worker-high-freq:
+    networks:
+      - dongtainetwork
     image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
     restart: always
     entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-high-freq"]
@@ -499,6 +534,8 @@ services:
       options:
         max-size: "10m"
   dongtai-worker-sca:
+    networks:
+      - dongtainetwork
     image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
     restart: always
     entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-sca"]
@@ -511,6 +548,8 @@ services:
       options:
         max-size: "10m"
   dongtai-worker-es:
+    networks:
+      - dongtainetwork
     image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
     restart: always
     entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-es"]
@@ -523,6 +562,8 @@ services:
       options:
         max-size: "10m"
   dongtai-logrotate:
+    networks:
+      - dongtainetwork
     image: "$registry/dongtai-logrotate:$DONGTAI_SERVER_VER"
     restart: always
     user: root
@@ -533,6 +574,8 @@ services:
       options:
         max-size: "10m"
   dongtai-logstash:
+    networks:
+      - dongtainetwork
     image: "$registry/dongtai-logstash:$DONGTAI_SERVER_VER"
     restart: always
     user: root
@@ -937,6 +980,7 @@ if [ ! 0 == $# ]; then # If options provided then
   "install") # install iast server
     #unset OPTIND
     # Check if the Docker service is turned on
+    latest_code
     check_docker() {
       Info "check docker servie status."
       docker ps 1>/dev/null 2>/dev/null
@@ -1133,6 +1177,7 @@ if [ ! 0 == $# ]; then # If options provided then
     ;;
 
   "upgrade")
+    latest_code
     exit_not_running
     TO_VERSION=""
     FROM_VERSION=""
@@ -1194,6 +1239,7 @@ if [ ! 0 == $# ]; then # If options provided then
 
       Info "Sql store directory: $sql_dir"
 
+
       # sql downloaded,start to execute sql
       Info $SQL_NAMES
       for SQL in $SQL_NAMES; do
@@ -1204,6 +1250,15 @@ if [ ! 0 == $# ]; then # If options provided then
         #   Info "Sql character mysql8.0 ok!"
         # fi
       done
+
+      if [[ $(first_gt_second $TO_VERSION 1.13.9) == true ]]; then
+        Info "reinstall:[$TO_VERSION]"
+        docker run -i --name dongtai-server-update -v $PWD/config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini --rm \
+          --link `docker ps | grep dongtai-mysql | awk '{print $1}'`:dongtai-mysql \
+          --link `docker ps | grep dongtai-redis | awk '{print $1}'`:dongtai-redis \
+          --network dongtainetwork registry.cn-hongkong.aliyuncs.com/secnium/dongtai-server:$TO_VERSION migrate || exit 1
+      fi
+
       if [ $TO_VERSION = 1.8.0 ]; then
         docker exec -i $mysql_container_id /bin/bash -c "mysql -uroot -p'dongtai-iast' dongtai_webapi < $sql_dir/utf8mb4_general_ci.sql"
         Info "Sql character ok!"

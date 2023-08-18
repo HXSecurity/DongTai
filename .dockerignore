@@ -3,7 +3,6 @@
 *.DS_Store
 /venv
 */__pycache__/*
-*/migrations/*
 *.pyc
 .idea/
 scaapi/cron/logs/sca.log
@@ -25,7 +24,6 @@ build_docker.sh
 *.DS_Store
 /venv
 */__pycache__/*
-*/migrations/*
 *.pyc
 .idea/
 scaapi/cron/logs/sca.log

@@ -8,6 +8,7 @@
 
 
 from django.db import models
+
 from dongtai_common.utils.settings import get_managed
 
 
@@ -16,4 +17,4 @@ class IastProgramLanguage(models.Model):
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_program_language'
+        db_table = "iast_program_language"
