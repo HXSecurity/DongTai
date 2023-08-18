@@ -27,7 +27,7 @@ git pull
 
 
 ```
-./dtctl install -v <version_id>
+./dtctl install -v 1.14.0
 ```
 s: 跳过的资源(skip)，可选： `mysql` `redis`  `mysql,redis`，默认：不跳过
 
@@ -51,7 +51,7 @@ git pull
 
 
 ```
-./dtctl upgrade  -t <version_id>
+./dtctl upgrade  -t 1.14.0
 ```
 更新到执行的版本
 
