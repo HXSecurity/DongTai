@@ -482,6 +482,7 @@ EMAIL_PORT = config.get("smtp", "port")
 ENABLE_SSL = config.get("smtp", "ssl") == "True"
 ADMIN_EMAIL = config.get("smtp", "cc_addr")
 SESSION_COOKIE_DOMAIN = None
+SESSION_ENGINE = "dongtai_common.utils.db_session_engine"
 CSRF_COOKIE_DOMAIN = None
 
 SECURE_BROWSER_XSS_FILTER = True

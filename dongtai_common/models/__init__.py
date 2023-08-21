@@ -1,15 +1,18 @@
 #!/usr/bin/env python
 # datetime:2021/1/25 下午6:43
 
-from .user import User  # noqa: I001, F401
-from . import api_route  # noqa: F401
-from .project_group import IastProjectGroup  # noqa: F401
-from .project_metadata import IastProjectMetaData  # noqa: F401
-from .api_route_v2 import *  # noqa: F403
-from .integration import *  # noqa: F403
-from .license import *  # noqa: F403
-from .request_chains import *  # noqa: F403
-from .share_token import *  # noqa: F403
+# ruff: noqa: I001, F401, F403
+
+from .user import User
+from . import api_route
+from .project_group import IastProjectGroup
+from .project_metadata import IastProjectMetaData
+from .api_route_v2 import *
+from .integration import *
+from .license import *
+from .request_chains import *
+from .share_token import *
+from dongtai_common.utils.db_session_engine import Session
 
 
 LANGUAGE_DICT = {"JAVA": 1, "PYTHON": 2, "PHP": 3, "GO": 4}
