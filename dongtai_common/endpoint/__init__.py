@@ -6,7 +6,6 @@ from functools import reduce
 from operator import ior
 from typing import TYPE_CHECKING
 
-from django.contrib.auth import logout
 from django.core.paginator import EmptyPage, Paginator
 from django.db.models import Count
 from django.http import JsonResponse
@@ -31,7 +30,6 @@ from dongtai_common.permissions import (
 )
 from dongtai_common.utils import const
 from dongtai_common.utils.init_schema import VIEW_CLASS_TO_SCHEMA
-from dongtai_conf import settings
 
 if TYPE_CHECKING:
     from django.core.paginator import _SupportsPagination
