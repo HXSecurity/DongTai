@@ -4,6 +4,7 @@
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.db import models
 from django.db.models import Q, QuerySet
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from dongtai_common.models.department import Department
@@ -65,6 +66,8 @@ class User(AbstractUser, PermissionsMixin):
     role = models.ForeignKey(IastRoleV2, models.DO_NOTHING, default=1, db_constraint=False)
     is_global_permission = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
+    failed_login_count = models.IntegerField(default=0)
+    failed_login_time = models.DateTimeField(default=timezone.now)
 
     objects = SaaSUserManager()
     using_department = None
