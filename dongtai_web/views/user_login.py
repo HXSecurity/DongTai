@@ -1,9 +1,11 @@
 #!/usr/local/env python
 import logging
 import time
+from datetime import timedelta
 
 from captcha.models import CaptchaStore
 from django.contrib.auth import authenticate, login
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 
@@ -41,8 +43,20 @@ class UserLogin(UserEndPoint):
                 if captcha_obj.response == captcha.lower():
                     username = request.data["username"]
                     password = request.data["password"]
-                    user = authenticate(username=username, password=password)
+                    user: User | None = authenticate(username=username, password=password)  # type: ignore
                     if user is not None:
+                        current_time = timezone.now()
+                        delta = current_time - user.failed_login_time
+                        if (
+                            (user.failed_login_count == 6 and delta < timedelta(minutes=1))
+                            or (user.failed_login_count == 7 and delta < timedelta(minutes=5))
+                            or (user.failed_login_count == 8 and delta < timedelta(minutes=15))
+                            or (user.failed_login_count == 9 and delta < timedelta(minutes=60))
+                            or user.failed_login_count >= 10
+                        ):
+                            return R.failure(msg="账号已被锁定")
+                        user.failed_login_count = 0
+                        user.save()
                         login(request, user)
                         return R.success(
                             msg=_("Login successful"),
@@ -51,7 +65,7 @@ class UserLogin(UserEndPoint):
                                 "is_active": user.is_active,
                             },
                         )
-                    user_login = User.objects.filter(username=username).first()
+                    user_login: User | None = User.objects.filter(username=username).first()
                     if user_login and not user_login.is_active:
                         return R.failure(
                             status=205,
@@ -61,6 +75,11 @@ class UserLogin(UserEndPoint):
                                 "is_active": user_login.is_active,
                             },
                         )
+                    if user_login is not None:
+                        user_login.failed_login_count += 1
+                        user_login.failed_login_time = timezone.now()
+                        user_login.save()
+                        return R.failure(msg="密码错误")
                     logger.warn(
                         f"user [{username}] login failure, rease: {'user not exist' if user is None else 'user is disable'}"
                     )
