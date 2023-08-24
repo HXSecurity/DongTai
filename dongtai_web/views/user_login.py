@@ -68,7 +68,7 @@ class UserLogin(UserEndPoint):
                             or (user.failed_login_count == 9 and delta < timedelta(minutes=60))
                             or user.failed_login_count >= 10
                         ):
-                            return R.failure(msg="账号已被锁定")
+                            return R.failure(status=206, msg="账号已被锁定")
                         user.failed_login_count = 0
                         user.save()
                         login(request, user)
