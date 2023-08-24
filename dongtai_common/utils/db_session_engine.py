@@ -1,9 +1,15 @@
+import json
+
+from django.conf import settings
 from django.contrib.auth import SESSION_KEY
 from django.contrib.sessions.backends.db import SessionStore as DBSessionStore
 from django.contrib.sessions.base_session import AbstractBaseSession
 from django.db import models
 
+from dongtai_common.models.profile import IastProfile
 from dongtai_common.models.user import User
+
+SESSION_EXPIRY_PROFILE_KEY = "session_expiry"
 
 
 class Session(AbstractBaseSession):
@@ -34,3 +40,9 @@ class SessionStore(DBSessionStore):
             session_data=self.encode(data),
             expire_date=self.get_expiry_date(),
         )
+
+    def get_session_cookie_age(self):
+        profile = IastProfile.objects.filter(key=SESSION_EXPIRY_PROFILE_KEY).values_list("value", flat=True).first()
+        if profile is None:
+            return settings.SESSION_COOKIE_AGE
+        return json.loads(profile)[SESSION_EXPIRY_PROFILE_KEY]
