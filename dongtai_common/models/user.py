@@ -9,7 +9,7 @@ from django.utils.translation import gettext_lazy as _
 
 from dongtai_common.models.department import Department
 from dongtai_common.models.iast_role import IastRoleV2
-from dongtai_conf.patch import patch_point
+from dongtai_conf.patch import patch_point, to_patch
 
 
 class PermissionsMixin(models.Model):
@@ -120,6 +120,7 @@ class User(AbstractUser, PermissionsMixin):
             return self.using_department
         return self.get_department()
 
+    @to_patch
     def get_projects(self) -> QuerySet:
         from dongtai_common.models.project import IastProject
 

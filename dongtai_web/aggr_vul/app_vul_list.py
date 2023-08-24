@@ -22,7 +22,7 @@ from dongtai_common.models.vulnerablity import (
 from dongtai_common.utils.const import OPERATE_GET
 from dongtai_common.utils.db import SearchLanguageMode
 from dongtai_conf import settings
-from dongtai_conf.patch import patch_point
+from dongtai_conf.patch import patch_point, to_patch
 from dongtai_conf.settings import ELASTICSEARCH_STATE
 from dongtai_engine.elatic_search.data_correction import data_correction_interpetor
 from dongtai_web.aggregation.aggregation_common import turnIntListOfStr
@@ -39,6 +39,7 @@ class GetAppVulsList(UserEndPoint):
         tags=[_("Vulnerability"), OPERATE_GET],
         summary="应用漏洞列表",
     )
+    @to_patch
     def post(self, request):
         """
         :param request:
