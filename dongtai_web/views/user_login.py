@@ -1,32 +1,19 @@
 #!/usr/local/env python
-import json
 import logging
 import time
 from datetime import timedelta
 
 from captcha.models import CaptchaStore
-from django.conf import settings
 from django.contrib.auth import authenticate, login
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 
 from dongtai_common.endpoint import R, UserEndPoint
-from dongtai_common.models.profile import IastProfile
 from dongtai_common.models.user import User
 from dongtai_common.utils.request_type import Request
 
 logger = logging.getLogger("dongtai-webapi")
-
-
-SESSION_EXPIRY_PROFILE_KEY = "session_expiry"
-
-
-def get_session_expiry() -> int:
-    profile = IastProfile.objects.filter(key=SESSION_EXPIRY_PROFILE_KEY).values_list("value", flat=True).first()
-    if profile is None:
-        return settings.SESSION_COOKIE_AGE
-    return json.loads(profile)[SESSION_EXPIRY_PROFILE_KEY]
 
 
 class UserLogin(UserEndPoint):
@@ -72,7 +59,6 @@ class UserLogin(UserEndPoint):
                         user.failed_login_count = 0
                         user.save()
                         login(request, user)
-                        request.session.set_expiry(get_session_expiry())
                         return R.success(
                             msg=_("Login successful"),
                             data={
