@@ -150,7 +150,7 @@ initContainers:
 
 {{- define "deploy.initContainers" -}}
 initContainers:
-  - image: {{ .Values.images }}/dongtai-logrotate:{{ .Values.tag }}
+  - image: {{ .Values.images }}/dongtai-server:{{ .Values.tag }}
     command:
     - sh
     - -c
