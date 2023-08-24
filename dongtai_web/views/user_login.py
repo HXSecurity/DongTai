@@ -25,7 +25,7 @@ SESSION_EXPIRY_PROFILE_KEY = "session_expiry"
 def get_session_expiry() -> int:
     profile = IastProfile.objects.filter(key=SESSION_EXPIRY_PROFILE_KEY).values_list("value", flat=True).first()
     if profile is None:
-        return settings["SESSION_COOKIE_AGE"]
+        return settings.SESSION_COOKIE_AGE
     return json.loads(profile)[SESSION_EXPIRY_PROFILE_KEY]
 
 
