@@ -1,12 +1,11 @@
 import importlib
-import inspect
 import logging
 import pkgutil
 from collections import defaultdict
 from collections.abc import Callable
-from dataclasses import dataclass
+from contextvars import ContextVar
+from functools import wraps
 from pathlib import Path
-from types import CodeType
 from typing import Any, TypeVar, overload
 
 from typing_extensions import TypeVarTuple, Unpack
@@ -16,13 +15,11 @@ from dongtai_conf.settings import BASE_DIR
 logger = logging.getLogger("patch")
 
 
-@dataclass
-class PatchConfig:
-    type_check: bool
-
-
 is_init_patch = False
-PATCH_HANDLER: dict[CodeType, dict[int, tuple[Callable, PatchConfig]]] = defaultdict(dict)
+PATCH_HANDLER: dict[Callable[..., Any], dict[int, Callable[..., Any]]] = defaultdict(dict)
+
+context_func: ContextVar[Callable[..., Any] | None] = ContextVar("context_func", default=None)
+context_count: ContextVar[int] = ContextVar("context_count", default=0)
 
 
 def init_patch() -> None:
@@ -40,45 +37,22 @@ Ts = TypeVarTuple("Ts")
 
 
 @overload
-def patch_point(*args: Unpack[tuple[T]], patch_id: int = 0) -> T:
+def patch_point(*args: Unpack[tuple[T]]) -> T:
     ...
 
 
 @overload
-def patch_point(*args: Unpack[Ts], patch_id: int = 0) -> tuple[Unpack[Ts]]:
+def patch_point(*args: Unpack[Ts]) -> tuple[Unpack[Ts]]:
     ...
 
 
-def patch_point(*args: Any, patch_id: int = 0) -> Any:
-    init_patch()
-    current_frame = inspect.currentframe()
-    if current_frame is None:
-        logger.error("current frame is None, can not patch")
-        return _return_args(*args)
-    caller_frame = current_frame.f_back
-    if caller_frame is None:
-        logger.error("caller frame is None, can not patch")
-        return _return_args(*args)
-    caller_code = caller_frame.f_code
-    if caller_code in PATCH_HANDLER:
-        func, patch_config = PATCH_HANDLER[caller_code][patch_id]
-        func_args, _, _, _, kwonlyargs, _, annotations = inspect.getfullargspec(func)
-        func_args += kwonlyargs
-
-        patch_func_args = {}
-        for name in func_args:
-            if name in caller_frame.f_locals:
-                local_value = caller_frame.f_locals[name]
-                if patch_config.type_check:
-                    # 如果启用类型检查,进行类型检查
-                    type_ = annotations.get(name, None)
-                    if type(type_) is type and not isinstance(local_value, type_):
-                        logger.error(f"type check error, name {name}, expect {type_}, get{type(local_value)}")
-                patch_func_args[name] = local_value
-            else:
-                logger.error(f"can not call patch function, miss local var {name}")
-                return _return_args(*args)
-        return_value = func(**patch_func_args)
+def patch_point(*args: Any) -> Any:
+    patch_func = context_func.get()
+    patch_id = context_count.get()
+    context_count.set(patch_id + 1)
+    if patch_func in PATCH_HANDLER:
+        func = PATCH_HANDLER[patch_func][patch_id]
+        return_value = func(*args)
         if return_value is None:
             return _return_args(*args)
         if len(args) == 1:
@@ -99,19 +73,28 @@ def _return_args(*args: Unpack[Ts]) -> tuple[Unpack[Ts]] | Any:
     return args
 
 
-def patch(patch_func: Callable, type_check: bool = False, patch_id: int = 0):
-    def wrapper(func: Callable):
-        PATCH_HANDLER[patch_func.__code__][patch_id] = (
-            func,
-            PatchConfig(type_check=type_check),
-        )
-        return func
+def to_patch(to_patch_func: Callable[..., Any]):
+    @wraps(to_patch_func)
+    def wrapper(*args: Any, **kwargs: Any):
+        token_func = context_func.set(to_patch_func)
+        token_count = context_count.set(0)
+        try:
+            to_patch_func(*args, **kwargs)
+        finally:
+            context_func.reset(token_func)
+            context_count.reset(token_count)
 
+    wrapper.to_patch_func = to_patch_func  # type: ignore
     return wrapper
 
 
-def check_patch() -> None:
-    for code, func in PATCH_HANDLER.items():
-        args, _, _, _, kwonlyargs, _, _ = inspect.getfullargspec(func)
-        if not set(args + kwonlyargs).issubset(set(code.co_varnames)):
-            logger.error(f"error: expect args {args + kwonlyargs}, varnames {code.co_varnames}")
+def patch(patch_func: Callable[..., Any], patch_id: int = 0):
+    def wrapper(func: Callable[..., Any]):
+        to_patch_func = getattr(patch_func, "to_patch_func", None)
+        if to_patch_func is None:
+            logger.error(f"to patch function {patch_func} must be decorated by @to_patch")
+        else:
+            PATCH_HANDLER[to_patch_func][patch_id] = func
+        return func
+
+    return wrapper

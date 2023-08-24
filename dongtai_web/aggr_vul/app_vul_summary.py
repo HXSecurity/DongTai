@@ -9,7 +9,7 @@ from dongtai_common.endpoint import R, UserEndPoint
 from dongtai_common.models.project import IastProject
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from dongtai_common.utils.const import OPERATE_GET
-from dongtai_conf.patch import patch_point
+from dongtai_conf.patch import patch_point, to_patch
 from dongtai_conf.settings import ELASTICSEARCH_STATE
 from dongtai_web.serializers.aggregation import AggregationArgsSerializer
 from dongtai_web.utils import dict_transfrom, extend_schema_with_envcheck
@@ -25,6 +25,7 @@ def get_annotate_cache_data(projects: QuerySet[IastProject]):
     return get_annotate_data(projects, 0, 0)
 
 
+@to_patch
 def get_annotate_data(projects: QuerySet[IastProject], bind_project_id: int, project_version_id: int) -> dict:
     cache_q = Q(is_del=0, project_id__gt=0, project__in=projects)
 
@@ -123,6 +124,7 @@ class GetAppVulsSummary(UserEndPoint):
         )
 
 
+@to_patch
 def get_annotate_data_es(projects: QuerySet[IastProject], bind_project_id: int, project_version_id: int):
     from elasticsearch import Elasticsearch
     from elasticsearch_dsl import A, Q
@@ -154,7 +156,7 @@ def get_annotate_data_es(projects: QuerySet[IastProject], bind_project_id: int, 
         "strategy": A("terms", field="strategy_id", size=2147483647),
         "status": A("terms", field="status_id", size=2147483647),
     }
-    buckets = patch_point(buckets, patch_id=0)
+    buckets = patch_point(buckets)
     for k, v in buckets.items():
         search.aggs.bucket(k, v)
     from dongtai_conf import settings
@@ -189,6 +191,6 @@ def get_annotate_data_es(projects: QuerySet[IastProject], bind_project_id: int, 
             for i in origin_buckets:
                 i["name"] = level_dic[i["id"]]["name_value"]
             origin_buckets = sorted(origin_buckets, key=lambda x: x["id"])
-        key, origin_buckets = patch_point(key, origin_buckets, patch_id=1)
+        key, origin_buckets = patch_point(key, origin_buckets)
         dic[key] = list(origin_buckets)
     return dict(dic)
