@@ -79,7 +79,7 @@ def to_patch(to_patch_func: Callable[..., Any]):
         token_func = context_func.set(to_patch_func)
         token_count = context_count.set(0)
         try:
-            to_patch_func(*args, **kwargs)
+            return to_patch_func(*args, **kwargs)
         finally:
             context_func.reset(token_func)
             context_count.reset(token_count)
