@@ -157,7 +157,7 @@ urlpatterns: list[URLResolver | URLPattern] = [
     path("vuln/<int:id>", VulDetail.as_view()),
     path("vuln/status", VulStatus.as_view()),
     path("vuln/delete/<int:id>", VulDelete.as_view()),
-    path("vuln/method_pool/<int:id>", VulMethodPoolDownload.as_view()),
+    path("vuln/<int:id>/method_pool", VulMethodPoolDownload.as_view()),
     path("vul/status_list", VulnerabilityStatusView.as_view()),
     path("plugin/vuln/list", VulListEndPoint.as_view()),
     path("plugin/vuln/count", VulCountForPluginEndPoint.as_view()),

@@ -15,7 +15,8 @@ class VulMethodPoolSerializer(serializers.ModelSerializer):
     class Meta:
         model = VulMethodPool
         fields = [
-            "id",
+            "method_pool_id",
+            "vul_id",
             "agent_id",
             "url",
             "uri",
@@ -35,7 +36,6 @@ class VulMethodPoolSerializer(serializers.ModelSerializer):
             "create_time",
             "update_time",
             "uri_sha1",
-            "vul_id",
         ]
 
 

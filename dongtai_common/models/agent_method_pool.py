@@ -51,6 +51,8 @@ class MethodPool(models.Model):
 
 class VulMethodPool(models.Model):
     id = models.BigAutoField(primary_key=True)
+    method_pool_id = models.IntegerField()
+    vul = models.ForeignKey(IastVulnerabilityModel, models.DO_NOTHING, db_constraint=False)
     agent = models.ForeignKey(IastAgent, models.DO_NOTHING, db_constraint=False)
     url = models.CharField(max_length=2000, blank=True)
     uri = models.CharField(max_length=2000, blank=True)
@@ -70,12 +72,15 @@ class VulMethodPool(models.Model):
     create_time = models.IntegerField()
     update_time = models.IntegerField()
     uri_sha1 = models.CharField(max_length=40, blank=True, db_index=True)
-    vul = models.ForeignKey(IastVulnerabilityModel, models.DO_NOTHING, db_constraint=False)
 
     class Meta:
         managed = get_managed()
         db_table = "iast_agent_method_pool_vul"
-        indexes = [models.Index(fields=["uri_sha1", "http_method", "agent"])]
+        indexes = [
+            models.Index(fields=["uri_sha1", "http_method", "agent"]),
+            models.Index(fields=["method_pool_id"]),
+            models.Index(fields=["vul_id"]),
+        ]
 
 
 @registry.register_document
