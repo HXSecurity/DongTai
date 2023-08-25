@@ -13,7 +13,7 @@ from django.db.models import Q
 from django.dispatch import receiver
 
 from dongtai_common.engine.compatibility import method_pool_3_to_2
-from dongtai_common.models.agent_method_pool import MethodPool
+from dongtai_common.models.agent_method_pool import MethodPool, VulMethodPool
 from dongtai_common.models.profile import IastProfile
 from dongtai_common.models.project import IastProject, VulValidation
 from dongtai_common.models.replay_queue import IastReplayQueue
@@ -374,6 +374,29 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
             department_id=vul_meta.agent.department_id,
         )
 
+    VulMethodPool(
+        id=vul_meta.id,
+        agent_id=vul_meta.agent_id,
+        url=vul_meta.url,
+        uri=vul_meta.uri,
+        http_method=vul_meta.http_method,
+        http_scheme=vul_meta.http_scheme,
+        http_protocol=vul_meta.http_protocol,
+        req_header=vul_meta.req_header,
+        req_params=vul_meta.req_params,
+        req_data=vul_meta.req_data,
+        res_header=vul_meta.res_header,
+        res_body=vul_meta.res_body,
+        req_header_fs=vul_meta.req_header_fs,
+        context_path=vul_meta.context_path,
+        method_pool=vul_meta.method_pool,
+        pool_sign=vul_meta.pool_sign,
+        clent_ip=vul_meta.clent_ip,
+        create_time=vul_meta.create_time,
+        update_time=vul_meta.update_time,
+        uri_sha1=vul_meta.uri_sha1,
+        vul_id=1,
+    ).save()
     cache.delete(cache_key)
     # delete if exists more than one   departured use redis lock
     # IastVulnerabilityModel.objects.filter(

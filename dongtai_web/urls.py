@@ -114,6 +114,7 @@ from dongtai_web.views.vul_details import (
 )
 from dongtai_web.views.vul_levels import VulLevelList
 from dongtai_web.views.vul_list_for_plugin import VulListEndPoint
+from dongtai_web.views.vul_method_pool_download import VulMethodPoolDownload
 from dongtai_web.views.vul_request_replay import RequestReplayEndPoint
 from dongtai_web.views.vul_status import VulStatus
 from dongtai_web.views.vul_summary import VulSummary
@@ -156,6 +157,7 @@ urlpatterns: list[URLResolver | URLPattern] = [
     path("vuln/<int:id>", VulDetail.as_view()),
     path("vuln/status", VulStatus.as_view()),
     path("vuln/delete/<int:id>", VulDelete.as_view()),
+    path("vuln/method_pool/<int:id>", VulMethodPoolDownload.as_view()),
     path("vul/status_list", VulnerabilityStatusView.as_view()),
     path("plugin/vuln/list", VulListEndPoint.as_view()),
     path("plugin/vuln/count", VulCountForPluginEndPoint.as_view()),
