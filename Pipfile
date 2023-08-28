@@ -75,7 +75,7 @@ pillow = "==9.3.0"
 pyrsistent = "==0.19.1"
 pytz = "==2022.6"
 types-pyyaml = ">=6.0.12.2"
-uwsgi = "==2.0.21"
+uwsgi = "==2.0.22"
 marisa-trie = "==0.8.0"
 gunicorn = "==20.1.0"
 celery-singleton = "*"
@@ -89,6 +89,7 @@ networkit = "*"
 flower = "~=2.0.0"
 django-health-check = "==3.17.0"
 django-prometheus = "==2.3.1"
+django-add-default-value = "==0.10.0"
 
 [dev-packages]
 

@@ -95,17 +95,26 @@ def get_summary_by_agent_ids(agent_ids: Iterable):
         else:
             day_num_dict[i["day_label"]] = [i]
     day_num_data = []
-    for _, day_label in daylist:
-        obj = {"day_label": day_label, "day_num": 0}
-        for i in range(1, 5 + 1):
-            obj["day_num_level_" + str(i)] = 0
+    last_timestamp: int = 0
+    for day_label_i in range(len(daylist)):
+        timestamp, day_label = daylist[day_label_i]
         if day_label in day_num_dict:
+            # show this day if this day has data
+            last_timestamp = timestamp
+            obj = get_empty_day_num_num(day_label)
             count = 0
             for i in day_num_dict[day_label]:
                 obj["day_num_level_" + str(i["level_id"])] = i["count"]
                 count += i["count"]
             obj["day_num"] = count
-        day_num_data.append(obj)
+            day_num_data.append(obj)
+        elif day_label_i + 1 < len(daylist) and daylist[day_label_i + 1][1] in day_num_dict:
+            # show this day if this yesterday has data
+            last_timestamp = timestamp
+            day_num_data.append(get_empty_day_num_num(day_label))
+    for i in range(1, 8 - len(day_num_data) + 1):
+        day = time.localtime(last_timestamp + 86400 * i)
+        day_num_data.append(get_empty_day_num_num(str(day.tm_mon) + "-" + str(day.tm_mday)))
     data["day_num"] = day_num_data
     levelInfo = IastVulLevel.objects.all()
     levelIdArr = {}
@@ -193,17 +202,26 @@ def get_summary_by_project(project_id: int, project_version_id: int):
         else:
             day_num_dict[i["day_label"]] = [i]
     day_num_data = []
-    for _, day_label in daylist:
-        obj = {"day_label": day_label, "day_num": 0}
-        for i in range(1, 5 + 1):
-            obj["day_num_level_" + str(i)] = 0
+    last_timestamp: int = 0
+    for day_label_i in range(len(daylist)):
+        timestamp, day_label = daylist[day_label_i]
         if day_label in day_num_dict:
+            # show this day if this day has data
+            last_timestamp = timestamp
+            obj = get_empty_day_num_num(day_label)
             count = 0
             for i in day_num_dict[day_label]:
                 obj["day_num_level_" + str(i["level_id"])] = i["count"]
                 count += i["count"]
             obj["day_num"] = count
-        day_num_data.append(obj)
+            day_num_data.append(obj)
+        elif day_label_i + 1 < len(daylist) and daylist[day_label_i + 1][1] in day_num_dict:
+            # show this day if this yesterday has data
+            last_timestamp = timestamp
+            day_num_data.append(get_empty_day_num_num(day_label))
+    for i in range(1, 8 - len(day_num_data) + 1):
+        day = time.localtime(last_timestamp + 86400 * i)
+        day_num_data.append(get_empty_day_num_num(str(day.tm_mon) + "-" + str(day.tm_mday)))
     data["day_num"] = day_num_data
     levelInfo = IastVulLevel.objects.all()
     levelIdArr = {}
@@ -220,6 +238,13 @@ def get_summary_by_project(project_id: int, project_version_id: int):
             )
     data["level_count"] = levelNum
     return data
+
+
+def get_empty_day_num_num(day_label: str):
+    obj = {"day_label": day_label, "day_num": 0}
+    for i in range(1, 5 + 1):
+        obj["day_num_level_" + str(i)] = 0
+    return obj
 
 
 def geneatre_vul_timerange_count_queryset(
