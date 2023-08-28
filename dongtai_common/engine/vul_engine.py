@@ -195,7 +195,7 @@ class VulEngine:
                     == 0
                 ):
                     continue
-                    total_path_list.append(total_path)
+                total_path_list.append(total_path)
         final_path = []
         for path in total_path_list:
             find_index = None
