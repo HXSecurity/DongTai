@@ -4,7 +4,6 @@ import logging
 from django.utils.translation import gettext_lazy as _
 
 from dongtai_common.endpoint import R, UserEndPoint
-from dongtai_common.models.agent_method_pool import VulMethodPool
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 
@@ -36,7 +35,6 @@ class VulDelete(UserEndPoint):
             IastVulnerabilityModel.objects.get(
                 id=id, agent_id__in=self.get_auth_agents_with_user(request.user)
             ).delete()
-            VulMethodPool.objects.filter(vul_id=id).delete()
             return R.success(msg=_("Deleted Successfully"))
         except IastVulnerabilityModel.DoesNotExist:
             return R.failure(msg=_("Failed to delete, error message: Vulnerability does not exist"))
