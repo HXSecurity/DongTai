@@ -133,7 +133,7 @@ class VulEngine:
         from functools import reduce
         from itertools import product
 
-        import networkit as nk
+        import networkx as nk
 
         # Gather data
         source_hash_dict = defaultdict(set)
@@ -171,21 +171,17 @@ class VulEngine:
                     for s in reduce(lambda x, y: x | y, (target_hash_dict[i] for i in pool["sourceHash"]), set())
                 )
             for source, target in vecs:
-                g.addEdge(source, target, (source - target) * (source - target), addMissing=True)
-        # Checkout each pair source/target have a path or not
-        # It may lost sth when multi paths exists.
+                # g.addEdge(source, target, (source - target) * (source - target), addMissing=True)
+                g.add_edge(source, target, weight=(source - target) * (source - target))
         final_stack = []
         total_path_list = []
         for s, t in product(source_methods, vul_methods):
-            if not g.hasNode(s) or not g.hasNode(t):
+            if not g.has_node(s) or not g.has_node(t):
                 continue
-            dij_obj = nk.distance.BidirectionalBFS(g, s, t, False).run()
-            if dij_obj.getDistance() < sys.float_info.max:
-                dij_obj = nk.distance.BidirectionalBFS(g, s, t).run()
-                logger.info("find sink here!")
-                path = dij_obj.getPath()
-                total_path = [s, *path, t]
-                # Check taint range exists
+            if nk.has_path(g, s, t):
+                path = nk.shortest_path(g, s, t, weight="weight")
+                total_path = path
+                total_path_list.append(total_path)
                 if (
                     len(total_path) > 1
                     and "targetRange" in invokeid_dict[total_path[-2]]
@@ -199,7 +195,7 @@ class VulEngine:
                     == 0
                 ):
                     continue
-                total_path_list.append(total_path)
+                    total_path_list.append(total_path)
         final_path = []
         for path in total_path_list:
             find_index = None
