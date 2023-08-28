@@ -2,6 +2,7 @@
 
 import django.db.models.deletion
 from django.db import migrations, models
+from django_add_default_value import AddDefaultValue
 
 
 class Migration(migrations.Migration):
@@ -67,4 +68,5 @@ class Migration(migrations.Migration):
             model_name="vulmethodpool",
             index=models.Index(fields=["vul_id", "update_time"], name="iast_agent__vul_id_47b430_idx"),
         ),
+        AddDefaultValue(model_name="vulmethodpool", name="method_pool_id", value=0),
     ]
