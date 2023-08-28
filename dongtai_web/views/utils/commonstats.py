@@ -98,6 +98,7 @@ def get_summary_by_agent_ids(agent_ids: Iterable):
     for day_label_i in range(len(daylist)):
         _, day_label = daylist[day_label_i]
         if day_label in day_num_dict:
+            # show this day if this day has data
             obj = get_empty_day_num_num(day_label)
             count = 0
             for i in day_num_dict[day_label]:
@@ -106,6 +107,7 @@ def get_summary_by_agent_ids(agent_ids: Iterable):
             obj["day_num"] = count
             day_num_data.append(obj)
         elif day_label_i + 1 < len(daylist) and daylist[day_label_i + 1][1] in day_num_dict:
+            # show this day if this yesterday has data
             day_num_data.append(get_empty_day_num_num(day_label))
     data["day_num"] = day_num_data
     levelInfo = IastVulLevel.objects.all()
@@ -197,6 +199,7 @@ def get_summary_by_project(project_id: int, project_version_id: int):
     for day_label_i in range(len(daylist)):
         _, day_label = daylist[day_label_i]
         if day_label in day_num_dict:
+            # show this day if this day has data
             obj = get_empty_day_num_num(day_label)
             count = 0
             for i in day_num_dict[day_label]:
@@ -205,6 +208,7 @@ def get_summary_by_project(project_id: int, project_version_id: int):
             obj["day_num"] = count
             day_num_data.append(obj)
         elif day_label_i + 1 < len(daylist) and daylist[day_label_i + 1][1] in day_num_dict:
+            # show this day if this yesterday has data
             day_num_data.append(get_empty_day_num_num(day_label))
     data["day_num"] = day_num_data
     levelInfo = IastVulLevel.objects.all()
