@@ -79,8 +79,7 @@ class VulMethodPool(models.Model):
         indexes = [
             models.Index(fields=["uri_sha1", "http_method", "agent"]),
             models.Index(fields=["method_pool_id"]),
-            models.Index(fields=["vul_id"]),
-            models.Index(fields=["update_time"]),
+            models.Index(fields=["vul_id", "update_time"]),
         ]
 
 
