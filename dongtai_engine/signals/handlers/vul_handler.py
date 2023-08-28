@@ -95,7 +95,7 @@ def parse_header(req_header: str, taint_value: str) -> str | None:
 
     header_dict = parse_headers_dict_from_bytes(base64.b64decode(req_header))
     for k, v in header_dict.items():
-        if v == taint_value or k == taint_value:
+        if taint_value in {v, k}:
             return k
     return None
 

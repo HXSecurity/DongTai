@@ -264,7 +264,7 @@ class VulEngine:
             # mark there has a vul
             # if vul_type has filter, do escape
             stack_count = len(self.vul_stack)
-            for index in range(0, stack_count):
+            for index in range(stack_count):
                 stack = self.vul_stack[index]
                 for item in stack:
                     if item["signature"] == "java.net.URL.<init>":
@@ -278,7 +278,7 @@ class VulEngine:
                             break
             vul_source_signature = self.vul_source_signature
             self.vul_source_signature = None
-            for index in range(0, stack_count):
+            for index in range(stack_count):
                 if self.vul_stack[index]:
                     self.vul_source_signature = vul_source_signature
                 else:
