@@ -89,6 +89,7 @@ networkit = "*"
 flower = "~=2.0.0"
 django-health-check = "==3.17.0"
 django-prometheus = "==2.3.1"
+django-add-default-value = "==0.10.0"
 
 [dev-packages]
 
