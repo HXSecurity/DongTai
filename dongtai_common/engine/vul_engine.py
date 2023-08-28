@@ -179,8 +179,9 @@ class VulEngine:
         for s, t in product(source_methods, vul_methods):
             if not g.hasNode(s) or not g.hasNode(t):
                 continue
-            dij_obj = nk.distance.BidirectionalDijkstra(g, s, t).run()
+            dij_obj = nk.distance.BidirectionalBFS(g, s, t, False).run()
             if dij_obj.getDistance() < sys.float_info.max:
+                dij_obj = nk.distance.BidirectionalBFS(g, s, t).run()
                 logger.info("find sink here!")
                 path = dij_obj.getPath()
                 total_path = [s, *path, t]
