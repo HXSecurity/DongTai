@@ -95,10 +95,12 @@ def get_summary_by_agent_ids(agent_ids: Iterable):
         else:
             day_num_dict[i["day_label"]] = [i]
     day_num_data = []
+    last_timestamp: int = 0
     for day_label_i in range(len(daylist)):
-        _, day_label = daylist[day_label_i]
+        timestamp, day_label = daylist[day_label_i]
         if day_label in day_num_dict:
             # show this day if this day has data
+            last_timestamp = timestamp
             obj = get_empty_day_num_num(day_label)
             count = 0
             for i in day_num_dict[day_label]:
@@ -108,7 +110,11 @@ def get_summary_by_agent_ids(agent_ids: Iterable):
             day_num_data.append(obj)
         elif day_label_i + 1 < len(daylist) and daylist[day_label_i + 1][1] in day_num_dict:
             # show this day if this yesterday has data
+            last_timestamp = timestamp
             day_num_data.append(get_empty_day_num_num(day_label))
+    for i in range(1, 8 - len(day_num_data) + 1):
+        day = time.localtime(last_timestamp + 86400 * i)
+        day_num_data.append(get_empty_day_num_num(str(day.tm_mon) + "-" + str(day.tm_mday)))
     data["day_num"] = day_num_data
     levelInfo = IastVulLevel.objects.all()
     levelIdArr = {}
@@ -196,10 +202,12 @@ def get_summary_by_project(project_id: int, project_version_id: int):
         else:
             day_num_dict[i["day_label"]] = [i]
     day_num_data = []
+    last_timestamp: int = 0
     for day_label_i in range(len(daylist)):
-        _, day_label = daylist[day_label_i]
+        timestamp, day_label = daylist[day_label_i]
         if day_label in day_num_dict:
             # show this day if this day has data
+            last_timestamp = timestamp
             obj = get_empty_day_num_num(day_label)
             count = 0
             for i in day_num_dict[day_label]:
@@ -209,7 +217,11 @@ def get_summary_by_project(project_id: int, project_version_id: int):
             day_num_data.append(obj)
         elif day_label_i + 1 < len(daylist) and daylist[day_label_i + 1][1] in day_num_dict:
             # show this day if this yesterday has data
+            last_timestamp = timestamp
             day_num_data.append(get_empty_day_num_num(day_label))
+    for i in range(1, 8 - len(day_num_data) + 1):
+        day = time.localtime(last_timestamp + 86400 * i)
+        day_num_data.append(get_empty_day_num_num(str(day.tm_mon) + "-" + str(day.tm_mday)))
     data["day_num"] = day_num_data
     levelInfo = IastVulLevel.objects.all()
     levelIdArr = {}
