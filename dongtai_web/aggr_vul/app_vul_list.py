@@ -13,6 +13,7 @@ from rest_framework.serializers import ValidationError
 from dongtai_common.common.utils import make_hash
 from dongtai_common.endpoint import R, UserEndPoint
 from dongtai_common.models import APP_LEVEL_RISK, APP_VUL_ORDER
+from dongtai_common.models.agent_method_pool import VulMethodPool
 from dongtai_common.models.dast_integration import IastDastIntegrationRelation
 from dongtai_common.models.vulnerablity import (
     IastVulnerabilityDocument,
@@ -177,6 +178,7 @@ class GetAppVulsList(UserEndPoint):
             lambda: 0,
             {item["iastvul_id"]: item["dastvul_count"] for item in dastvul_rel_count_res},
         )
+        has_vul_method_pool_set = set(VulMethodPool.objects.filter(vul_id__in=vul_ids).values_list("vul_id", flat=True))
         if vul_data:
             for item in vul_data:
                 item["level_name"] = APP_LEVEL_RISK.get(str(item["level_id"]), "")
@@ -190,6 +192,7 @@ class GetAppVulsList(UserEndPoint):
                 item["dastvul__vul_type"] = dast_vul_types_dict[item["id"]]
                 item["dastvul_count"] = dastvul_rel_count_res_dict[item["id"]]
                 item["dast_validation_status"] = bool(dastvul_rel_count_res_dict[item["id"]])
+                item["has_vul_method_pool"] = item["id"] in has_vul_method_pool_set
                 end["data"].append(item)
         # all Iast Vulnerability Status
         status = IastVulnerabilityStatus.objects.all()

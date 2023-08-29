@@ -9,6 +9,7 @@ from drf_spectacular.utils import extend_schema
 from rest_framework import serializers
 
 from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models.agent_method_pool import VulMethodPool
 from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.project import IastProject
 from dongtai_common.models.project_version import IastProjectVersion
@@ -327,6 +328,7 @@ class VulDetail(UserEndPoint):
             "method_pool_id": vul.method_pool_id,
             "project_id": project_id,
             "is_need_http_detail": is_need_http_detail(strategy_name),
+            "has_vul_method_pool": VulMethodPool.objects.filter(vul_id=vul.id).exists(),
         }
 
     def get_strategy(self):
