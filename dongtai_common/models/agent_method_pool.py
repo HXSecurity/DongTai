@@ -67,7 +67,7 @@ class VulMethodPool(models.Model):
     req_header_fs = models.TextField(db_column="req_header_for_search")
     context_path = models.CharField(max_length=255, blank=True, null=True)
     method_pool = models.TextField()  # This field type is a guess.
-    pool_sign = models.CharField(unique=True, blank=True, max_length=40)  # This field type is a guess.
+    pool_sign = models.CharField(blank=True, max_length=40)  # This field type is a guess.
     clent_ip = models.CharField(max_length=255, blank=True)
     create_time = models.IntegerField()
     update_time = models.IntegerField()
