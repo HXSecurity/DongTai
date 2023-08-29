@@ -266,6 +266,17 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
     is_api_cached = uuid_key != cache.get_or_set(cache_key, uuid_key)
     if is_api_cached:
         return None
+
+    if IastVulnerabilityModel.objects.filter(
+        strategy_id=strategy_id,
+        pattern_uri=pattern_uri,
+        http_method=vul_meta.http_method,
+        project_id=vul_meta.agent.bind_project_id,
+        param_name=param_name,
+        status_id=const.VUL_IGNORE,
+    ).exists():
+        return None
+
     # 获取 相同项目版本下的数据
     vul = (
         IastVulnerabilityModel.objects.filter(
@@ -300,6 +311,7 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
         vul.method_pool_id = vul_meta.id
         vul.language = vul_meta.agent.language
         vul.full_stack = json.dumps(vul_stack, ensure_ascii=False)
+        vul.is_del = 0
         vul.save(
             update_fields=[
                 "url",
@@ -320,6 +332,7 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
                 "latest_time",
                 "latest_time_desc",
                 "language",
+                "is_del",
             ]
         )
     else:
