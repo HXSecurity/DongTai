@@ -2,7 +2,6 @@
 # datetime: 2021/7/21 下午7:07
 import copy
 import logging
-import sys
 from collections import defaultdict
 
 from django.utils.functional import cached_property
