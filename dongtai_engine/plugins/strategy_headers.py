@@ -121,7 +121,7 @@ def check_response_header(method_pool):
         )
 
 
-def save_vul(vul_type, method_pool, position=None, data=None):
+def save_vul(vul_type, method_pool, position="", data=""):
     if is_strategy_enable(vul_type, method_pool) is False:
         return
     vul_strategy = IastStrategyModel.objects.filter(
