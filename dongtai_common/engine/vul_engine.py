@@ -200,7 +200,7 @@ class VulEngine:
             find_index = None
             # Merge if path take same node
             for ind, target_path in enumerate(final_path):
-                if set(path[1:]) & set(target_path[1:]):
+                if set(path[1:]) & set(target_path[1:]) and path[-1] == target_path[-1]:
                     find_index = ind
                     break
             if find_index is not None:
