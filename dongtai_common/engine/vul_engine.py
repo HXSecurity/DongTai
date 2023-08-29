@@ -2,7 +2,6 @@
 # datetime: 2021/7/21 下午7:07
 import copy
 import logging
-import sys
 from collections import defaultdict
 
 from django.utils.functional import cached_property
@@ -133,7 +132,7 @@ class VulEngine:
         from functools import reduce
         from itertools import product
 
-        import networkit as nk
+        import networkx as nk
 
         # Gather data
         source_hash_dict = defaultdict(set)
@@ -171,20 +170,16 @@ class VulEngine:
                     for s in reduce(lambda x, y: x | y, (target_hash_dict[i] for i in pool["sourceHash"]), set())
                 )
             for source, target in vecs:
-                g.addEdge(source, target, (source - target) * (source - target), addMissing=True)
-        # Checkout each pair source/target have a path or not
-        # It may lost sth when multi paths exists.
+                # g.addEdge(source, target, (source - target) * (source - target), addMissing=True)
+                g.add_edge(source, target, weight=(source - target) * (source - target))
         final_stack = []
         total_path_list = []
         for s, t in product(source_methods, vul_methods):
-            if not g.hasNode(s) or not g.hasNode(t):
+            if not g.has_node(s) or not g.has_node(t):
                 continue
-            dij_obj = nk.distance.BidirectionalDijkstra(g, s, t).run()
-            if dij_obj.getDistance() < sys.float_info.max:
-                logger.info("find sink here!")
-                path = dij_obj.getPath()
-                total_path = [s, *path, t]
-                # Check taint range exists
+            if nk.has_path(g, s, t):
+                path = nk.shortest_path(g, s, t, weight="weight")
+                total_path = path
                 if (
                     len(total_path) > 1
                     and "targetRange" in invokeid_dict[total_path[-2]]
@@ -204,7 +199,7 @@ class VulEngine:
             find_index = None
             # Merge if path take same node
             for ind, target_path in enumerate(final_path):
-                if set(path[1:]) & set(target_path[1:]):
+                if set(path[1:]) & set(target_path[1:]) and path[-1] == target_path[-1]:
                     find_index = ind
                     break
             if find_index is not None:
