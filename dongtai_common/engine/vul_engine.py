@@ -181,7 +181,6 @@ class VulEngine:
             if nk.has_path(g, s, t):
                 path = nk.shortest_path(g, s, t, weight="weight")
                 total_path = path
-                total_path_list.append(total_path)
                 if (
                     len(total_path) > 1
                     and "targetRange" in invokeid_dict[total_path[-2]]
@@ -194,7 +193,8 @@ class VulEngine:
                     )
                     == 0
                 ):
-                    total_path_list.append(total_path)
+                    continue
+                total_path_list.append(total_path)
         final_path = []
         for path in total_path_list:
             find_index = None
