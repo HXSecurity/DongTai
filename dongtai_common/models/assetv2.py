@@ -75,6 +75,7 @@ class AssetV2Global(models.Model):
     license_list = models.JSONField(blank=True, default=list)
     language_id = models.IntegerField(default=1, blank=True)
     aql = models.CharField(max_length=255, blank=True, unique=True)
+    is_focus = models.BooleanField(default=False)
 
     class Meta:
         managed = get_managed()
