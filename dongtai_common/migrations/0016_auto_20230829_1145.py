@@ -42,7 +42,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="iastvulnerabilitymodel",
             name="taint_value",
-            field=models.CharField(blank=True, default="", max_length=255),
+            field=models.CharField(blank=True, default="", max_length=4000),
         ),
         migrations.AlterField(
             model_name="iastvulnerabilitymodel",
