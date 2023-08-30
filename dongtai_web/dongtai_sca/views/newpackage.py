@@ -49,6 +49,7 @@ class PackeageScaAssetSerializer(PackeageScaAssetDetailSerializer):
             "language_id",
             "aql",
             "vul_count_groupby_level",
+            "is_focus",
         ]
 
 
@@ -84,7 +85,7 @@ class PackageList(UserEndPoint):
             q = q & Q(aql__contains=ser.validated_data["keyword"])
         order = ("-" if ser.validated_data["order"] == "desc" else "") + ser.validated_data["order_field"]
         page_info, data = self.get_paginator(
-            AssetV2Global.objects.filter(q).order_by(order).all(),
+            AssetV2Global.objects.filter(q).order_by("-is_focus", order).all(),
             ser.validated_data["page"],
             ser.validated_data["page_size"],
         )
