@@ -7,6 +7,7 @@ from hashlib import sha1
 
 from celery import shared_task
 from django.db import IntegrityError
+from django.db.models import Q
 
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.asset import Asset
@@ -18,7 +19,9 @@ from dongtai_common.models.asset_vul import (
     IastVulAssetRelation,
     IastVulLevel,
 )
+from dongtai_common.models.package_focus import IastPackageFocus
 from dongtai_conf.settings import SCA_SETUP
+from dongtai_protocol.views.hook_profiles import LANGUAGE_DICT
 from dongtai_web.dongtai_sca.common.dataclass import VulInfo
 
 from .cwe import get_cwe_name
@@ -276,6 +279,11 @@ def new_update_one_sca(
     else:
         packages = get_package_v3(aql=package_name)
     asset_license_list = []
+    is_focus = IastPackageFocus.objects.filter(
+        Q(package_version=package_version) | Q(package_name=package_name, package_version=""),
+        language_id=LANGUAGE_DICT.get(agent.language, None),
+        package_name=package_name,
+    ).exists()
     for package in packages:
         aql = get_package_aql(package.name, package.ecosystem, package.version)
         license_list = get_license_list_v2(package.license)
@@ -297,6 +305,7 @@ def new_update_one_sca(
                 "signature_value": package.hash,
                 "version": package.version,
                 "license_list": license_list,
+                "is_focus": is_focus,
             },
         )
         AssetV2.objects.update_or_create(
