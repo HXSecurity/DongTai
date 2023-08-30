@@ -280,7 +280,7 @@ def new_update_one_sca(
         packages = get_package_v3(aql=package_name)
     asset_license_list = []
     is_focus = IastPackageFocus.objects.filter(
-        Q(package_version=package_version) | Q(package_name=package_name, package_version=""),
+        Q(package_version=package_version) | Q(package_version=""),
         language_id=LANGUAGE_DICT.get(agent.language, None),
         package_name=package_name,
     ).exists()
