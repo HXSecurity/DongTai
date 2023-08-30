@@ -80,6 +80,7 @@ class AssetV2Global(models.Model):
     class Meta:
         managed = get_managed()
         db_table = "iast_asset_v2_global"
+        indexes = [models.Index(fields=("is_focus", "vul_count", "aql", "level", "language_id"))]
 
     def get_vul_count_groupby_level(self):
         return [
