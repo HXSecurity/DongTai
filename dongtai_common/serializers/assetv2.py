@@ -38,6 +38,7 @@ class PackeageScaAssetDetailSerializer(serializers.ModelSerializer):
             "aql",
             "language",
             "vul_count_groupby_level",
+            "is_focus",
         ]
 
     def get_language(self, obj) -> str:
