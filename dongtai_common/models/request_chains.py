@@ -12,6 +12,7 @@ from django.db import models
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.agent_method_pool import MethodPool
 from dongtai_common.models.project import IastProject
+from dongtai_common.models.project_version import IastProjectVersion
 from dongtai_common.utils.db import get_timestamp
 from dongtai_common.utils.settings import get_managed
 
@@ -58,3 +59,135 @@ class IastAgentRequestChainsVulContext(models.Model):
     class Meta:
         managed = get_managed()
         db_table = "iast_request_chains_vul_context"
+
+
+class IastAgentRequestChainsTopoGraph(models.Model):
+    start_project = models.ForeignKey(
+        IastProject,
+        models.DO_NOTHING,
+        blank=True,
+        default=-1,
+        db_constraint=False,
+    )
+    start_project_version = models.ForeignKey(
+        IastProjectVersion,
+        models.DO_NOTHING,
+        blank=True,
+        default=-1,
+        db_constraint=False,
+    )
+    graph_hash = models.CharField(
+        max_length=255,
+        blank=True,
+        unique=True,
+    )
+    dot_string = models.TextField()
+    max_depth = models.IntegerField()
+
+    class Meta:
+        managed = get_managed()
+        db_table = "iast_request_chains_topo_graph"
+
+
+class IastAgentRequestChainsTopoGraphVec(models.Model):
+    graph_hash = models.ForeignKey(
+        IastAgentRequestChainsTopoGraph,
+        max_length=255,
+        blank=True,
+        to_field="graph_hash",
+        on_delete=models.CASCADE,
+        db_constraint=False,
+    )
+    level_id = models.IntegerField()
+    source_project_version = models.ForeignKey(
+        IastProjectVersion,
+        models.DO_NOTHING,
+        blank=True,
+        default=-1,
+        db_constraint=False,
+        related_name="source_project_version",
+    )
+    target_project_version = models.ForeignKey(
+        IastProjectVersion,
+        models.DO_NOTHING,
+        blank=True,
+        default=-1,
+        db_constraint=False,
+        related_name="target_project_version",
+    )
+    source_project = models.ForeignKey(
+        IastProject,
+        models.DO_NOTHING,
+        blank=True,
+        default=-1,
+        db_constraint=False,
+        related_name="source_project",
+    )
+    target_project = models.ForeignKey(
+        IastProject,
+        models.DO_NOTHING,
+        blank=True,
+        default=-1,
+        db_constraint=False,
+        related_name="target_project",
+    )
+    source_node_tag = models.CharField(
+        max_length=255,
+        blank=True,
+    )
+    target_node_tag = models.CharField(
+        max_length=255,
+        blank=True,
+    )
+
+    class Meta:
+        managed = get_managed()
+        db_table = "iast_request_chains_topo_graph_vecs"
+
+
+class IastAgentRequestChainsTotalProjectVersionGraphVec(models.Model):
+    source_project_version = models.ForeignKey(
+        IastProjectVersion,
+        models.DO_NOTHING,
+        blank=True,
+        default=-1,
+        db_constraint=False,
+        related_name="total_source_project_version",
+    )
+    target_project_version = models.ForeignKey(
+        IastProjectVersion,
+        models.DO_NOTHING,
+        blank=True,
+        default=-1,
+        db_constraint=False,
+        related_name="total_target_project_version",
+    )
+
+    class Meta:
+        managed = get_managed()
+        db_table = "iast_request_chains_total_project_version_graph_vec"
+        unique_together = (("source_project_version", "target_project_version"),)
+
+
+class IastAgentRequestChainsTotalProjectGraphVec(models.Model):
+    source_project = models.ForeignKey(
+        IastProject,
+        models.DO_NOTHING,
+        blank=True,
+        default=-1,
+        db_constraint=False,
+        related_name="total_source_project",
+    )
+    target_project = models.ForeignKey(
+        IastProject,
+        models.DO_NOTHING,
+        blank=True,
+        default=-1,
+        db_constraint=False,
+        related_name="total_target_project",
+    )
+
+    class Meta:
+        managed = get_managed()
+        db_table = "iast_request_chains_total_project_graph_vec"
+        unique_together = (("source_project", "target_project"),)
