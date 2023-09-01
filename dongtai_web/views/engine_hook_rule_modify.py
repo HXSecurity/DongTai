@@ -32,7 +32,7 @@ class _EngineHookRuleModifySerializer(serializers.Serializer):
     rule_type_id = serializers.IntegerField(help_text=_("The id of hook rule type."))
     rule_value = serializers.CharField(
         help_text=_("The value of strategy"),
-        max_length=255,
+        max_length=2000,
         allow_blank=True,
     )
     rule_source = serializers.CharField(
