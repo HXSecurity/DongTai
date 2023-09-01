@@ -166,6 +166,7 @@ class IastAgentRequestChainsTotalProjectVersionGraphVec(models.Model):
     class Meta:
         managed = get_managed()
         db_table = "iast_request_chains_total_project_version_graph_vec"
+        unique_together = (("source_project_version", "target_project_version"),)
 
 
 class IastAgentRequestChainsTotalProjectGraphVec(models.Model):
@@ -189,3 +190,4 @@ class IastAgentRequestChainsTotalProjectGraphVec(models.Model):
     class Meta:
         managed = get_managed()
         db_table = "iast_request_chains_total_project_graph_vec"
+        unique_together = (("source_project", "target_project"),)
