@@ -186,7 +186,7 @@ class EndPoint(APIView):
 
     @staticmethod
     def get_paginator(
-        queryset: "QuerySet | ValuesQuerySet", page: int = 1, page_size: int = 20
+        queryset: "QuerySet | ValuesQuerySet", page: int = 1, page_size: int = 20, max_page_size: int = 50
     ) -> tuple[dict, "QuerySet | _SupportsPagination"]:
         """
         根据模型集合、页号、每页大小获取分页数据
@@ -197,7 +197,7 @@ class EndPoint(APIView):
         :param page_size:
         :return:
         """
-        page_size = min(50, int(page_size))
+        page_size = min(max_page_size, int(page_size))
         page = int(page)
         try:
             page_info = Paginator(queryset, per_page=page_size)
