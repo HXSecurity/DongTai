@@ -21,6 +21,7 @@ from dongtai_common.models.asset_vul import (
 )
 from dongtai_common.models.package_focus import IastPackageFocus
 from dongtai_conf.settings import SCA_SETUP
+from dongtai_engine.signals import send_notify
 from dongtai_protocol.views.hook_profiles import LANGUAGE_DICT
 from dongtai_web.dongtai_sca.common.dataclass import VulInfo
 
@@ -98,7 +99,7 @@ class PackageVulSummary:
     unaffected_versions: tuple[str, ...] = ()
 
 
-def sca_scan_asset_v2(aql: str, ecosystem: str, package_name: str, version: str) -> PackageVulSummary:
+def sca_scan_asset_v2(aql: str, ecosystem: str, package_name: str, version: str) -> tuple[PackageVulSummary, list[int]]:
     from dongtai_common.models.asset_vul_v2 import IastAssetVulV2, IastVulAssetRelationV2
 
     vuls, affected_versions, unaffected_versions = get_package_vul_v4(
@@ -107,9 +108,10 @@ def sca_scan_asset_v2(aql: str, ecosystem: str, package_name: str, version: str)
         package_name=package_name,
     )
     vul_asset_rel_list = []
+    vul_asset_list = []
     for vul in vuls:
         logger.debug("vul_level %s", get_vul_level_dict()[vul.vul_info.severity.lower()])
-        IastAssetVulV2.objects.update_or_create(
+        obj, _ = IastAssetVulV2.objects.update_or_create(
             vul_id=vul.vul_info.vul_id,
             defaults={
                 "vul_codes": vul.vul_codes.to_dict(),
@@ -135,15 +137,19 @@ def sca_scan_asset_v2(aql: str, ecosystem: str, package_name: str, version: str)
             asset_vul_id=vul.vul_info.vul_id,
             asset_id=aql,
         )
+        vul_asset_list.append(obj.pk)
         vul_asset_rel_list.append(vul_asset_rel)
     IastVulAssetRelationV2.objects.filter(asset_id=aql).delete()
     IastVulAssetRelationV2.objects.bulk_create(vul_asset_rel_list, ignore_conflicts=True)
     package_info_dict = stat_severity_v2([vul.vul_info for vul in vuls])
     logger.debug("package_info_dict: %s", package_info_dict)
-    return PackageVulSummary(
-        affected_versions=affected_versions,
-        unaffected_versions=unaffected_versions,
-        **package_info_dict,
+    return (
+        PackageVulSummary(
+            affected_versions=affected_versions,
+            unaffected_versions=unaffected_versions,
+            **package_info_dict,
+        ),
+        vul_asset_list,
     )
 
 
@@ -287,7 +293,7 @@ def new_update_one_sca(
     for package in packages:
         aql = get_package_aql(package.name, package.ecosystem, package.version)
         license_list = get_license_list_v2(package.license)
-        package_info = sca_scan_asset_v2(aql, package.ecosystem, package.name, package.version)
+        package_info, vul_asset_list = sca_scan_asset_v2(aql, package.ecosystem, package.name, package.version)
         obj, created = IastPackageGAInfo.objects.update_or_create(
             package_fullname=package.ecosystem + package.name,
             defaults={
@@ -308,7 +314,7 @@ def new_update_one_sca(
                 "is_focus": is_focus,
             },
         )
-        AssetV2.objects.update_or_create(
+        asset, _ = AssetV2.objects.update_or_create(
             aql=assetglobalobj,
             project_id=agent.bind_project_id,
             project_version_id=agent.project_version_id,
@@ -331,6 +337,8 @@ def new_update_one_sca(
         for i in license_list:
             license = IastAssetLicense(license_id=i["id"], asset=assetglobalobj)
             asset_license_list.append(license)
+        for i in vul_asset_list:
+            send_notify.send_robust(sender=new_update_one_sca, asset_id=asset.id, asset_vul_id=i)
     IastAssetLicense.objects.bulk_create(asset_license_list, ignore_conflicts=True)
     # create license list
 

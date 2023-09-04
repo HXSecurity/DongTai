@@ -232,11 +232,7 @@ def save_vul(vul_type, method_pool, position="", data=""):
             vul.id,
             vul.strategy.vul_name,
         )  # type: ignore
-        send_notify.send_robust(
-            sender=save_vul,
-            vul_id=vul.id,
-            department_id=method_pool.agent.department_id,
-        )
+        send_notify.send_robust(sender=save_vul, vul_id=vul.id)
     cache.delete(cache_key)
     header_vul = None
     if not IastHeaderVulnerability.objects.filter(

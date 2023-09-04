@@ -381,11 +381,7 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
             vul.id,
             vul.strategy.vul_name,
         )  # type: ignore
-        send_notify.send_robust(
-            sender=save_vul,
-            vul_id=vul.id,
-            department_id=vul_meta.agent.department_id,
-        )
+        send_notify.send_robust(sender=save_vul, vul_id=vul.id)
 
     VulMethodPool.objects.update_or_create(
         vul_id=vul.id,
