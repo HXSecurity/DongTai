@@ -420,8 +420,8 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
     # 记录漏洞重放
     for header in base64.b64decode(vul.req_header).decode("utf-8").split("\n"):
         if header.startswith("iast-server-replay-uuid:"):
-            uuid = header.removeprefix("iast-server-replay-uuid:")
-            msg = f"id为{vul.agent.bind_project.id}的项目{vul.agent.bind_project.name}在UUID为{uuid}的漏洞重放中检测到漏洞{vul.strategy.vul_name}"
+            replay_uuid = header.removeprefix("iast-server-replay-uuid:")
+            msg = f"id为{vul.agent.bind_project.id}的项目{vul.agent.bind_project.name}在UUID为{replay_uuid}的漏洞重放中检测到漏洞{vul.strategy.vul_name}"
             IastVulLog.objects.create(
                 msg_type=MessageTypeChoices.VUL_REPLAY,
                 msg=msg,
