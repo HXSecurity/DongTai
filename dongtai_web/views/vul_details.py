@@ -117,8 +117,8 @@ class VulDetail(UserEndPoint):
             "command": "",
         }
 
+    @staticmethod
     def parse_graphy(
-        self,
         graphy,
         extend_black_list: list | None = None,
         extend_white_list: list | None = None,
@@ -136,7 +136,7 @@ class VulDetail(UserEndPoint):
 
         results = []
         try:
-            if graphy is None:
+            if not graphy:
                 return results
             method_note_pool = json.loads(graphy)[0]
             method_counts = len(method_note_pool)
