@@ -345,6 +345,15 @@ Create the name of the service account to use
             location /log/ {
              proxy_pass http://dongtai-logstash-svc:8082/;
             }
+            {{- if .Values.max }}
+            location /doc/ {
+              proxy_pass http://dongtai-doc-svc/;
+              proxy_set_header X-real-ip $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header User-Agent $http_user_agent;
+              proxy_set_header X-Host $http_x_forwarded_host;
+            }
+            {{- end }}
             location = /50x.html {
                 root   /usr/share/nginx/html;
             }
