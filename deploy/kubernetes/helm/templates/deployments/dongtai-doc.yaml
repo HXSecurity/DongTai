@@ -1,0 +1,43 @@
+{{- if .Values.max }}
+---
+# dongtai-doc服务
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "dongtai.fullname" . }}-doc
+  namespace: {{.Release.Namespace}}
+  annotations:
+    kubesphere.io/description: {{ template "dongtai.fullname" . }}-doc
+  labels:
+    app: {{ template "dongtai.fullname" . }}-doc
+    {{- include "dongtai.labels" .  | nindent 4 }}
+spec:
+  replicas: {{.Values.replicaCount}}
+  selector:
+    matchLabels:
+      app: {{ template "dongtai.fullname" . }}-doc
+      {{- include "dongtai.labels" .  | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        doc_number: {{.Values.build.server_number}}
+      labels:
+        app: {{ template "dongtai.fullname" . }}-doc
+        {{- include "dongtai.labels" .  | nindent 8 }}
+    spec:
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
+      containers:
+        - name: {{ template "dongtai.fullname" . }}-doc-container
+          image: {{ .Values.images }}/dongtai-doc:{{ .Values.tag }}
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 500m
+              memory: 500Mi
+            requests:
+              cpu: 500m
+              memory: 500Mi
+{{- end }}
