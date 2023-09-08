@@ -4,7 +4,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ template "dongtai.fullname" . }}-update-{{ randAlphaNum 10 }}
+  name: {{ template "dongtai.fullname" . }}-update-{{ randNumeric 10 }}
   namespace: {{.Release.Namespace}}
   annotations:
     "helm.sh/hook": pre-upgrade
