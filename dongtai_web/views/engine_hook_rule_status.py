@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import logging
 
+from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
@@ -65,16 +66,14 @@ class EngineHookRuleEnableEndPoint(UserEndPoint):
     @staticmethod
     def set_strategy_status(strategy_id, strategy_ids, enable_status):
         if strategy_id:
-            rule = HookStrategy.objects.filter(
-                id=strategy_id,
-            ).first()
+            rule = HookStrategy.objects.filter(Q(system_type=0) if enable_status == -1 else Q(), id=strategy_id).first()
             if rule:
                 rule.enable = enable_status
                 rule.save()
                 return 1
         elif strategy_ids:
             return HookStrategy.objects.filter(
-                id__in=strategy_ids,
+                Q(system_type=0) if enable_status == -1 else Q(), id__in=strategy_ids
             ).update(enable=enable_status)
         return 0
 
@@ -112,7 +111,10 @@ class EngineHookRuleEnableEndPoint(UserEndPoint):
         if op is None:
             return R.failure(msg=_("Operation type does not exist"))
         if rule_type is not None and scope == "all":
-            count = HookStrategy.objects.filter(hooktype__id=rule_type).update(enable=op)
+            count = HookStrategy.objects.filter(
+                Q(system_type=0) if op == -1 else Q(),
+                hooktype__id=rule_type,
+            ).update(enable=op)
             logger.info(_("Policy type {} operation success, total of {} Policy types").format(rule_type, count))
             status = True
         if hook_rule_type is not None and language_id is not None and scope == "all":
@@ -120,6 +122,7 @@ class EngineHookRuleEnableEndPoint(UserEndPoint):
                 HookType.objects.filter(language_id=language_id, type=hook_rule_type).values_list("id", flat=True).all()
             )
             count = HookStrategy.objects.filter(
+                Q(system_type=0) if op == -1 else Q(),
                 hooktype__id__in=hook_type_ids,
             ).update(enable=op)
             logger.info(_("total of {} Policy types").format(count))

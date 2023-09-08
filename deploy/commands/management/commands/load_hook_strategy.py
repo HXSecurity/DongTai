@@ -110,7 +110,6 @@ class Command(BaseCommand):
                 hooktype_obj.save()
                 hooktype_dict[f"{hook_type['value']}-{hook_type['type']}"] = hooktype_obj
 
-            HookStrategy.objects.filter(language_id=v, system_type=1).delete()
             with open(os.path.join(POLICY_DIR, f"{k.lower()}_full_policy.json")) as fp:
                 full_policy = json.load(fp, object_pairs_hook=OrderedDict)
             for policy in full_policy:
@@ -119,6 +118,21 @@ class Command(BaseCommand):
                         continue
                     policy_strategy = strategy_dict[policy["value"]]
                     for hook_strategy in policy["details"]:
+                        if HookStrategy.objects.filter(
+                            value=hook_strategy["value"], type=hook_strategy["type"], language_id=v, system_type=1
+                        ).exists():
+                            # 如果已经存在规则,跳过创建
+                            continue
+                        if HookStrategy.objects.filter(
+                            value=hook_strategy["value"], type=hook_strategy["type"], language_id=v, system_type=0
+                        ):
+                            # 如果已经存在用户自定义规则,设置为系统规则,跳过创建
+                            hook_strategy_obj = HookStrategy.objects.filter(
+                                value=hook_strategy["value"], type=hook_strategy["type"], language_id=v, system_type=0
+                            ).get()
+                            hook_strategy_obj.system_type = 1
+                            hook_strategy_obj.save()
+                            continue
                         del hook_strategy["language"]
                         hook_strategy["language_id"] = v
                         HookStrategy.objects.create(strategy=policy_strategy, **hook_strategy)
@@ -127,6 +141,21 @@ class Command(BaseCommand):
                         continue
                     policy_hook_type = hooktype_dict[f"{policy['value']}-{policy['type']}"]
                     for hook_strategy in policy["details"]:
+                        if HookStrategy.objects.filter(
+                            value=hook_strategy["value"], type=hook_strategy["type"], language_id=v, system_type=1
+                        ).exists():
+                            # 如果已经存在规则,跳过创建
+                            continue
+                        if HookStrategy.objects.filter(
+                            value=hook_strategy["value"], type=hook_strategy["type"], language_id=v, system_type=0
+                        ):
+                            # 如果已经存在用户自定义规则,设置为系统规则,跳过创建
+                            hook_strategy_obj = HookStrategy.objects.filter(
+                                value=hook_strategy["value"], type=hook_strategy["type"], language_id=v, system_type=0
+                            ).get()
+                            hook_strategy_obj.system_type = 1
+                            hook_strategy_obj.save()
+                            continue
                         del hook_strategy["language"]
                         hook_strategy["language_id"] = v
                         HookStrategy.objects.create(hooktype=policy_hook_type, **hook_strategy)

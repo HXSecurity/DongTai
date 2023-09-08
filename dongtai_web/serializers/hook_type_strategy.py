@@ -8,7 +8,7 @@ from dongtai_common.models.strategy import IastStrategyModel
 class HookTypeSerialize(serializers.ModelSerializer):
     class Meta:
         model = HookType
-        fields = ["id", "name"]
+        fields = ["id", "name", "system_type"]
 
 
 class StrategySerialize(serializers.ModelSerializer):
@@ -16,7 +16,7 @@ class StrategySerialize(serializers.ModelSerializer):
 
     class Meta:
         model = IastStrategyModel
-        fields = ["id", "vul_name", "name"]
+        fields = ["id", "vul_name", "name", "system_type"]
 
     def get_name(self, obj):
         return obj.vul_name
