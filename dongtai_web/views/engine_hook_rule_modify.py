@@ -147,6 +147,11 @@ class EngineHookRuleModifyEndPoint(UserEndPoint):
         strategy = HookStrategy.objects.filter(id=rule_id).first()
         if not strategy:
             return R.failure(msg=_("No such hookstrategy."))
+        if strategy.system_type:
+            return R.failure(msg="Can not modify preset rule")
+        if HookStrategy.objects.filter(language_id=strategy.language_id, type=strategy.type, value=rule_value).exists():
+            return R.failure(msg="Already exists same rule")
+
         if strategy.type == 4:
             hook_type = IastStrategyModel.objects.filter(
                 id=rule_type,
@@ -155,20 +160,7 @@ class EngineHookRuleModifyEndPoint(UserEndPoint):
             hook_type = HookType.objects.filter(
                 id=rule_type,
             ).first()
-        if (
-            all(
-                (
-                    rule_id,
-                    rule_type,
-                    rule_value,
-                    rule_source,
-                    inherit,
-                    is_track,
-                    strategy,
-                )
-            )
-            is False
-        ):
+        if all((rule_id, rule_type, rule_value, rule_source, inherit, is_track, strategy)) is False:
             return R.failure(msg=_("Incomplete parameter, please check again"))
 
         ser = _EngineHookRuleModifySerializer(data=request.data)

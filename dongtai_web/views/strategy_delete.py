@@ -33,6 +33,8 @@ class StrategyDelete(TalentAdminEndPoint):
         strategy = IastStrategyModel.objects.filter(pk=id_).first()
         if not strategy:
             return R.failure(msg=_("This strategy does not exist"))
+        if strategy.system_type == 1:
+            return R.failure(msg="Can not delete system strategy")
         hook_types = HookType.objects.filter(vul_strategy=strategy).all()
         strategy.state = DELETE
         strategy.save()
