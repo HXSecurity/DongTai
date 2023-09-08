@@ -55,7 +55,6 @@ storage:
   persistentVolumeClaim: iast-agent-pvc  # or null(The agent needs to close the reporting log function 'dongtai.log.disable-collector: false')
 
 csrfTrustOrigins: .example.com
-secretKey: vbjlvbxfvazjfprywuxgyclmvhtmselddsefxxlcixovmqfpgy
 
 smtp:
   server: smtp_server

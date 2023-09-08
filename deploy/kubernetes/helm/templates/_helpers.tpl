@@ -247,7 +247,7 @@ Create the name of the service account to use
 
     [security]
     csrf_trust_origins ={{.Values.csrfTrustOrigins}}
-    secret_key ={{.Values.secretKey}}
+    secret_key ={{ randAlphaNum 50 }}
 
     [smtp]
     server ={{.Values.smtp.server}}
