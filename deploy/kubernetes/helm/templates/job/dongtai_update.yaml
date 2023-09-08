@@ -1,0 +1,35 @@
+{{- if .Values.migrate }}
+---
+# dongtai-update服务
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "dongtai.fullname" . }}-update
+  namespace: {{.Release.Namespace}}
+  annotations:
+    "helm.sh/hook": pre-upgrade
+    "helm.sh/hook-weight": "-5"
+    kubesphere.io/description: {{ template "dongtai.fullname" . }}-update
+  labels:
+    app: {{ template "dongtai.fullname" . }}-update
+    {{- include "dongtai.labels" .  | nindent 4 }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "dongtai.fullname" . }}-update
+        {{- include "dongtai.labels" .  | nindent 8 }}
+    spec:
+      restartPolicy: Never
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
+      containers:
+        - name: {{ template "dongtai.fullname" . }}-update-container
+          image: {{ .Values.images }}/dongtai-server:{{ .Values.tag }}
+          command: [ "/bin/sh","/opt/dongtai/deploy/docker/entrypoint.sh" ]
+          args: [ "migrate" ]
+          {{- include "deploy.config" . | nindent 10 }}
+      {{- include "deploy.config.vo" . | nindent 6 }}
+{{- end }}

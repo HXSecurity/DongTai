@@ -17,6 +17,7 @@ logging_level: INFO # DEBUG, INFO
 somaxconn: null #If system max net.core.somaxconn (128) . Example: somaxconn: 4096
 healthcheck: true
 logstash: "true"
+migrate: true
 
 nodeSelector:
   kubernetes.io/os: linux
