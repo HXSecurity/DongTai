@@ -346,7 +346,7 @@ Create the name of the service account to use
              proxy_pass http://dongtai-logstash-svc:8082/;
             }
             {{- if .Values.max }}
-            location /doc/ {
+            location /dongtai_doc/ {
              proxy_pass http://dongtai-doc-svc/;
              proxy_set_header X-Scheme $scheme;
              proxy_set_header X-Forwarded-Proto $scheme;
