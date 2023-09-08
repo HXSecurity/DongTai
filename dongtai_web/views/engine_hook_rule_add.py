@@ -230,7 +230,7 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
             else ser.validated_data["type"]
         )
 
-        if IastStrategyModel.objects.filter(
+        if HookStrategy.objects.filter(
             language_id=ser.validated_data["language_id"], type=type_, value=rule_value
         ).exists():
             return R.failure(msg="Already exists same rule")
