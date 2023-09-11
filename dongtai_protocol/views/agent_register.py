@@ -3,11 +3,13 @@
 import base64
 import json
 import logging
+import string
 import time
 
 from django.db import transaction
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
+from shortuuid import ShortUUID
 
 from dongtai_common.endpoint import OpenApiEndPoint, R
 from dongtai_common.models.agent import IastAgent
@@ -20,8 +22,6 @@ from dongtai_common.models.server import IastServer
 from dongtai_common.utils.request_type import Request
 from dongtai_protocol.api_schema import DongTaiParameter
 from dongtai_protocol.decrypter import parse_data
-from shortuuid import ShortUUID
-import string
 
 logger = logging.getLogger("dongtai.openapi")
 
