@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 # datetime:2020/11/30 下午5:32
+import string
 import time
 
 from django.db import models
+from shortuuid.django_fields import ShortUUIDField
 
 from dongtai_common.models import User
 from dongtai_common.models.department import Department
 from dongtai_common.models.strategy_user import IastStrategyUser
 from dongtai_common.utils.db import get_timestamp
 from dongtai_common.utils.settings import get_managed
-from shortuuid.django_fields import ShortUUIDField
-import string
 
 
 class VulValidation(models.IntegerChoices):
