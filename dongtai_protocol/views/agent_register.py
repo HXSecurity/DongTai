@@ -20,8 +20,14 @@ from dongtai_common.models.server import IastServer
 from dongtai_common.utils.request_type import Request
 from dongtai_protocol.api_schema import DongTaiParameter
 from dongtai_protocol.decrypter import parse_data
+from shortuuid import ShortUUID
+import string
 
 logger = logging.getLogger("dongtai.openapi")
+
+
+def generate_shoutuuid() -> str:
+    return ShortUUID(alphabet=string.ascii_letters + string.digits).random(length=22)
 
 
 def get_agent_allow_report(agent_id):
@@ -262,6 +268,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                 "template_id": template.id if template else -1,
                 "user": user,
                 "department_id": 1,
+                "token": generate_shoutuuid(),
             }
 
             default_params.update(template.to_full_project_args() if template else {})
