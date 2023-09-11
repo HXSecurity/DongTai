@@ -74,6 +74,7 @@ from dongtai_web.views.project_detail import ProjectDetail
 from dongtai_web.views.project_engines import ProjectEngines
 from dongtai_web.views.project_search import ProjectSearch
 from dongtai_web.views.project_summary import ProjectSummary
+from dongtai_web.views.project_token import ProjectToken
 from dongtai_web.views.project_version_add import ProjectVersionAdd
 from dongtai_web.views.project_version_current import ProjectVersionCurrent
 from dongtai_web.views.project_version_delete import ProjectVersionDelete
@@ -137,6 +138,7 @@ urlpatterns: list[URLResolver | URLPattern] = [
     path("user/password/reset", UserPasswordReset.as_view()),
     path("captcha/", include("captcha.urls")),
     path(r"captcha/refresh", CaptchaCreate.as_view()),
+    path("project/<int:pk>/token", ProjectToken.as_view()),
     path("project/<int:id>", ProjectDetail.as_view()),
     path("project/add", ProjectAdd.as_view()),
     path("project/delete", ProjectDel.as_view()),

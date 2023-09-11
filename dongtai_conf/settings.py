@@ -121,6 +121,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.SessionAuthentication",
         "dongtai_common.common.utils.DepartmentTokenAuthentication",
+        "dongtai_common.common.utils.ProjectTokenAuthentication",
         "rest_framework.authentication.TokenAuthentication",
     ],
     "DEFAULT_RENDERER_CLASSES": [
