@@ -71,6 +71,7 @@ class User(AbstractUser, PermissionsMixin):
 
     objects = SaaSUserManager()
     using_department = None
+    using_project = None
 
     class Meta(AbstractUser.Meta):
         db_table = "auth_user"

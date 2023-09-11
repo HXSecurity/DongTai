@@ -265,7 +265,8 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             }
 
             default_params.update(template.to_full_project_args() if template else {})
-
+            if request.user.using_project is not None:
+                project_name = request.user.using_project.name
             with transaction.atomic():
                 (
                     obj,

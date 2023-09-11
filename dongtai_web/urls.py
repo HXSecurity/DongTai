@@ -125,6 +125,7 @@ from dongtai_web.views.vuls import VulsEndPoint
 from dongtai_web.vul_log.vul_log_view import VulLogViewSet
 from dongtai_web.vul_recheck_payload.vul_recheck_payload import VulReCheckPayloadViewSet
 from static.i18n.views.setlang import LanguageSetting
+from dongtai_web.views.project_token import ProjectToken
 
 urlpatterns: list[URLResolver | URLPattern] = [
     path("user/<int:user_id>", UserDetailEndPoint.as_view()),
@@ -137,6 +138,7 @@ urlpatterns: list[URLResolver | URLPattern] = [
     path("user/password/reset", UserPasswordReset.as_view()),
     path("captcha/", include("captcha.urls")),
     path(r"captcha/refresh", CaptchaCreate.as_view()),
+    path("project/<int:pk>/token", ProjectToken.as_view()),
     path("project/<int:id>", ProjectDetail.as_view()),
     path("project/add", ProjectAdd.as_view()),
     path("project/delete", ProjectDel.as_view()),
