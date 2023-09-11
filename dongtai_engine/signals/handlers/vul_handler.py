@@ -296,7 +296,6 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
     if vul:
         vul.url = vul_meta.url
         vul.uri = vul_meta.uri
-        vul.pattern_uri = pattern_uri
         vul.req_header = vul_meta.req_header
         vul.req_params = vul_meta.req_params
         vul.req_data = vul_meta.req_data
@@ -317,6 +316,7 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
         vul.save(
             update_fields=[
                 "url",
+                "uri",
                 "req_header",
                 "req_params",
                 "req_data",
