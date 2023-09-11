@@ -3,11 +3,13 @@
 import base64
 import json
 import logging
+import string
 import time
 
 from django.db import transaction
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
+from shortuuid import ShortUUID
 
 from dongtai_common.endpoint import OpenApiEndPoint, R
 from dongtai_common.models.agent import IastAgent
@@ -22,6 +24,10 @@ from dongtai_protocol.api_schema import DongTaiParameter
 from dongtai_protocol.decrypter import parse_data
 
 logger = logging.getLogger("dongtai.openapi")
+
+
+def generate_shoutuuid() -> str:
+    return ShortUUID(alphabet=string.ascii_letters + string.digits).random(length=22)
 
 
 def get_agent_allow_report(agent_id):
@@ -262,6 +268,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                 "template_id": template.id if template else -1,
                 "user": user,
                 "department_id": 1,
+                "token": generate_shoutuuid(),
             }
 
             default_params.update(template.to_full_project_args() if template else {})
