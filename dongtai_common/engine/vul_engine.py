@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # datetime: 2021/7/21 下午7:07
-import copy
 import logging
 from collections import defaultdict
 
@@ -281,8 +280,7 @@ class VulEngine:
 
     @staticmethod
     def copy_method(method_detail, sink=False, source=False, propagator=False, filter=False):
-        vul_method_detail = copy.deepcopy(method_detail)
-        vul_method_detail["originClassName"] = vul_method_detail["originClassName"]
+        vul_method_detail = method_detail
         # todo  根据类型进行拼接
         if source:
             vul_method_detail["tag"] = "source"
