@@ -139,6 +139,7 @@ class IastAgentRequestChainsTopoGraphVec(models.Model):
         max_length=255,
         blank=True,
     )
+    expandable = models.BooleanField(default=False)
 
     class Meta:
         managed = get_managed()
