@@ -17,7 +17,10 @@ from rest_framework.authentication import SessionAuthentication, TokenAuthentica
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.views import APIView
 
-from dongtai_common.common.utils import DepartmentTokenAuthentication
+from dongtai_common.common.utils import (
+    DepartmentTokenAuthentication,
+    ProjectTokenAuthentication,
+)
 from dongtai_common.models import User
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.asset import Asset
@@ -337,7 +340,11 @@ class UserEndPoint(MixinAuthEndPoint):
 
 
 class OpenApiEndPoint(EndPoint):
-    authentication_classes = (DepartmentTokenAuthentication, TokenAuthentication)
+    authentication_classes = (
+        ProjectTokenAuthentication,
+        DepartmentTokenAuthentication,
+        TokenAuthentication,
+    )
     permission_classes = (UserPermission,)
 
 

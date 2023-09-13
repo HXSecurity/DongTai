@@ -161,7 +161,7 @@ class DepartmentTokenAuthentication(TokenAuthentication):
         return self.auth_decodedenticate_credentials(token)
 
 
-@cached_decorator(random_range=(60, 120), use_celery_update=False)
+@cached_decorator(random_range=(300, 600), use_celery_update=False)
 def get_user_from_project_key(key):
     from dongtai_common.models.project import IastProject
     from dongtai_common.models.user import User
@@ -183,7 +183,6 @@ class ProjectTokenAuthentication(TokenAuthentication):
         from dongtai_common.models.project import IastProject
 
         try:
-            warnings.warn("Department token is departured. Please use new token to register agent.", stacklevel=1)
             user = get_user_from_project_key(key)
         except IastProject.DoesNotExist as e:
             raise exceptions.AuthenticationFailed(_("Invalid token.")) from e
@@ -193,5 +192,5 @@ class ProjectTokenAuthentication(TokenAuthentication):
         auth = get_authorization_header(request)
         if not auth or not auth.lower().startswith(self.keyword.lower().encode()):
             return None
-        token = auth.lower().replace(self.keyword.lower().encode(), b"", 1).decode()
+        token = auth[13:].decode()
         return self.auth_decodedenticate_credentials(token)

@@ -16,7 +16,10 @@ from drf_spectacular.utils import extend_schema
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.authtoken.models import Token
 
-from dongtai_common.common.utils import DepartmentTokenAuthentication
+from dongtai_common.common.utils import (
+    DepartmentTokenAuthentication,
+    ProjectTokenAuthentication,
+)
 from dongtai_common.endpoint import OpenApiEndPoint, R
 from dongtai_conf.settings import BUCKET_NAME_BASE_URL, VERSION
 from dongtai_protocol.api_schema import DongTaiParameter
@@ -283,6 +286,7 @@ class AgentDownload(OpenApiEndPoint):
     name = "download_iast_agent"
     description = "下载洞态Agent"
     authentication_classes = (
+        ProjectTokenAuthentication,
         DepartmentTokenAuthentication,
         TokenAuthentication,
         SessionAuthentication,
