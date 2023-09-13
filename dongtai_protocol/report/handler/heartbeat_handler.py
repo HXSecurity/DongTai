@@ -5,6 +5,7 @@ import time
 from typing import Any
 
 from celery import shared_task
+from celery_singleton import Singleton
 from django.core.cache import cache
 from django.db.models import Q, QuerySet
 from django.utils.translation import gettext_lazy as _
@@ -31,7 +32,7 @@ def check_agent_incache(agent_id):
     return bool(cache.get(f"heartbeat-{agent_id}"))
 
 
-@shared_task
+@shared_task(base=Singleton)
 def update_heartbeat(agent_id: int, defaults: dict[str, Any]):
     IastHeartbeat.objects.update_or_create(agent_id=agent_id, defaults=defaults)
     IastAgent.objects.update_or_create(pk=agent_id, defaults={"is_running": 1, "online": 1})
@@ -66,8 +67,6 @@ class HeartBeatHandler(IReportHandler):
 
     def save_heartbeat(self):
         default_dict = {"dt": int(time.time())}
-        if not check_agent_incache(self.agent_id):
-            update_heartbeat.delay(agent_id=self.agent_id, defaults=default_dict)
         if self.return_queue == 1:
             default_dict["req_count"] = self.req_count
             default_dict["report_queue"] = self.report_queue
