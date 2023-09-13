@@ -149,8 +149,6 @@ class EngineHookRuleModifyEndPoint(UserEndPoint):
             return R.failure(msg=_("No such hookstrategy."))
         if strategy.system_type and rule_value != strategy.value:
             return R.failure(msg="Can not modify preset rule")
-        if HookStrategy.objects.filter(language_id=strategy.language_id, type=strategy.type, value=rule_value).exists():
-            return R.failure(msg="Already exists same rule")
 
         if strategy.type == 4:
             hook_type = IastStrategyModel.objects.filter(
