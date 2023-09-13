@@ -3,9 +3,11 @@ import os
 from collections import OrderedDict
 
 from django.core.management.base import BaseCommand
+from django.db.models import Q
 
 from dongtai_common.models.hook_strategy import HookStrategy
 from dongtai_common.models.hook_type import HookType
+from dongtai_common.models.sensitive_info import IastSensitiveInfoRule
 from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.utils.validate import save_hook_stratefile_sha1sum
 from dongtai_conf.settings import BASE_DIR
@@ -23,6 +25,9 @@ class Command(BaseCommand):
         POLICY_DIR = os.path.join(BASE_DIR, "static/data/")
         with open(os.path.join(POLICY_DIR, "vul_strategy.json")) as fp:
             full_strategies = json.load(fp, object_pairs_hook=OrderedDict)
+        if os.path.exists(os.path.join(POLICY_DIR, "sensitive_info_strategy.json")):
+            with open(os.path.exists(os.path.join(POLICY_DIR, "sensitive_info_strategy.json"))) as fp:
+                full_strategies.extend(json.load(fp, object_pairs_hook=OrderedDict))
         strategy_dict = {}
         for strategy in full_strategies:
             if IastStrategyModel.objects.filter(
@@ -160,4 +165,30 @@ class Command(BaseCommand):
                         hook_strategy["language_id"] = v
                         HookStrategy.objects.create(hooktype=policy_hook_type, **hook_strategy)
         save_hook_stratefile_sha1sum()
+
+        sensitive_info_rule = []
+        if os.path.exists(os.path.join(POLICY_DIR, "sensitive_info_rule.json")):
+            with open(os.path.join(POLICY_DIR, "sensitive_info_rule.json")) as fp:
+                sensitive_info_rule = json.load(fp, object_pairs_hook=OrderedDict)
+        sensitive_info_rule_ids = []
+        for rule in sensitive_info_rule:
+            if rule["strategy"] not in strategy_dict:
+                continue
+            strategy = strategy_dict[rule["strategy"]]
+            exist_rule = IastSensitiveInfoRule.objects.filter(
+                strategy=strategy, pattern_type_id=rule["pattern_type"], pattern=rule["pattern"], system_type=1
+            ).first()
+            if exist_rule:
+                sensitive_info_rule_ids.append(exist_rule.pk)
+            else:
+                obj = IastSensitiveInfoRule.objects.create(
+                    user_id=1,
+                    strategy=strategy,
+                    pattern_type_id=rule["pattern_type"],
+                    pattern=rule["pattern"],
+                    status=1,
+                    system_type=1,
+                )
+                sensitive_info_rule_ids.append(obj.pk)
+        IastSensitiveInfoRule.objects.filter(~Q(id__in=sensitive_info_rule_ids), system_type=1).delete()
         self.stdout.write(self.style.SUCCESS("Successfully load strategy ."))
