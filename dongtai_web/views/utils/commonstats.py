@@ -187,7 +187,10 @@ def get_summary_by_project(project_id: int, project_version_id: int):
     timestamp_gt = current_timestamp
     queryset_list = []
     queryset_ = IastVulnerabilityModel.objects.filter(
-        project_id=project_id, project_version_id=project_version_id, is_del=0
+        project_id=project_id,
+        project_version_id=project_version_id,
+        is_del=0,
+        level_id__in=(1, 2, 3, 5),
     )
     for timestamp, _ in daylist:
         queryset_list.append(geneatre_vul_timerange_count_queryset(queryset_, timestamp_gt, timestamp, wkey))
@@ -223,7 +226,7 @@ def get_summary_by_project(project_id: int, project_version_id: int):
         day = time.localtime(last_timestamp + 86400 * i)
         day_num_data.append(get_empty_day_num_num(str(day.tm_mon) + "-" + str(day.tm_mday)))
     data["day_num"] = day_num_data
-    levelInfo = IastVulLevel.objects.all()
+    levelInfo = IastVulLevel.objects.filter(pk__in=(1, 2, 3, 5)).all()
     levelIdArr = {}
     levelNum = []
     if levelInfo:
@@ -242,7 +245,7 @@ def get_summary_by_project(project_id: int, project_version_id: int):
 
 def get_empty_day_num_num(day_label: str):
     obj = {"day_label": day_label, "day_num": 0}
-    for i in range(1, 5 + 1):
+    for i in (1, 2, 3, 5):
         obj["day_num_level_" + str(i)] = 0
     return obj
 
