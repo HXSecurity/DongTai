@@ -18,7 +18,7 @@ class ProjectToken(UserEndPoint):
             return R.success(
                 data={
                     "id": project.id,
-                    "token": project.token,
+                    "token": f"PROJECT{project.token}",
                 }
             )
         return R.failure(status=203, msg=_("no permission"))
