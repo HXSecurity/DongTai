@@ -8,9 +8,8 @@
 
 from django.conf import settings
 from django.http import JsonResponse
-from django.utils.translation import gettext_lazy as _
 
-from dongtai_common.endpoint import AnonymousAndUserEndPoint, R
+from dongtai_common.endpoint import AnonymousAndUserEndPoint
 from dongtai_conf.settings import LANGUAGES
 from dongtai_web.utils import extend_schema_with_envcheck
 
@@ -32,9 +31,7 @@ class LanguageSetting(AnonymousAndUserEndPoint):
         summary="切换语言",
     )
     def get(self, request):
-        lang_code = request.GET.get(LANGUAGE_QUERY_PARAMETER)
-        if lang_code not in ALLOWED_LANG_CODE:
-            return R.failure(msg=_("this language not supported now"))
+        lang_code = "zh"
         response = JsonResponse({"status": 201})
         if request.user.is_authenticated:
             user = request.user
