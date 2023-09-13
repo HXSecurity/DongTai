@@ -93,6 +93,7 @@ django-add-default-value = "==0.10.0"
 networkx = {extras = ["all"], version = "*"}
 pandas = "~=2.1.0"
 pydot = "*"
+more-itertools = "*"
 
 [dev-packages]
 
