@@ -30,6 +30,7 @@ class IastSensitiveInfoRule(models.Model):
     pattern = models.CharField(default=None, max_length=255)
     status = models.IntegerField(default=None)
     latest_time = models.IntegerField(default=get_timestamp)
+    system_type = models.IntegerField(default=0)
 
     class Meta:
         db_table = "iast_sensitive_info_rule"
