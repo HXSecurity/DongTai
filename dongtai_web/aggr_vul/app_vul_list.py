@@ -30,14 +30,72 @@ from dongtai_web.aggregation.aggregation_common import turnIntListOfStr
 from dongtai_web.serializers.aggregation import AggregationArgsSerializer
 from dongtai_web.serializers.vul import VulSerializer
 from dongtai_web.utils import extend_schema_with_envcheck
+from rest_framework import serializers
+from dongtai_web.utils import get_response_serializer
+from drf_spectacular.utils import extend_schema
 
 INT_LIMIT: int = 2**64 - 1
 
 
+class AppVulSerializer(serializers.ModelSerializer):
+    level_name = serializers.CharField()
+    server_type = serializers.CharField()
+    is_header_vul = serializers.CharField()
+    agent__project_name = serializers.CharField()
+    agent__server__container = serializers.CharField()
+    agent__language = serializers.CharField()
+    agent__bind_project_id = serializers.CharField()
+    header_vul_urls = serializers.ListField()
+    dastvul__vul_type = serializers.CharField()
+    dastvul_count = serializers.CharField()
+    dast_validation_status = serializers.CharField()
+    strategy__vul_name = serializers.CharField()
+    project__name = serializers.CharField()
+    server__container = serializers.CharField()
+    project_version__version_name = serializers.CharField()
+
+    class Meta:
+        model = IastVulnerabilityModel
+        fields = [
+            "id",
+            "uri",
+            "http_method",
+            "top_stack",
+            "bottom_stack",
+            "level_id",
+            "taint_position",
+            "status_id",
+            "first_time",
+            "latest_time",
+            "strategy__vul_name",
+            "language",
+            "project__name",
+            "server__container",
+            "project_id",
+            "strategy_id",
+            "project_version_id",
+            "project_version__version_name",
+            "level_name",
+            "server_type",
+            "is_header_vul",
+            "agent__project_name",
+            "agent__server__container",
+            "agent__language",
+            "agent__bind_project_id",
+            "header_vul_urls",
+            "dastvul__vul_type",
+            "dastvul_count",
+            "dast_validation_status",
+        ]
+
+
+_NewResponseSerializer = get_response_serializer(AppVulSerializer(many=True))
+
+
 class GetAppVulsList(UserEndPoint):
-    @extend_schema_with_envcheck(
+    @extend_schema(
         request=AggregationArgsSerializer,
-        tags=[_("Vulnerability"), OPERATE_GET],
+        tags=[_("Vulnerability"), OPERATE_GET, "集成"],
         summary="应用漏洞列表",
     )
     @to_patch
