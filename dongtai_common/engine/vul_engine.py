@@ -155,7 +155,7 @@ class VulEngine:
             )
         ]
         # Build a graph
-        g = nk.Graph(weighted=True, directed=True)
+        g = nk.DiGraph(weighted=True, directed=True)
         for pool in self.method_pool:
             if "sourceType" in pool:
                 vecs = ()
