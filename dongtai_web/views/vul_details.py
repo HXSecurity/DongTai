@@ -9,6 +9,7 @@ from drf_spectacular.utils import extend_schema
 from rest_framework import serializers
 
 from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models.agent_method_pool import VulMethodPool
 from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.project import IastProject
 from dongtai_common.models.project_version import IastProjectVersion
@@ -116,8 +117,8 @@ class VulDetail(UserEndPoint):
             "command": "",
         }
 
+    @staticmethod
     def parse_graphy(
-        self,
         graphy,
         extend_black_list: list | None = None,
         extend_white_list: list | None = None,
@@ -135,7 +136,7 @@ class VulDetail(UserEndPoint):
 
         results = []
         try:
-            if graphy is None:
+            if not graphy:
                 return results
             method_note_pool = json.loads(graphy)[0]
             method_counts = len(method_note_pool)
@@ -327,6 +328,7 @@ class VulDetail(UserEndPoint):
             "method_pool_id": vul.method_pool_id,
             "project_id": project_id,
             "is_need_http_detail": is_need_http_detail(strategy_name),
+            "has_vul_method_pool": VulMethodPool.objects.filter(vul_id=vul.id).exists(),
         }
 
     def get_strategy(self):
@@ -454,68 +456,9 @@ class VulDetailV2(VulDetail):
         ]
         return res
 
-    @extend_schema_with_envcheck(
-        response_bodys=[
-            {
-                "name": _("Get data sample"),
-                "description": _(
-                    "The aggregation results are programming language, risk level, vulnerability type, project"
-                ),
-                "value": {
-                    "status": 201,
-                    "msg": "success",
-                    "data": {
-                        "vul": {
-                            "url": "http://localhost:81/captcha/captchaImage",
-                            "uri": "/captcha/captchaImage",
-                            "agent_name": "Mac OS X-localhost-v1.0.0-d24bf703ca62499ebdd12770708296f5",
-                            "http_method": "GET",
-                            "type": "Weak Random Number Generation",
-                            "taint_position": None,
-                            "first_time": 1631089870,
-                            "latest_time": 1631089961,
-                            "project_name": "demo-4.6.1",
-                            "project_version": "V1.0",
-                            "language": "JAVA",
-                            "level": "LOW",
-                            "level_type": 3,
-                            "counts": 6,
-                            "req_header": 'GET /captcha/captchaImage?type=math HTTP/1.1\nhost:localhost:81\nconnection:keep-alive\nsec-ch-ua:"Google Chrome";v="93", " Not;A Brand";v="99", "Chromium";v="93"\nsec-ch-ua-mobile:?0\nuser-agent:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36\nsec-ch-ua-platform:"macOS"\naccept:image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8\nsec-fetch-site:same-origin\nsec-fetch-mode:no-cors\nsec-fetch-dest:image\nreferer:http://localhost:81/login\naccept-encoding:gzip, deflate, br\naccept-language:zh-CN,zh;q=0.9\ncookie:JSESSIONID=4bada2e5-d848-4218-8e24-3b28f765b986\n',
-                            "response": "None\n\nNone",
-                            "graph": None,
-                            "context_path": "127.0.0.1",
-                            "client_ip": "127.0.0.1",
-                            "status": "Confirmed",
-                            "taint_value": None,
-                            "param_name": {},
-                            "method_pool_id": None,
-                            "project_id": 69,
-                        },
-                        "server": {
-                            "name": "server.name",
-                            "hostname": "localhost",
-                            "ip": "localhost",
-                            "port": 81,
-                            "container": "Apache Tomcat/9.0.41",
-                            "server_type": "apache tomcat",
-                            "container_path": "/Users/erzhuangniu/workspace/vul/demo-4.6.1",
-                            "runtime": "OpenJDK Runtime Environment",
-                            "environment": "java.runtime.name=OpenJDK Runtime Environment, spring.output.ansi.enabled=always, project.name=demo-4.6.1, sun.boot.library.path=/Users/erzhuangniu/Library/Java/JavaVirtualMachines/corretto-1.8.0_292/Contents/Home/jre/lib, java.vm.version=25.292-b10, gop",
-                            "command": "com.ruoyi.demoApplication",
-                        },
-                        "strategy": {
-                            "desc": "Verifies that weak sources of entropy are not used.",
-                            "sample_code": "",
-                            "repair_suggestion": None,
-                        },
-                    },
-                },
-            }
-        ],
-        description=_("Use the corresponding id of the vulnerability to query the details of the vulnerability"),
+    @extend_schema(
         summary="获取漏洞详情",
-        tags=["Vulnerability", "集成"],
-        response_schema=_ResponseSerializer,
+        tags=["Vulnerability"],
     )
     def get(
         self,
