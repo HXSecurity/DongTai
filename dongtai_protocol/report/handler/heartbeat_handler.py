@@ -32,7 +32,7 @@ def check_agent_incache(agent_id):
     return bool(cache.get(f"heartbeat-{agent_id}"))
 
 
-@shared_task(base=Singleton)
+@shared_task(base=Singleton, unique_on=["agent_id"], lock_expiry=20)
 def update_heartbeat(agent_id: int, defaults: dict[str, Any]):
     IastHeartbeat.objects.update_or_create(agent_id=agent_id, defaults=defaults)
     IastAgent.objects.update_or_create(pk=agent_id, defaults={"is_running": 1, "online": 1})
