@@ -17,14 +17,22 @@ logger = logging.getLogger(__name__)
 class PackageListArgsSerializer(serializers.Serializer):
     page_size = serializers.IntegerField(default=20, help_text=_("Number per page"))
     page = serializers.IntegerField(default=1, help_text=_("Page index"))
-    language_ids = serializers.ListField(required=False, child=serializers.IntegerField(help_text=_("language")))
-    license_ids = serializers.ListField(required=False, child=serializers.IntegerField(help_text=_("license")))
-    level_ids = serializers.ListField(required=False, child=serializers.IntegerField(help_text=_("level")))
-    project_id = serializers.IntegerField(required=False, help_text=_("Page index"))
-    project_version_id = serializers.IntegerField(required=False, help_text=_("Page index"))
-    keyword = serializers.CharField(required=False, help_text=_("search_keyword"))
-    order_field = serializers.ChoiceField(["vul_count", "level"], default="vul_count")
-    order = serializers.ChoiceField(["desc", "asc"], default="desc")
+    language_ids = serializers.ListField(
+        required=False,
+        child=serializers.IntegerField(help_text=_("language")),
+        help_text="筛选语言id: 1 Java 2 Python 3 PHP 4 Go",
+    )
+    license_ids = serializers.ListField(
+        required=False, child=serializers.IntegerField(help_text=_("license")), help_text="筛选, 许可证id, 该id范围可在组件概况获取"
+    )
+    level_ids = serializers.ListField(
+        required=False, child=serializers.IntegerField(help_text=_("level")), help_text="筛选, 危险等级id"
+    )
+    project_id = serializers.IntegerField(required=False, help_text="项目id")
+    project_version_id = serializers.IntegerField(required=False, help_text="项目版本id")
+    keyword = serializers.CharField(required=False, help_text="搜索关键字")
+    order_field = serializers.ChoiceField(["vul_count", "level"], default="vul_count", help_text="排序字段")
+    order = serializers.ChoiceField(["desc", "asc"], default="desc", help_text="排序方式")
 
 
 class PackeageScaAssetSerializer(PackeageScaAssetDetailSerializer):
@@ -49,7 +57,6 @@ class PackeageScaAssetSerializer(PackeageScaAssetDetailSerializer):
             "language_id",
             "aql",
             "vul_count_groupby_level",
-            "is_focus",
         ]
 
 
@@ -59,7 +66,7 @@ _NewResponseSerializer = get_response_serializer(PackeageScaAssetSerializer(many
 class PackageList(UserEndPoint):
     @extend_schema_with_envcheck_v2(
         request=PackageListArgsSerializer,
-        tags=[_("Component"), OPERATE_GET],
+        tags=[_("Component"), OPERATE_GET, "集成"],
         summary=_("Component List"),
         responses={200: _NewResponseSerializer},
     )
@@ -85,7 +92,7 @@ class PackageList(UserEndPoint):
             q = q & Q(aql__contains=ser.validated_data["keyword"])
         order = ("-" if ser.validated_data["order"] == "desc" else "") + ser.validated_data["order_field"]
         page_info, data = self.get_paginator(
-            AssetV2Global.objects.filter(q).order_by("-is_focus", order).all(),
+            AssetV2Global.objects.filter(q).order_by(order).all(),
             ser.validated_data["page"],
             ser.validated_data["page_size"],
         )

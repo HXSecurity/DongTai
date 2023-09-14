@@ -52,7 +52,7 @@ class Projects(UserEndPoint):
 
     @extend_schema_with_envcheck(
         [_ProjectsArgsSerializer],
-        tags=[_("Project")],
+        tags=[_("Project"), "集成"],
         summary=_("Projects List"),
         description=_("Get the item corresponding to the user, support fuzzy search based on name."),
         response_schema=_SuccessSerializer,

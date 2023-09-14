@@ -5,11 +5,11 @@ from dongtai_web.dongtai_sca.scan.utils import get_sca_language_profile, get_sho
 
 
 class PackageVulSerializer(serializers.ModelSerializer):
-    vul_name = serializers.SerializerMethodField()
-    vul_detail = serializers.SerializerMethodField()
-    references = serializers.SerializerMethodField()
-    level_name = serializers.CharField(source="get_level_display")
-    level_id = serializers.IntegerField(source="level")
+    vul_name = serializers.SerializerMethodField(help_text="漏洞名")
+    vul_detail = serializers.SerializerMethodField(help_text="漏洞详情")
+    references = serializers.SerializerMethodField(help_text="引用文章")
+    level_name = serializers.CharField(source="get_level_display", help_text="等级名")
+    level_id = serializers.IntegerField(source="level", help_text="等级id")
 
     class Meta:
         model = IastAssetVulV2
