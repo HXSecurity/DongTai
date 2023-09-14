@@ -144,6 +144,7 @@ class IastAgentRequestChainsTopoGraphVec(models.Model):
     class Meta:
         managed = get_managed()
         db_table = "iast_request_chains_topo_graph_vecs"
+        unique_together = (("graph_hash", "source_node_tag", "target_node_tag"),)
 
 
 class IastAgentRequestChainsTotalProjectVersionGraphVec(models.Model):
