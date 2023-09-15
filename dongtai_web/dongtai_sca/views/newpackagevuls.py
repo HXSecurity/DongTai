@@ -23,7 +23,7 @@ NewPackageVulSResponseSerializer = get_response_serializer(PackageVulSerializer(
 
 class NewPackageVuls(UserEndPoint):
     @extend_schema_with_envcheck_v2(
-        tags=[_("Component")],
+        tags=[_("Component"), "集成"],
         summary="组件漏洞列表",
         parameters=[PackageVulsListArgsSerializer],
         responses={200: NewPackageVulSResponseSerializer},

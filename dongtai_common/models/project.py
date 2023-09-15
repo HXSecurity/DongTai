@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 # datetime:2020/11/30 下午5:32
+import string
 import time
 
 from django.db import models
+from shortuuid.django_fields import ShortUUIDField
 
 from dongtai_common.models import User
 from dongtai_common.models.department import Department
@@ -79,6 +81,7 @@ class IastProject(models.Model):
     status = models.IntegerField(default=0, choices=ProjectStatus.choices)
     projectgroups = models.ManyToManyField("IastProjectGroup", through="IastProjectGroupProject")
     users = models.ManyToManyField("User", through="IastProjectUser", related_name="auth_projects")
+    token = ShortUUIDField(max_length=22, alphabet=string.ascii_letters + string.digits)
 
     class Meta:
         managed = get_managed()

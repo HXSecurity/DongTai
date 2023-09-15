@@ -2,7 +2,10 @@
 # datetime:2020/10/23 11:56
 import logging
 import time
+from typing import Any
 
+from celery import shared_task
+from celery_singleton import Singleton
 from django.core.cache import cache
 from django.db.models import Q, QuerySet
 from django.utils.translation import gettext_lazy as _
@@ -27,6 +30,12 @@ def update_agent_cache(agent_id, data):
 
 def check_agent_incache(agent_id):
     return bool(cache.get(f"heartbeat-{agent_id}"))
+
+
+@shared_task(base=Singleton, unique_on=["agent_id"], lock_expiry=20)
+def update_heartbeat(agent_id: int, defaults: dict[str, Any]):
+    IastHeartbeat.objects.update_or_create(agent_id=agent_id, defaults=defaults)
+    IastAgent.objects.update_or_create(pk=agent_id, defaults={"is_running": 1, "online": 1})
 
 
 @ReportHandler.register(const.REPORT_HEART_BEAT)
@@ -58,9 +67,6 @@ class HeartBeatHandler(IReportHandler):
 
     def save_heartbeat(self):
         default_dict = {"dt": int(time.time())}
-        if not check_agent_incache(self.agent_id):
-            IastHeartbeat.objects.update_or_create(agent_id=self.agent_id, defaults=default_dict)
-            IastAgent.objects.update_or_create(pk=self.agent_id, defaults={"is_running": 1, "online": 1})
         if self.return_queue == 1:
             default_dict["req_count"] = self.req_count
             default_dict["report_queue"] = self.report_queue
@@ -72,7 +78,7 @@ class HeartBeatHandler(IReportHandler):
             default_dict["memory"] = self.memory
             default_dict["cpu"] = self.cpu
             default_dict["disk"] = self.disk
-            IastHeartbeat.objects.update_or_create(agent_id=self.agent_id, defaults=default_dict)
+            update_heartbeat.delay(agent_id=self.agent_id, defaults=default_dict)
         else:
             default_dict["memory"] = self.memory
             default_dict["cpu"] = self.cpu
@@ -81,7 +87,7 @@ class HeartBeatHandler(IReportHandler):
             default_dict["method_queue"] = self.method_queue
             default_dict["replay_queue"] = self.replay_queue
             default_dict["disk"] = self.disk
-            IastHeartbeat.objects.update_or_create(agent_id=self.agent_id, defaults=default_dict)
+            update_heartbeat.delay(agent_id=self.agent_id, defaults=default_dict)
         update_agent_cache(self.agent_id, default_dict)
 
     def get_result(self, msg=None):

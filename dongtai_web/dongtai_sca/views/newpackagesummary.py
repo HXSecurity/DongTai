@@ -73,7 +73,7 @@ FullSummaryResponseSerializer = get_response_serializer(PackeageScaSummarySerial
 class NewPackageSummary(UserEndPoint):
     @extend_schema_with_envcheck_v2(
         parameters=[PackageSummaryArgsSerializer],
-        tags=[_("Component")],
+        tags=[_("Component"), "集成"],
         summary="组件概况",
         responses={200: FullSummaryResponseSerializer},
     )

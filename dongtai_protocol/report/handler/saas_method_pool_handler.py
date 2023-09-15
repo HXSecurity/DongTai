@@ -17,13 +17,11 @@ from django.http.request import QueryDict
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.agent_method_pool import MethodPool
 from dongtai_common.models.api_route import (
-    FromWhereChoices,
-    HttpMethod,
     IastApiMethod,
-    IastApiMethodHttpMethodRelation,
     IastApiParameter,
     IastApiRoute,
 )
+from dongtai_common.models.api_route_v2 import IastApiRouteV2
 from dongtai_common.models.replay_method_pool import IastAgentMethodPoolReplay
 from dongtai_common.models.replay_queue import IastReplayQueue
 from dongtai_common.models.res_header import (
@@ -111,6 +109,7 @@ class SaasMethodPoolHandler(IReportHandler):
         )
         # update_api_route_deatil(self.agent_id, self.http_uri, self.http_method,
         #                        params_dict)
+        add_new_api_route(self.agent, self.http_uri, self.http_method)
         if self.http_replay:
             # 保存数据至重放请求池
             replay_id = headers.get("dongtai-replay-id")
@@ -412,27 +411,9 @@ def add_new_api_route(agent: IastAgent, path, method):
         logger.info(f"found cache api_route-{agent.id}-{path}-{method} ,skip its insert")
         return
     try:
-        api_method, is_create = IastApiMethod.objects.get_or_create(method=method.upper())
-        http_method, _ = HttpMethod.objects.get_or_create(method=method.upper())
-        IastApiMethodHttpMethodRelation.objects.get_or_create(
-            api_method_id=api_method.id, http_method_id=http_method.id
-        )
-        api_route, is_create = IastApiRoute.objects.get_or_create(
-            from_where=FromWhereChoices.FROM_METHOD_POOL,
-            method_id=api_method.id,
+        IastApiRouteV2.objects.filter(
             path=path,
-            agent_id=agent.id,
-            project_id=agent.bind_project_id,
-            project_version_id=agent.project_version_id,
-        )
-    except (IntegrityError, MultipleObjectsReturned) as e:
-        logger.info(e)
-        logger.debug(e, exc_info=e)
-    try:
-        api_method, is_create = IastApiMethod.objects.get_or_create(method=method.upper())
-        IastApiRoute.objects.filter(
-            path=path,
-            method_id=api_method.id,
+            method=method.lower(),
             project_id=agent.bind_project_id,
             project_version_id=agent.project_version_id,
         ).update(is_cover=1)

@@ -34,7 +34,7 @@ class IastVulnerabilityModel(models.Model):
     level = models.ForeignKey(IastVulLevel, models.DO_NOTHING, blank=True)
     url = models.CharField(max_length=2000, blank=True)
     uri = models.CharField(max_length=255, blank=True)
-    pattern_uri = models.CharField(max_length=255, blank=True, null=True)
+    pattern_uri = models.CharField(max_length=255, blank=True, default="")
     # 模糊搜索 全文索引 查询
     vul_title = models.CharField(max_length=255, blank=True, default="")
     http_method = models.CharField(max_length=10, blank=True)
@@ -42,18 +42,16 @@ class IastVulnerabilityModel(models.Model):
     http_protocol = models.CharField(max_length=255, blank=True)
     req_header = models.TextField(blank=True)
     req_params = models.CharField(max_length=2000, blank=True, default="")
-    req_data = models.TextField(
-        blank=True,
-    )
+    req_data = models.TextField(blank=True)
     res_header = models.TextField(blank=True)
     res_body = models.TextField(blank=True)
-    full_stack = models.TextField(blank=True, null=True)
-    top_stack = models.CharField(max_length=255, blank=True, null=True)
-    bottom_stack = models.CharField(max_length=255, blank=True, null=True)
-    taint_value = models.CharField(max_length=255, blank=True, null=True)
-    taint_position = models.CharField(max_length=255, blank=True, null=True)
+    full_stack = models.TextField(blank=True, default="")
+    top_stack = models.CharField(max_length=255, blank=True, default="")
+    bottom_stack = models.CharField(max_length=255, blank=True, default="")
+    taint_value = models.CharField(max_length=4000, blank=True, default="")
+    taint_position = models.CharField(max_length=255, blank=True, default="")
     agent = models.ForeignKey(IastAgent, models.DO_NOTHING, blank=True)
-    language = models.CharField(max_length=10, blank=True, null=True)
+    language = models.CharField(max_length=10, blank=True, default="")
     context_path = models.CharField(max_length=255, blank=True)
     counts = models.IntegerField(blank=True)
     first_time = models.IntegerField(blank=True)
@@ -61,7 +59,7 @@ class IastVulnerabilityModel(models.Model):
     latest_time_desc = models.IntegerField(blank=True, default=0)
     level_id_desc = models.SmallIntegerField(blank=True, default=0)
     client_ip = models.CharField(max_length=255, blank=True)
-    param_name = models.CharField(max_length=255, blank=True, null=True)
+    param_name = models.CharField(max_length=255, blank=True, default="")
     is_del = models.SmallIntegerField(blank=True, default=0)
     method_pool_id = models.IntegerField(default=-1, blank=True)
     strategy = models.ForeignKey(
@@ -90,6 +88,9 @@ class IastVulnerabilityModel(models.Model):
     class Meta:
         managed = get_managed()
         db_table = "iast_vulnerability"
+        indexes = [
+            models.Index(fields=("http_method", "param_name", "pattern_uri", "project_id", "status_id", "strategy_id")),
+        ]
 
     def save(self, *args, **kwargs):
         key_works = [

@@ -6,7 +6,6 @@ from functools import reduce
 from operator import ior
 from typing import TYPE_CHECKING
 
-from django.contrib.auth import logout
 from django.core.paginator import EmptyPage, Paginator
 from django.db.models import Count
 from django.http import JsonResponse
@@ -18,7 +17,10 @@ from rest_framework.authentication import SessionAuthentication, TokenAuthentica
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.views import APIView
 
-from dongtai_common.common.utils import DepartmentTokenAuthentication
+from dongtai_common.common.utils import (
+    DepartmentTokenAuthentication,
+    ProjectTokenAuthentication,
+)
 from dongtai_common.models import User
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.asset import Asset
@@ -31,7 +33,6 @@ from dongtai_common.permissions import (
 )
 from dongtai_common.utils import const
 from dongtai_common.utils.init_schema import VIEW_CLASS_TO_SCHEMA
-from dongtai_conf import settings
 
 if TYPE_CHECKING:
     from django.core.paginator import _SupportsPagination
@@ -95,23 +96,6 @@ class EndPoint(APIView):
         request = self.initialize_request(request, *args, **kwargs)
         self.request = request
         self.headers = self.default_response_headers  # deprecate?
-
-        is_protocol_api = False
-        try:
-            if self.request.method is not None:
-                _path, _path_regex, _schema, filepath = VIEW_CLASS_TO_SCHEMA[self.__class__][self.request.method]
-                is_protocol_api = "dongtai_protocol" in filepath
-        except Exception:
-            pass
-
-        if not is_protocol_api and not request.user.is_active and not request.user.is_anonymous:
-            logout(request)
-            request.session.delete()
-            response = R.failure(msg="用户已经禁用", status_code=403)
-            request.session.delete()
-            response.delete_cookie(key=settings.CSRF_COOKIE_NAME, domain=settings.SESSION_COOKIE_DOMAIN)
-            response.delete_cookie(key="sessionid", domain=settings.SESSION_COOKIE_DOMAIN)
-            return response
 
         try:
             self.initial(request, *args, **kwargs)
@@ -205,7 +189,7 @@ class EndPoint(APIView):
 
     @staticmethod
     def get_paginator(
-        queryset: "QuerySet | ValuesQuerySet", page: int = 1, page_size: int = 20
+        queryset: "QuerySet | ValuesQuerySet", page: int = 1, page_size: int = 20, max_page_size: int = 50
     ) -> tuple[dict, "QuerySet | _SupportsPagination"]:
         """
         根据模型集合、页号、每页大小获取分页数据
@@ -216,7 +200,7 @@ class EndPoint(APIView):
         :param page_size:
         :return:
         """
-        page_size = min(50, int(page_size))
+        page_size = min(max_page_size, int(page_size))
         page = int(page)
         try:
             page_info = Paginator(queryset, per_page=page_size)
@@ -356,7 +340,11 @@ class UserEndPoint(MixinAuthEndPoint):
 
 
 class OpenApiEndPoint(EndPoint):
-    authentication_classes = (DepartmentTokenAuthentication, TokenAuthentication)
+    authentication_classes = (
+        ProjectTokenAuthentication,
+        DepartmentTokenAuthentication,
+        TokenAuthentication,
+    )
     permission_classes = (UserPermission,)
 
 

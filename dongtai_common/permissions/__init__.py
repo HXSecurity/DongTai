@@ -3,7 +3,7 @@
 
 from rest_framework import permissions
 
-from dongtai_conf.patch import patch_point
+from dongtai_conf.patch import patch_point, to_patch
 
 
 class ScopedPermission(permissions.BasePermission):
@@ -44,6 +44,7 @@ class UserPermission(ScopedPermission):
     用户权限验证类,验证是否为有效用户
     """
 
+    @to_patch
     def has_permission(self, request, view):
         user = request.user
         from dongtai_common.endpoint import OpenApiEndPoint

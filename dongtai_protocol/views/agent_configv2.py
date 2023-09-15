@@ -8,7 +8,7 @@ from rest_framework.serializers import ValidationError
 from dongtai_common.endpoint import OpenApiEndPoint, R
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.profile import IastProfile
-from dongtai_conf.patch import patch_point
+from dongtai_conf.patch import patch_point, to_patch
 from dongtai_web.utils import extend_schema_with_envcheck
 
 
@@ -38,6 +38,7 @@ class AgentConfigAllinOneView(OpenApiEndPoint):
         tags=["Agent服务端交互协议"],
         methods=["GET"],
     )
+    @to_patch
     def get(self, request):
         ser = _AgentConfigArgsSerializer(data=request.GET)
         try:

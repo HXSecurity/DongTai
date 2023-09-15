@@ -74,6 +74,7 @@ from dongtai_web.views.project_detail import ProjectDetail
 from dongtai_web.views.project_engines import ProjectEngines
 from dongtai_web.views.project_search import ProjectSearch
 from dongtai_web.views.project_summary import ProjectSummary
+from dongtai_web.views.project_token import ProjectToken
 from dongtai_web.views.project_version_add import ProjectVersionAdd
 from dongtai_web.views.project_version_current import ProjectVersionCurrent
 from dongtai_web.views.project_version_delete import ProjectVersionDelete
@@ -114,6 +115,7 @@ from dongtai_web.views.vul_details import (
 )
 from dongtai_web.views.vul_levels import VulLevelList
 from dongtai_web.views.vul_list_for_plugin import VulListEndPoint
+from dongtai_web.views.vul_method_pool_download import VulMethodPoolDownload
 from dongtai_web.views.vul_request_replay import RequestReplayEndPoint
 from dongtai_web.views.vul_status import VulStatus
 from dongtai_web.views.vul_summary import VulSummary
@@ -136,6 +138,7 @@ urlpatterns: list[URLResolver | URLPattern] = [
     path("user/password/reset", UserPasswordReset.as_view()),
     path("captcha/", include("captcha.urls")),
     path(r"captcha/refresh", CaptchaCreate.as_view()),
+    path("project/<int:pk>/token", ProjectToken.as_view()),
     path("project/<int:id>", ProjectDetail.as_view()),
     path("project/add", ProjectAdd.as_view()),
     path("project/delete", ProjectDel.as_view()),
@@ -156,6 +159,7 @@ urlpatterns: list[URLResolver | URLPattern] = [
     path("vuln/<int:id>", VulDetail.as_view()),
     path("vuln/status", VulStatus.as_view()),
     path("vuln/delete/<int:id>", VulDelete.as_view()),
+    path("vuln/<int:id>/method_pool", VulMethodPoolDownload.as_view()),
     path("vul/status_list", VulnerabilityStatusView.as_view()),
     path("plugin/vuln/list", VulListEndPoint.as_view()),
     path("plugin/vuln/count", VulCountForPluginEndPoint.as_view()),

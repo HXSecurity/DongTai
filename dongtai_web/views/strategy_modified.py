@@ -40,18 +40,14 @@ class StrategyModified(TalentAdminEndPoint):
         strategy = IastStrategyModel.objects.filter(pk=id_).first()
         if not strategy:
             return R.failure()
-        _update(strategy, data)
+        for k, v in data.items():
+            if k in {"vul_name", "vul_type"} and strategy.system_type == 1:
+                continue
+            setattr(strategy, k, v)
+        strategy.save()
         HookType.objects.filter(vul_strategy=strategy, type=4).update(name=data["vul_name"])
         HookType.objects.filter(vul_strategy=strategy, type=3).update(name=data["vul_name"])
         return R.success(data={"id": id_})
-        #    hook_type=hook_type.id).first()
-        # if strategy:
-
-
-def _update(model, dic):
-    for k, v in dic.items():
-        setattr(model, k, v)
-    model.save()
 
 
 def get_model_field(model, exclude=None, include=None):

@@ -30,7 +30,6 @@ select = [
     "SIM",  # flake8-simplify
     "TCH",  # flake8-type-checking
     "INT",  # flake8-gettext
-    "ERA",  # eradicate
     "PGH",  # pygrep-hooks
     "PL",   # Pylint
     "TRY",  # tryceratops

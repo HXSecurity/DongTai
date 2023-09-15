@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # datetime: 2021/4/30 下午3:00
+import base64
 import json
 import time
 import uuid
@@ -13,7 +14,8 @@ from django.db.models import Q
 from django.dispatch import receiver
 
 from dongtai_common.engine.compatibility import method_pool_3_to_2
-from dongtai_common.models.agent_method_pool import MethodPool
+from dongtai_common.models.agent_method_pool import MethodPool, VulMethodPool
+from dongtai_common.models.iast_vul_log import IastVulLog, MessageTypeChoices
 from dongtai_common.models.profile import IastProfile
 from dongtai_common.models.project import IastProject, VulValidation
 from dongtai_common.models.replay_queue import IastReplayQueue
@@ -95,7 +97,7 @@ def parse_header(req_header: str, taint_value: str) -> str | None:
 
     header_dict = parse_headers_dict_from_bytes(base64.b64decode(req_header))
     for k, v in header_dict.items():
-        if v == taint_value or k == taint_value:
+        if taint_value in {v, k}:
             return k
     return None
 
@@ -266,6 +268,17 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
     is_api_cached = uuid_key != cache.get_or_set(cache_key, uuid_key)
     if is_api_cached:
         return None
+
+    if IastVulnerabilityModel.objects.filter(
+        strategy_id=strategy_id,
+        pattern_uri=pattern_uri,
+        http_method=vul_meta.http_method,
+        project_id=vul_meta.agent.bind_project_id,
+        param_name=param_name,
+        status_id=const.VUL_IGNORE,
+    ).exists():
+        return None
+
     # 获取 相同项目版本下的数据
     vul = (
         IastVulnerabilityModel.objects.filter(
@@ -283,7 +296,6 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
     if vul:
         vul.url = vul_meta.url
         vul.uri = vul_meta.uri
-        vul.pattern_uri = pattern_uri
         vul.req_header = vul_meta.req_header
         vul.req_params = vul_meta.req_params
         vul.req_data = vul_meta.req_data
@@ -300,9 +312,11 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
         vul.method_pool_id = vul_meta.id
         vul.language = vul_meta.agent.language
         vul.full_stack = json.dumps(vul_stack, ensure_ascii=False)
+        vul.is_del = 0
         vul.save(
             update_fields=[
                 "url",
+                "uri",
                 "req_header",
                 "req_params",
                 "req_data",
@@ -320,6 +334,7 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
                 "latest_time",
                 "latest_time_desc",
                 "language",
+                "is_del",
             ]
         )
     else:
@@ -368,16 +383,53 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
             vul.id,
             vul.strategy.vul_name,
         )  # type: ignore
-        send_notify.send_robust(
-            sender=save_vul,
-            vul_id=vul.id,
-            department_id=vul_meta.agent.department_id,
-        )
+        send_notify.send_robust(sender=save_vul, vul_id=vul.id)
+
+    VulMethodPool.objects.update_or_create(
+        vul_id=vul.id,
+        defaults={
+            "method_pool_id": vul_meta.id,
+            "vul_id": vul.id,
+            "agent_id": vul_meta.agent_id,
+            "url": vul_meta.url,
+            "uri": vul_meta.uri,
+            "http_method": vul_meta.http_method,
+            "http_scheme": vul_meta.http_scheme,
+            "http_protocol": vul_meta.http_protocol,
+            "req_header": vul_meta.req_header,
+            "req_params": vul_meta.req_params,
+            "req_data": vul_meta.req_data,
+            "res_header": vul_meta.res_header,
+            "res_body": vul_meta.res_body,
+            "req_header_fs": vul_meta.req_header_fs,
+            "context_path": vul_meta.context_path,
+            "method_pool": vul_meta.method_pool,
+            "pool_sign": vul_meta.pool_sign,
+            "clent_ip": vul_meta.clent_ip,
+            "create_time": vul_meta.create_time,
+            "update_time": vul_meta.update_time,
+            "uri_sha1": vul_meta.uri_sha1,
+        },
+    )
 
     cache.delete(cache_key)
     # delete if exists more than one   departured use redis lock
     # IastVulnerabilityModel.objects.filter(
     # ).delete()
+
+    # 记录漏洞重放
+    for header in base64.b64decode(vul.req_header).decode("utf-8").split("\n"):
+        if header.startswith("iast-server-replay-uuid:"):
+            replay_uuid = header.removeprefix("iast-server-replay-uuid:")
+            msg = f"id为{vul.agent.bind_project.id}的项目{vul.agent.bind_project.name}在UUID为{replay_uuid}的漏洞重放中检测到漏洞{vul.strategy.vul_name}"
+            IastVulLog.objects.create(
+                msg_type=MessageTypeChoices.VUL_REPLAY,
+                msg=msg,
+                meta_data=kwargs,
+                vul_id=vul.id,
+                user_id=vul.agent.user_id,
+            )
+            break
 
     logger.info(f"vul_found {vul.id}")
     return vul

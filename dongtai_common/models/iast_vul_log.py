@@ -13,6 +13,7 @@ class MessageTypeChoices(IntegerChoices):
     VUL_RECHECK = 2
     PUSH_TO_INTEGRATION = 3
     VUL_FOUND = 4
+    VUL_REPLAY = 5
 
 
 class IastVulLog(models.Model):

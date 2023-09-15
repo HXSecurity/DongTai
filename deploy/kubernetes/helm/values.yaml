@@ -17,6 +17,7 @@ logging_level: INFO # DEBUG, INFO
 somaxconn: null #If system max net.core.somaxconn (128) . Example: somaxconn: 4096
 healthcheck: true
 logstash: "true"
+migrate: true
 
 nodeSelector:
   kubernetes.io/os: linux
@@ -54,7 +55,6 @@ storage:
   persistentVolumeClaim: iast-agent-pvc  # or null(The agent needs to close the reporting log function 'dongtai.log.disable-collector: false')
 
 csrfTrustOrigins: .example.com
-secretKey: vbjlvbxfvazjfprywuxgyclmvhtmselddsefxxlcixovmqfpgy
 
 smtp:
   server: smtp_server

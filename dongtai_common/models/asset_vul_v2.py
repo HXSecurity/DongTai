@@ -5,27 +5,24 @@ from dongtai_common.utils.settings import get_managed
 
 
 class IastAssetVulV2(models.Model):
-    vul_name = models.CharField(max_length=255, blank=True)
-    vul_name_zh = models.CharField(max_length=255, blank=True)
-    vul_detail = models.TextField()
-    vul_detail_zh = models.TextField(blank=True)
+    vul_name = models.CharField(max_length=255, blank=True, help_text="漏洞名")
+    vul_name_zh = models.CharField(max_length=255, blank=True, help_text="漏洞名(中文)")
+    vul_detail = models.TextField(help_text="漏洞详情")
+    vul_detail_zh = models.TextField(blank=True, help_text="漏洞详情(中文)")
     # 漏洞类型等级
     level = models.IntegerField(
-        choices=AssetRiskLevel.choices,
-        blank=True,
-        db_column="level_id",
-        default=AssetRiskLevel.LOW,
+        choices=AssetRiskLevel.choices, blank=True, db_column="level_id", default=AssetRiskLevel.LOW, help_text="漏洞等级"
     )
-    update_time = models.IntegerField()
-    create_time = models.IntegerField()
-    references = models.JSONField(default=list)
-    change_time = models.IntegerField()
-    published_time = models.IntegerField()
-    vul_id = models.CharField(max_length=255, unique=True, blank=True)
-    vul_type = models.JSONField()
-    vul_codes = models.JSONField()
-    affected_versions = models.JSONField()
-    unaffected_versions = models.JSONField()
+    update_time = models.IntegerField(help_text="更新时间")
+    create_time = models.IntegerField(help_text="创建时间")
+    references = models.JSONField(default=list, help_text="引用文章")
+    change_time = models.IntegerField(help_text="修改时间")
+    published_time = models.IntegerField(help_text="发布时间")
+    vul_id = models.CharField(max_length=255, unique=True, blank=True, help_text="漏洞id")
+    vul_type = models.JSONField(help_text="漏洞类型")
+    vul_codes = models.JSONField(help_text="漏洞编号")
+    affected_versions = models.JSONField(help_text="影响版本")
+    unaffected_versions = models.JSONField(help_text="不影响版本")
 
     class Meta:
         managed = True
