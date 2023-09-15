@@ -47,28 +47,6 @@
         "created_by": 1,
         "enable": 1,
         "language": 1,
-        "name": "EL\u8868\u8fbe\u5f0f\u6ce8\u5165",
-        "name_en": null,
-        "name_zh": "EL\u8868\u8fbe\u5f0f\u6ce8\u5165",
-        "system_type": 0,
-        "type": 3,
-        "value": "EL\u8868\u8fbe\u5f0f\u6ce8\u5165"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 1,
-        "name": "EL\u8868\u8fbe\u5f0f\u6ce8\u5165",
-        "name_en": null,
-        "name_zh": "EL\u8868\u8fbe\u5f0f\u6ce8\u5165",
-        "system_type": 0,
-        "type": 4,
-        "value": "EL\u8868\u8fbe\u5f0f\u6ce8\u5165"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 1,
         "name": "\u679a\u4e3e\u7c7b\u578b\u4f20\u64ad",
         "name_en": "Propagator:Enumeration",
         "name_zh": "\u679a\u4e3e\u7c7b\u578b\u4f20\u64ad",
@@ -234,28 +212,6 @@
         "created_by": 1,
         "enable": 1,
         "language": 1,
-        "name": "Ognl\u8868\u8fbe\u5f0f\u6ce8\u5165",
-        "name_en": null,
-        "name_zh": "Ognl\u8868\u8fbe\u5f0f\u6ce8\u5165",
-        "system_type": 0,
-        "type": 3,
-        "value": "Ognl\u8868\u8fbe\u5f0f\u6ce8\u5165"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 1,
-        "name": "Ognl\u8868\u8fbe\u5f0f\u6ce8\u5165",
-        "name_en": null,
-        "name_zh": "Ognl\u8868\u8fbe\u5f0f\u6ce8\u5165",
-        "system_type": 0,
-        "type": 4,
-        "value": "Ognl\u8868\u8fbe\u5f0f\u6ce8\u5165"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 1,
         "name": "PreparedStatement\u63a5\u53e3\u4f20\u64ad",
         "name_en": null,
         "name_zh": "PreparedStatement\u63a5\u53e3\u4f20\u64ad",
@@ -317,28 +273,6 @@
         "system_type": 1,
         "type": 1,
         "value": "RequestFacade"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 1,
-        "name": "SPEL\u8868\u8fbe\u5f0f\u6ce8\u5165",
-        "name_en": null,
-        "name_zh": "SPEL\u8868\u8fbe\u5f0f\u6ce8\u5165",
-        "system_type": 0,
-        "type": 3,
-        "value": "SPEL\u8868\u8fbe\u5f0f\u6ce8\u5165"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 1,
-        "name": "SPEL\u8868\u8fbe\u5f0f\u6ce8\u5165",
-        "name_en": null,
-        "name_zh": "SPEL\u8868\u8fbe\u5f0f\u6ce8\u5165",
-        "system_type": 0,
-        "type": 4,
-        "value": "SPEL\u8868\u8fbe\u5f0f\u6ce8\u5165"
     },
     {
         "created_by": 1,
@@ -427,28 +361,6 @@
         "system_type": 1,
         "type": 2,
         "value": "Struts2"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 1,
-        "name": "Thymeleaf\u6a21\u7248\u6ce8\u5165",
-        "name_en": null,
-        "name_zh": "Thymeleaf\u6a21\u7248\u6ce8\u5165",
-        "system_type": 0,
-        "type": 3,
-        "value": "Thymeleaf\u6a21\u7248\u6ce8\u5165"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 1,
-        "name": "Thymeleaf\u6a21\u7248\u6ce8\u5165",
-        "name_en": null,
-        "name_zh": "Thymeleaf\u6a21\u7248\u6ce8\u5165",
-        "system_type": 0,
-        "type": 4,
-        "value": "Thymeleaf\u6a21\u7248\u6ce8\u5165"
     },
     {
         "created_by": 1,
