@@ -342,6 +342,8 @@ class AgentDownload(OpenApiEndPoint):
             user_token = request.query_params.get("token", None)
             if department_token:
                 final_token = department_token
+            elif request.user.using_project is not None:
+                token = request.user.using_project.token
             elif not user_token:
                 token, success = Token.objects.get_or_create(user=request.user)
                 final_token = token.key
