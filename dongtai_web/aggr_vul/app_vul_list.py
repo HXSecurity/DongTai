@@ -6,8 +6,10 @@ import pymysql
 from django.core.cache import cache
 from django.db.models import Count, F
 from django.utils.translation import gettext_lazy as _
+from drf_spectacular.utils import extend_schema
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Q
+from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 
 from dongtai_common.common.utils import make_hash
@@ -29,10 +31,7 @@ from dongtai_engine.elatic_search.data_correction import data_correction_interpe
 from dongtai_web.aggregation.aggregation_common import turnIntListOfStr
 from dongtai_web.serializers.aggregation import AggregationArgsSerializer
 from dongtai_web.serializers.vul import VulSerializer
-from dongtai_web.utils import extend_schema_with_envcheck
-from rest_framework import serializers
 from dongtai_web.utils import get_response_serializer
-from drf_spectacular.utils import extend_schema
 
 INT_LIMIT: int = 2**64 - 1
 

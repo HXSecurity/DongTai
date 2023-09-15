@@ -5,7 +5,6 @@ import logging
 
 from django.db.models.base import ObjectDoesNotExist
 from django.utils.translation import gettext_lazy as _
-from drf_spectacular.utils import extend_schema
 from rest_framework import serializers
 
 from dongtai_common.endpoint import R, UserEndPoint
