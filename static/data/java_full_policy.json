@@ -2790,11 +2790,15 @@
                 "source": "O",
                 "stack_blacklist": [],
                 "system_type": 1,
-                "tags": [],
+                "tags": [
+                    "custom-encoded-cmd-injection"
+                ],
                 "target": "O",
                 "track": "false",
                 "type": 1,
-                "untags": [],
+                "untags": [
+                    "custom-decoded-cmd-injection"
+                ],
                 "value": "java.lang.StringBuilder.delete(int,int)"
             },
             {
@@ -2952,11 +2956,15 @@
                 "source": "O|P3",
                 "stack_blacklist": [],
                 "system_type": 1,
-                "tags": [],
+                "tags": [
+                    "custom-decoded-cmd-injection"
+                ],
                 "target": "O",
                 "track": "false",
                 "type": 1,
-                "untags": [],
+                "untags": [
+                    "custom-decoded-cmd-injection"
+                ],
                 "value": "java.lang.StringBuilder.replace(int,int,java.lang.String)"
             },
             {
@@ -5225,11 +5233,15 @@
                 "source": "O",
                 "stack_blacklist": [],
                 "system_type": 1,
-                "tags": [],
+                "tags": [
+                    "custom-decoded-cmd-injection"
+                ],
                 "target": "R",
                 "track": "false",
                 "type": 1,
-                "untags": [],
+                "untags": [
+                    "custom-encoded-cmd-injection"
+                ],
                 "value": "com.fasterxml.jackson.core.JsonParser.getCurrentName()"
             },
             {
@@ -6381,7 +6393,7 @@
                 "value": "org.glassfish.grizzly.http.Cookie.setSecure(boolean)"
             }
         ],
-        "enable": 0,
+        "enable": 1,
         "type": 4,
         "value": "cookie-flags-missing"
     },
@@ -6448,7 +6460,7 @@
                 "value": "javax.crypto.Cipher.getInstance(java.lang.String,java.security.Provider)"
             }
         ],
-        "enable": 0,
+        "enable": 1,
         "type": 4,
         "value": "crypto-bad-ciphers"
     },
@@ -6549,7 +6561,7 @@
                 "value": "java.security.MessageDigest.getInstance(java.lang.String,java.security.Provider)"
             }
         ],
-        "enable": 0,
+        "enable": 1,
         "type": 4,
         "value": "crypto-bad-mac"
     },
@@ -6839,7 +6851,7 @@
                 "value": "org.apache.commons.lang.RandomStringUtils.randomNumeric(int)"
             }
         ],
-        "enable": 0,
+        "enable": 1,
         "type": 4,
         "value": "crypto-weak-randomness"
     },
@@ -11774,7 +11786,8 @@
                 "source": "P1",
                 "stack_blacklist": [
                     "org.springframework.web.util.UriComponentsBuilder.fromOriginHeader",
-                    "org.springframework.web.util.UriComponentsBuilder.fromUriString"
+                    "org.springframework.web.util.UriComponentsBuilder.fromUriString",
+                    "java.lang.String.replaceAll"
                 ],
                 "system_type": 1,
                 "tags": [],
@@ -11793,7 +11806,9 @@
                 "inherit": "false",
                 "language": 1,
                 "source": "P1",
-                "stack_blacklist": [],
+                "stack_blacklist": [
+                    "java.lang.String.replaceAll"
+                ],
                 "system_type": 1,
                 "tags": [],
                 "target": "",
@@ -12604,7 +12619,7 @@
                 "value": "org.springframework.http.converter.StringHttpMessageConverter.writeInternal(java.lang.String,org.springframework.http.HttpOutputMessage)"
             }
         ],
-        "enable": 0,
+        "enable": 1,
         "type": 4,
         "value": "reflected-xss"
     },
@@ -13193,7 +13208,7 @@
                 "system_type": 1,
                 "tags": [],
                 "target": "R",
-                "track": "",
+                "track": "false",
                 "type": 1,
                 "untags": [],
                 "value": "org.springframework.cloud.config.server.resource.ResourceController.retrieve(java.lang.String,java.lang.String,java.lang.String,java.lang.String,boolean)"
@@ -14670,7 +14685,7 @@
                 "value": "play.mvc.Http$Session.put(java.lang.String,java.lang.String)"
             }
         ],
-        "enable": 0,
+        "enable": 1,
         "type": 4,
         "value": "trust-boundary-violation"
     },
@@ -15453,7 +15468,7 @@
                 "command": "",
                 "created_by": 1,
                 "enable": 1,
-                "ignore_blacklist": false,
+                "ignore_blacklist": true,
                 "ignore_internal": false,
                 "inherit": "false",
                 "language": 1,
@@ -15462,7 +15477,7 @@
                 "system_type": 1,
                 "tags": [],
                 "target": "O",
-                "track": "",
+                "track": "false",
                 "type": 1,
                 "untags": [],
                 "value": "org.xml.sax.InputSource.<init>(java.io.Reader)"
