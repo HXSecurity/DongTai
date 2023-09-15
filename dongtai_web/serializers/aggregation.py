@@ -16,8 +16,8 @@ class AggregationArgsSerializer(serializers.Serializer):
     order_type = serializers.IntegerField(default=0, help_text=_("Order by"))
     order_type_desc = serializers.IntegerField(default=0, help_text=_("Order by desc"))
 
-    bind_project_id = serializers.IntegerField(default=0, help_text=_("bind_project_id"))
-    project_version_id = serializers.IntegerField(default=0, help_text=_("project_version_id"))
+    bind_project_id = serializers.IntegerField(default=0, help_text="项目id")
+    project_version_id = serializers.IntegerField(default=0, help_text="项目版本id")
     uri = serializers.CharField(
         required=False,
         max_length=1024,
@@ -40,7 +40,7 @@ class AggregationArgsSerializer(serializers.Serializer):
         required=False,
         max_length=100,
         error_messages={"keywords": _("Length limit exceeded")},
-        help_text=_("Keywords select"),
+        help_text="搜索关键字",
     )
 
     source_type_str = serializers.CharField(

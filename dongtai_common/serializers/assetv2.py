@@ -7,12 +7,12 @@ from dongtai_web.dongtai_sca.scan.utils import get_language
 
 
 class PackeageScaAssetDetailSerializer(serializers.ModelSerializer):
-    affected_versions = serializers.ListField(source="package_fullname.affected_versions")
-    unaffected_versions = serializers.ListField(source="package_fullname.unaffected_versions")
-    language = serializers.SerializerMethodField()
-    level_name = serializers.CharField(source="get_level_display")
-    level_id = serializers.IntegerField(source="level")
-    vul_count_groupby_level = serializers.ListField(source="get_vul_count_groupby_level")
+    affected_versions = serializers.ListField(source="package_fullname.affected_versions", help_text="影响版本")
+    unaffected_versions = serializers.ListField(source="package_fullname.unaffected_versions", help_text="安全版本")
+    language = serializers.SerializerMethodField(help_text="语言")
+    level_name = serializers.CharField(source="get_level_display", help_text="危险等级名")
+    level_id = serializers.IntegerField(source="level", help_text="危险等级id")
+    vul_count_groupby_level = serializers.ListField(source="get_vul_count_groupby_level", help_text="漏洞统计")
 
     class Meta:
         model = AssetV2Global
@@ -38,7 +38,6 @@ class PackeageScaAssetDetailSerializer(serializers.ModelSerializer):
             "aql",
             "language",
             "vul_count_groupby_level",
-            "is_focus",
         ]
 
     def get_language(self, obj) -> str:
