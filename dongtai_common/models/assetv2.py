@@ -75,10 +75,12 @@ class AssetV2Global(models.Model):
     license_list = models.JSONField(blank=True, default=list)
     language_id = models.IntegerField(default=1, blank=True)
     aql = models.CharField(max_length=255, blank=True, unique=True)
+    is_focus = models.BooleanField(default=False)
 
     class Meta:
         managed = get_managed()
         db_table = "iast_asset_v2_global"
+        indexes = [models.Index(fields=("is_focus", "vul_count", "aql", "level", "language_id"))]
 
     def get_vul_count_groupby_level(self):
         return [

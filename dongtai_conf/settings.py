@@ -120,6 +120,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": ["django.core.paginator"],
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.SessionAuthentication",
+        "dongtai_common.common.utils.ProjectTokenAuthentication",
         "dongtai_common.common.utils.DepartmentTokenAuthentication",
         "rest_framework.authentication.TokenAuthentication",
     ],
@@ -482,6 +483,7 @@ EMAIL_PORT = config.get("smtp", "port")
 ENABLE_SSL = config.get("smtp", "ssl") == "True"
 ADMIN_EMAIL = config.get("smtp", "cc_addr")
 SESSION_COOKIE_DOMAIN = None
+SESSION_ENGINE = "dongtai_common.utils.db_session_engine"
 CSRF_COOKIE_DOMAIN = None
 
 SECURE_BROWSER_XSS_FILTER = True
@@ -654,6 +656,30 @@ DEFAULT_IAST_VALUE_TAG = [
     "ldap-decoded",
     "http-token-limited-chars",
     "numeric-limited-chars",
+    "custom-encoded-cmd-injection",
+    "custom-decoded-cmd-injection",
+    "custom-encoded-jnd-injection",
+    "custom-decoded-jnd-injection",
+    "custom-encoded-hql-injection",
+    "custom-decoded-hql-injection",
+    "custom-encoded-nosql-injection",
+    "custom-decoded-nosql-injection",
+    "custom-encoded-smtp-injection",
+    "custom-decoded-smtp-injection",
+    "custom-encoded-xxe",
+    "custom-decoded-xxe",
+    "custom-encoded-el-injection",
+    "custom-decoded-el-injection",
+    "custom-encoded-reflection-injection",
+    "custom-decoded-reflection-injection",
+    "custom-encoded-ssrf",
+    "custom-decoded-ssrf",
+    "custom-encoded-path-traversal",
+    "custom-decoded-path-traversal",
+    "custom-encoded-file-write",
+    "custom-encoded-file-write",
+    "custom-encoded-redos",
+    "custom-decoded-redos",
 ]
 DEFAULT_TAINT_VALUE_RANGE_COMMANDS = [
     "KEEP",

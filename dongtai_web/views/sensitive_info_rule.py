@@ -58,6 +58,7 @@ class SensitiveInfoRuleSerializer(serializers.ModelSerializer):
             "pattern",
             "status",
             "latest_time",
+            "system_type",
         ]
 
     def get_strategy_name(self, obj):
@@ -208,7 +209,7 @@ class SensitiveInfoRuleViewSet(UserEndPoint, viewsets.ViewSet):
         except ValidationError as e:
             return R.failure(data=e.detail)
         users = self.get_auth_users(request.user)
-        IastSensitiveInfoRule.objects.filter(pk=pk, user__in=users).update(
+        IastSensitiveInfoRule.objects.filter(pk=pk, user__in=users, system_type=0).update(
             **ser.validated_data, latest_time=time.time()
         )
         return R.success(msg=_("update success"))
@@ -220,7 +221,7 @@ class SensitiveInfoRuleViewSet(UserEndPoint, viewsets.ViewSet):
     )
     def destory(self, request, pk):
         users = self.get_auth_users(request.user)
-        IastSensitiveInfoRule.objects.filter(pk=pk, user__in=users).update(status=-1)
+        IastSensitiveInfoRule.objects.filter(pk=pk, user__in=users, system_type=0).update(status=-1)
         return R.success(msg=_("delete success"))
 
     @extend_schema_with_envcheck(

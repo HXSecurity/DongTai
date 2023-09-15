@@ -32,7 +32,7 @@ class ProjectVersionList(UserEndPoint):
     description = _("View application version list")
 
     @extend_schema_with_envcheck(
-        tags=[_("Project")],
+        tags=[_("Project"), "集成"],
         summary=_("Projects Version List"),
         description=_("Get the version information list of the item corresponding to the id"),
         response_schema=_ProjectVersionListResponseSerializer,

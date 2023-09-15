@@ -95,6 +95,7 @@ class HookRuleSerializer(serializers.ModelSerializer):
             "untags",
             "stack_blacklist",
             "command",
+            "system_type",
         ]
 
     def get_rule_type(self, obj):

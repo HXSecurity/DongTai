@@ -54,6 +54,11 @@ configs["task_queues"] = [
         Exchange("dongtai-es-save-task"),
         routing_key="dongtai-es-save-task",
     ),
+    Queue(
+        "dongtai-update-heartbeat",
+        Exchange("dongtai-update-heartbeat"),
+        routing_key="dongtai-update-heartbeat",
+    ),
     # cronjob
     Queue(
         "dongtai-periodic-task",
@@ -117,6 +122,10 @@ configs["task_routes"] = {
     "dongtai_engine.elatic_search.data_correction": {
         "exchange": "dongtai-es-save-task",
         "routing_key": "dongtai-es-save-task",
+    },
+    "dongtai_protocol.report.handler.heartbeat_handler.update_heartbeat": {
+        "exchange": "dongtai-update-heartbeat",
+        "routing_key": "dongtai-update-heartbeat",
     },
     # cronjob
     "dongtai_engine.tasks.update_agent_status": {

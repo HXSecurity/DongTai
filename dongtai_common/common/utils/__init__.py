@@ -159,3 +159,38 @@ class DepartmentTokenAuthentication(TokenAuthentication):
             return None
         token = auth.lower().replace(self.keyword.lower().encode(), b"", 1).decode()
         return self.auth_decodedenticate_credentials(token)
+
+
+@cached_decorator(random_range=(300, 600), use_celery_update=False)
+def get_user_from_project_key(key):
+    from dongtai_common.models.project import IastProject
+    from dongtai_common.models.user import User
+
+    project = IastProject.objects.get(token=key)
+    principal = User.objects.filter(pk=project.user_id).first()
+    user = principal if principal else User.objects.filter(pk=1).first()
+    user.using_project = project
+    return user
+
+
+class ProjectTokenAuthentication(TokenAuthentication):
+    keyword = "Token PROJECT"
+    model = None
+
+    def auth_decodedenticate_credentials(self, key):
+        from rest_framework import exceptions
+
+        from dongtai_common.models.project import IastProject
+
+        try:
+            user = get_user_from_project_key(key)
+        except IastProject.DoesNotExist as e:
+            raise exceptions.AuthenticationFailed(_("Invalid token.")) from e
+        return (user, key)
+
+    def authenticate(self, request):
+        auth = get_authorization_header(request)
+        if not auth or not auth.lower().startswith(self.keyword.lower().encode()):
+            return None
+        token = auth[13:].decode()
+        return self.auth_decodedenticate_credentials(token)

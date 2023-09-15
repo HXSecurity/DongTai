@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # datetime: 2021/7/21 下午7:07
-import copy
 import logging
-import sys
 from collections import defaultdict
 
 from django.utils.functional import cached_property
@@ -133,7 +131,7 @@ class VulEngine:
         from functools import reduce
         from itertools import product
 
-        import networkit as nk
+        import networkx as nk
 
         # Gather data
         source_hash_dict = defaultdict(set)
@@ -157,7 +155,7 @@ class VulEngine:
             )
         ]
         # Build a graph
-        g = nk.Graph(weighted=True, directed=True)
+        g = nk.DiGraph(weighted=True, directed=True)
         for pool in self.method_pool:
             if "sourceType" in pool:
                 vecs = ()
@@ -171,20 +169,16 @@ class VulEngine:
                     for s in reduce(lambda x, y: x | y, (target_hash_dict[i] for i in pool["sourceHash"]), set())
                 )
             for source, target in vecs:
-                g.addEdge(source, target, (source - target) * (source - target), addMissing=True)
-        # Checkout each pair source/target have a path or not
-        # It may lost sth when multi paths exists.
+                # g.addEdge(source, target, (source - target) * (source - target), addMissing=True)
+                g.add_edge(source, target, weight=(source - target) * (source - target))
         final_stack = []
         total_path_list = []
         for s, t in product(source_methods, vul_methods):
-            if not g.hasNode(s) or not g.hasNode(t):
+            if not g.has_node(s) or not g.has_node(t):
                 continue
-            dij_obj = nk.distance.BidirectionalDijkstra(g, s, t).run()
-            if dij_obj.getDistance() < sys.float_info.max:
-                logger.info("find sink here!")
-                path = dij_obj.getPath()
-                total_path = [s, *path, t]
-                # Check taint range exists
+            if nk.has_path(g, s, t):
+                path = nk.shortest_path(g, s, t, weight="weight")
+                total_path = path
                 if (
                     len(total_path) > 1
                     and "targetRange" in invokeid_dict[total_path[-2]]
@@ -204,7 +198,7 @@ class VulEngine:
             find_index = None
             # Merge if path take same node
             for ind, target_path in enumerate(final_path):
-                if set(path[1:]) & set(target_path[1:]):
+                if set(path[1:]) & set(target_path[1:]) and path[-1] == target_path[-1]:
                     find_index = ind
                     break
             if find_index is not None:
@@ -264,7 +258,7 @@ class VulEngine:
             # mark there has a vul
             # if vul_type has filter, do escape
             stack_count = len(self.vul_stack)
-            for index in range(0, stack_count):
+            for index in range(stack_count):
                 stack = self.vul_stack[index]
                 for item in stack:
                     if item["signature"] == "java.net.URL.<init>":
@@ -278,7 +272,7 @@ class VulEngine:
                             break
             vul_source_signature = self.vul_source_signature
             self.vul_source_signature = None
-            for index in range(0, stack_count):
+            for index in range(stack_count):
                 if self.vul_stack[index]:
                     self.vul_source_signature = vul_source_signature
                 else:
@@ -286,8 +280,7 @@ class VulEngine:
 
     @staticmethod
     def copy_method(method_detail, sink=False, source=False, propagator=False, filter=False):
-        vul_method_detail = copy.deepcopy(method_detail)
-        vul_method_detail["originClassName"] = vul_method_detail["originClassName"]
+        vul_method_detail = method_detail
         # todo  根据类型进行拼接
         if source:
             vul_method_detail["tag"] = "source"

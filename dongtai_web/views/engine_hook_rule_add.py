@@ -28,7 +28,7 @@ class _HookRuleAddBodyargsSerializer(serializers.Serializer):
     language_id = serializers.IntegerField(help_text=_("The id of language."))
     rule_value = serializers.CharField(
         help_text=_("The value of strategy"),
-        max_length=255,
+        max_length=2000,
         allow_blank=True,
     )
     rule_source = serializers.CharField(
@@ -197,18 +197,7 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
             ignore_blacklist,
             ignore_internal,
         ) = self.parse_args(request)
-        if (
-            all(
-                (
-                    rule_type,
-                    rule_value,
-                    rule_source,
-                    inherit,
-                    is_track,
-                )
-            )
-            is False
-        ):
+        if all((rule_type, rule_value, rule_source, inherit, is_track)) is False:
             return R.failure(msg=_("Incomplete parameter, please check again"))
 
         ser = _HookRuleAddBodyargsSerializer(data=request.data)
@@ -240,6 +229,12 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
             if "type" not in ser.validated_data
             else ser.validated_data["type"]
         )
+
+        if HookStrategy.objects.filter(
+            language_id=ser.validated_data["language_id"], type=type_, value=rule_value
+        ).exists():
+            return R.failure(msg="Already exists same rule")
+
         strategy = self.create_strategy(
             rule_value,
             rule_source,

@@ -32,7 +32,7 @@ class _EngineHookRuleModifySerializer(serializers.Serializer):
     rule_type_id = serializers.IntegerField(help_text=_("The id of hook rule type."))
     rule_value = serializers.CharField(
         help_text=_("The value of strategy"),
-        max_length=255,
+        max_length=2000,
         allow_blank=True,
     )
     rule_source = serializers.CharField(
@@ -147,6 +147,9 @@ class EngineHookRuleModifyEndPoint(UserEndPoint):
         strategy = HookStrategy.objects.filter(id=rule_id).first()
         if not strategy:
             return R.failure(msg=_("No such hookstrategy."))
+        if strategy.system_type and rule_value != strategy.value:
+            return R.failure(msg="Can not modify preset rule")
+
         if strategy.type == 4:
             hook_type = IastStrategyModel.objects.filter(
                 id=rule_type,
@@ -155,20 +158,7 @@ class EngineHookRuleModifyEndPoint(UserEndPoint):
             hook_type = HookType.objects.filter(
                 id=rule_type,
             ).first()
-        if (
-            all(
-                (
-                    rule_id,
-                    rule_type,
-                    rule_value,
-                    rule_source,
-                    inherit,
-                    is_track,
-                    strategy,
-                )
-            )
-            is False
-        ):
+        if all((rule_id, rule_type, rule_value, rule_source, inherit, is_track, strategy)) is False:
             return R.failure(msg=_("Incomplete parameter, please check again"))
 
         ser = _EngineHookRuleModifySerializer(data=request.data)

@@ -16,4 +16,5 @@ class StrategySerializer(serializers.ModelSerializer):
             "vul_name",
             "vul_desc",
             "dt",
+            "system_type",
         ]

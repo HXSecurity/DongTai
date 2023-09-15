@@ -4,11 +4,12 @@
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.db import models
 from django.db.models import Q, QuerySet
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from dongtai_common.models.department import Department
 from dongtai_common.models.iast_role import IastRoleV2
-from dongtai_conf.patch import patch_point
+from dongtai_conf.patch import patch_point, to_patch
 
 
 class PermissionsMixin(models.Model):
@@ -65,9 +66,12 @@ class User(AbstractUser, PermissionsMixin):
     role = models.ForeignKey(IastRoleV2, models.DO_NOTHING, default=1, db_constraint=False)
     is_global_permission = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
+    failed_login_count = models.IntegerField(default=0)
+    failed_login_time = models.DateTimeField(default=timezone.now)
 
     objects = SaaSUserManager()
     using_department = None
+    using_project = None
 
     class Meta(AbstractUser.Meta):
         db_table = "auth_user"
@@ -117,6 +121,7 @@ class User(AbstractUser, PermissionsMixin):
             return self.using_department
         return self.get_department()
 
+    @to_patch
     def get_projects(self) -> QuerySet:
         from dongtai_common.models.project import IastProject
 

@@ -6,13 +6,16 @@ import pymysql
 from django.core.cache import cache
 from django.db.models import Count, F
 from django.utils.translation import gettext_lazy as _
+from drf_spectacular.utils import extend_schema
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Q
+from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 
 from dongtai_common.common.utils import make_hash
 from dongtai_common.endpoint import R, UserEndPoint
 from dongtai_common.models import APP_LEVEL_RISK, APP_VUL_ORDER
+from dongtai_common.models.agent_method_pool import VulMethodPool
 from dongtai_common.models.dast_integration import IastDastIntegrationRelation
 from dongtai_common.models.vulnerablity import (
     IastVulnerabilityDocument,
@@ -22,23 +25,79 @@ from dongtai_common.models.vulnerablity import (
 from dongtai_common.utils.const import OPERATE_GET
 from dongtai_common.utils.db import SearchLanguageMode
 from dongtai_conf import settings
-from dongtai_conf.patch import patch_point
+from dongtai_conf.patch import patch_point, to_patch
 from dongtai_conf.settings import ELASTICSEARCH_STATE
 from dongtai_engine.elatic_search.data_correction import data_correction_interpetor
 from dongtai_web.aggregation.aggregation_common import turnIntListOfStr
 from dongtai_web.serializers.aggregation import AggregationArgsSerializer
 from dongtai_web.serializers.vul import VulSerializer
-from dongtai_web.utils import extend_schema_with_envcheck
+from dongtai_web.utils import get_response_serializer
 
 INT_LIMIT: int = 2**64 - 1
 
 
+class AppVulSerializer(serializers.ModelSerializer):
+    level_name = serializers.CharField()
+    server_type = serializers.CharField()
+    is_header_vul = serializers.CharField()
+    agent__project_name = serializers.CharField()
+    agent__server__container = serializers.CharField()
+    agent__language = serializers.CharField()
+    agent__bind_project_id = serializers.CharField()
+    header_vul_urls = serializers.ListField()
+    dastvul__vul_type = serializers.CharField()
+    dastvul_count = serializers.CharField()
+    dast_validation_status = serializers.CharField()
+    strategy__vul_name = serializers.CharField()
+    project__name = serializers.CharField()
+    server__container = serializers.CharField()
+    project_version__version_name = serializers.CharField()
+
+    class Meta:
+        model = IastVulnerabilityModel
+        fields = [
+            "id",
+            "uri",
+            "http_method",
+            "top_stack",
+            "bottom_stack",
+            "level_id",
+            "taint_position",
+            "status_id",
+            "first_time",
+            "latest_time",
+            "strategy__vul_name",
+            "language",
+            "project__name",
+            "server__container",
+            "project_id",
+            "strategy_id",
+            "project_version_id",
+            "project_version__version_name",
+            "level_name",
+            "server_type",
+            "is_header_vul",
+            "agent__project_name",
+            "agent__server__container",
+            "agent__language",
+            "agent__bind_project_id",
+            "header_vul_urls",
+            "dastvul__vul_type",
+            "dastvul_count",
+            "dast_validation_status",
+        ]
+
+
+_NewResponseSerializer = get_response_serializer(AppVulSerializer(many=True))
+
+
 class GetAppVulsList(UserEndPoint):
-    @extend_schema_with_envcheck(
+    @extend_schema(
         request=AggregationArgsSerializer,
-        tags=[_("Vulnerability"), OPERATE_GET],
+        tags=[_("Vulnerability"), OPERATE_GET, "集成"],
         summary="应用漏洞列表",
     )
+    @to_patch
     def post(self, request):
         """
         :param request:
@@ -176,6 +235,7 @@ class GetAppVulsList(UserEndPoint):
             lambda: 0,
             {item["iastvul_id"]: item["dastvul_count"] for item in dastvul_rel_count_res},
         )
+        has_vul_method_pool_set = set(VulMethodPool.objects.filter(vul_id__in=vul_ids).values_list("vul_id", flat=True))
         if vul_data:
             for item in vul_data:
                 item["level_name"] = APP_LEVEL_RISK.get(str(item["level_id"]), "")
@@ -189,6 +249,7 @@ class GetAppVulsList(UserEndPoint):
                 item["dastvul__vul_type"] = dast_vul_types_dict[item["id"]]
                 item["dastvul_count"] = dastvul_rel_count_res_dict[item["id"]]
                 item["dast_validation_status"] = bool(dastvul_rel_count_res_dict[item["id"]])
+                item["has_vul_method_pool"] = item["id"] in has_vul_method_pool_set
                 end["data"].append(item)
         # all Iast Vulnerability Status
         status = IastVulnerabilityStatus.objects.all()

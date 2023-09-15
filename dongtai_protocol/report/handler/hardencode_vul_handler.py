@@ -133,8 +133,4 @@ class HardEncodeVulHandler(IReportHandler):
             iast_vul.id,  # type: ignore
             iast_vul.strategy.vul_name,
         )
-        send_notify.send_robust(
-            sender=self.__class__,
-            vul_id=iast_vul.id,
-            department_id=self.agent.department_id,
-        )
+        send_notify.send_robust(sender=self.__class__, vul_id=iast_vul.id)

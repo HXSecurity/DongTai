@@ -3,6 +3,7 @@
 import json
 import logging
 
+from celery import group
 from django.utils.translation import gettext_lazy as _
 
 from dongtai_common.utils import const
@@ -77,7 +78,7 @@ class ScaHandler(IReportHandler):
 
 
 @ReportHandler.register(const.REPORT_SCA + 1)
-class ScaBulkHandler(ScaHandler):
+class ScaBulkHandler(IReportHandler):
     def parse(self):
         self.packages = self.detail.get("packages")
         self.package_path = self.detail.get("packagePath")
@@ -87,10 +88,45 @@ class ScaBulkHandler(ScaHandler):
         self.package_version = self.detail.get("packageVersion", "")
 
     def save(self):
+        task_group = []
         for package in self.packages:
             self.package_path = package.get("packagePath", None)
             self.package_signature = package.get("packageSignature", None)
             self.package_name = package.get("packageName", None)
             self.package_algorithm = package.get("packageAlgorithm", None)
             self.package_version = package.get("packageVersion", "")
-            super().save()
+
+            try:
+                logger.info(
+                    f"[+] 处理SCA请求[{self.agent_id}, {self.package_path}, {self.package_signature}, {self.package_name}, {self.package_algorithm} {self.package_version}]正在下发扫描任务"
+                )
+                if self.package_signature:
+                    task_group.append(
+                        new_update_one_sca.s(
+                            self.agent_id,
+                            self.package_path,
+                            self.package_signature,
+                            self.package_name,
+                            self.package_algorithm,
+                            self.package_version,
+                        )
+                    )
+                else:
+                    task_group.append(
+                        update_one_sca.s(
+                            self.agent_id,
+                            self.package_path,
+                            self.package_signature,
+                            self.package_name,
+                            self.package_algorithm,
+                            self.package_version,
+                        )
+                    )
+                logger.info(
+                    f"[+] 处理SCA请求[{self.agent_id}, {self.package_path}, {self.package_signature}, {self.package_name}, {self.package_algorithm} {self.package_version}]任务下发完成"
+                )
+            except Exception as e:
+                logger.info(
+                    f"[-] Failure: sca package [{self.agent_id} {self.package_path} {self.package_signature} {self.package_name} {self.package_algorithm} {self.package_version}], Error: {e}"
+                )
+        group(*task_group).delay()
