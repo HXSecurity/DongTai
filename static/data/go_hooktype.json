@@ -3,67 +3,23 @@
         "created_by": 1,
         "enable": 1,
         "language": 4,
-        "name": "1",
+        "name": "EL\u8868\u8fbe\u5f0f\u6ce8\u5165",
         "name_en": null,
-        "name_zh": "1",
+        "name_zh": "EL\u8868\u8fbe\u5f0f\u6ce8\u5165",
         "system_type": 0,
         "type": 3,
-        "value": "1"
+        "value": "EL\u8868\u8fbe\u5f0f\u6ce8\u5165"
     },
     {
         "created_by": 1,
         "enable": 1,
         "language": 4,
-        "name": "1",
+        "name": "EL\u8868\u8fbe\u5f0f\u6ce8\u5165",
         "name_en": null,
-        "name_zh": "1",
+        "name_zh": "EL\u8868\u8fbe\u5f0f\u6ce8\u5165",
         "system_type": 0,
         "type": 4,
-        "value": "1"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 4,
-        "name": "123",
-        "name_en": null,
-        "name_zh": "123",
-        "system_type": 0,
-        "type": 3,
-        "value": "1"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 4,
-        "name": "123",
-        "name_en": null,
-        "name_zh": "123",
-        "system_type": 0,
-        "type": 4,
-        "value": "1"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 4,
-        "name": "3",
-        "name_en": null,
-        "name_zh": "3",
-        "system_type": 0,
-        "type": 3,
-        "value": "3"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 4,
-        "name": "3",
-        "name_en": null,
-        "name_zh": "3",
-        "system_type": 0,
-        "type": 4,
-        "value": "3"
+        "value": "EL\u8868\u8fbe\u5f0f\u6ce8\u5165"
     },
     {
         "created_by": 1,
@@ -135,9 +91,75 @@
         "created_by": 1,
         "enable": 1,
         "language": 4,
-        "name": "\u547d\u4ee4\u6267\u884c123",
+        "name": "Ognl\u8868\u8fbe\u5f0f\u6ce8\u5165",
+        "name_en": null,
+        "name_zh": "Ognl\u8868\u8fbe\u5f0f\u6ce8\u5165",
+        "system_type": 0,
+        "type": 3,
+        "value": "Ognl\u8868\u8fbe\u5f0f\u6ce8\u5165"
+    },
+    {
+        "created_by": 1,
+        "enable": 1,
+        "language": 4,
+        "name": "Ognl\u8868\u8fbe\u5f0f\u6ce8\u5165",
+        "name_en": null,
+        "name_zh": "Ognl\u8868\u8fbe\u5f0f\u6ce8\u5165",
+        "system_type": 0,
+        "type": 4,
+        "value": "Ognl\u8868\u8fbe\u5f0f\u6ce8\u5165"
+    },
+    {
+        "created_by": 1,
+        "enable": 1,
+        "language": 4,
+        "name": "SPEL\u8868\u8fbe\u5f0f\u6ce8\u5165",
+        "name_en": null,
+        "name_zh": "SPEL\u8868\u8fbe\u5f0f\u6ce8\u5165",
+        "system_type": 0,
+        "type": 3,
+        "value": "SPEL\u8868\u8fbe\u5f0f\u6ce8\u5165"
+    },
+    {
+        "created_by": 1,
+        "enable": 1,
+        "language": 4,
+        "name": "SPEL\u8868\u8fbe\u5f0f\u6ce8\u5165",
+        "name_en": null,
+        "name_zh": "SPEL\u8868\u8fbe\u5f0f\u6ce8\u5165",
+        "system_type": 0,
+        "type": 4,
+        "value": "SPEL\u8868\u8fbe\u5f0f\u6ce8\u5165"
+    },
+    {
+        "created_by": 1,
+        "enable": 1,
+        "language": 4,
+        "name": "Thymeleaf\u6a21\u7248\u6ce8\u5165",
+        "name_en": null,
+        "name_zh": "Thymeleaf\u6a21\u7248\u6ce8\u5165",
+        "system_type": 0,
+        "type": 3,
+        "value": "Thymeleaf\u6a21\u7248\u6ce8\u5165"
+    },
+    {
+        "created_by": 1,
+        "enable": 1,
+        "language": 4,
+        "name": "Thymeleaf\u6a21\u7248\u6ce8\u5165",
+        "name_en": null,
+        "name_zh": "Thymeleaf\u6a21\u7248\u6ce8\u5165",
+        "system_type": 0,
+        "type": 4,
+        "value": "Thymeleaf\u6a21\u7248\u6ce8\u5165"
+    },
+    {
+        "created_by": 1,
+        "enable": 1,
+        "language": 4,
+        "name": "\u547d\u4ee4\u6267\u884c ",
         "name_en": "OS Command Injection",
-        "name_zh": "\u547d\u4ee4\u6267\u884c123",
+        "name_zh": "\u547d\u4ee4\u6267\u884c ",
         "system_type": 1,
         "type": 4,
         "value": "cmd-injection"
@@ -405,28 +427,6 @@
         "system_type": 1,
         "type": 4,
         "value": "ssrf"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 4,
-        "name": "test",
-        "name_en": null,
-        "name_zh": "test",
-        "system_type": 0,
-        "type": 3,
-        "value": "test"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 4,
-        "name": "test",
-        "name_en": null,
-        "name_zh": "test",
-        "system_type": 0,
-        "type": 4,
-        "value": "test"
     },
     {
         "created_by": 1,
