@@ -1312,7 +1312,7 @@ if [ ! 0 == $# ]; then # If options provided then
         docker run -i --name dongtai-server-update -v $PWD/config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini --rm \
           --link `docker ps | grep dongtai-mysql | awk '{print $1}'`:dongtai-mysql \
           --link `docker ps | grep dongtai-redis | awk '{print $1}'`:dongtai-redis \
-          --network dongtainetwork $(get_image_registry 2)/dongtai-server:$TO_VERSION migrate || exit 1
+          --network dongtainetwork $(get_image_registry 2)/dongtai-server:$TO_VERSION migrate 2> /dev/null || exit 1
       fi
 
       if [ $TO_VERSION = 1.8.0 ]; then
