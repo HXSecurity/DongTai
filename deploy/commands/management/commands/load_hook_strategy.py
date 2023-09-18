@@ -26,7 +26,7 @@ class Command(BaseCommand):
         with open(os.path.join(POLICY_DIR, "vul_strategy.json")) as fp:
             full_strategies = json.load(fp, object_pairs_hook=OrderedDict)
         if os.path.exists(os.path.join(POLICY_DIR, "sensitive_info_strategy.json")):
-            with open(os.path.exists(os.path.join(POLICY_DIR, "sensitive_info_strategy.json"))) as fp:
+            with open(os.path.join(POLICY_DIR, "sensitive_info_strategy.json")) as fp:
                 full_strategies.extend(json.load(fp, object_pairs_hook=OrderedDict))
         strategy_dict = {}
         for strategy in full_strategies:
