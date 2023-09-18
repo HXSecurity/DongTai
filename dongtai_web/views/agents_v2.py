@@ -43,6 +43,7 @@ class AgentListv2ArgsSerializer(serializers.Serializer):
     project_id = serializers.IntegerField(default=None, required=False, help_text=_("project_id"))
     project_name = serializers.CharField(default=None, help_text=_("project_name"))
     allow_report = serializers.IntegerField(default=None, required=False, help_text=_("allow_report"))
+    version = serializers.CharField(default=None, help_text="agent 版本")
 
 
 class AgentListv2(UserEndPoint, ViewSet):
@@ -72,6 +73,8 @@ class AgentListv2(UserEndPoint, ViewSet):
             filter_condiction = filter_condiction & Q(
                 heartbeat__dt__gte=int(time()) - 60 * 60 * 24 * ser.validated_data["last_days"]
             )
+        if ser.validated_data["version"] is not None:
+            filter_condiction = filter_condiction & Q(version=ser.validated_data["version"])
 
         summary, queryset = self.get_paginator(
             query_agent(filter_condiction),
@@ -132,6 +135,14 @@ class AgentListv2(UserEndPoint, ViewSet):
         except Exception as e:
             logger.debug(f"agent_stat error:{e}")
             res = {}
+        return R.success(data=res)
+
+    @extend_schema(
+        tags=[_("Agent")],
+        summary="获取 Agent 版本信息",
+    )
+    def agent_versions(self, request):
+        res = list(IastAgent.objects.values_list("version", flat=True).distinct())
         return R.success(data=res)
 
 
