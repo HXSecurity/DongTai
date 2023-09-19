@@ -5,7 +5,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("dongtai_common", "0026_auto_20230918_1413"),
+        ("dongtai_common", "0027_auto_20230919_1233"),
     ]
 
     operations = [
