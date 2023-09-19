@@ -185,6 +185,7 @@ class EngineHookRuleModifyEndPoint(UserEndPoint):
             strategy.untags = ser.validated_data["untags"]
             strategy.command = ser.validated_data["command"]
             strategy.stack_blacklist = ser.validated_data["stack_blacklist"]
+            strategy.modified = True
             strategy.save()
 
             return R.success(msg="策略更新成功")
