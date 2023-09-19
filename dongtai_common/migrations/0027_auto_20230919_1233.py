@@ -203,7 +203,7 @@ def update_admin_role(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("dongtai_common", "0025_alter_iastagentrequestchainstopographvec_unique_together"),
+        ("dongtai_common", "0026_auto_20230918_1413"),
     ]
 
     operations = []
