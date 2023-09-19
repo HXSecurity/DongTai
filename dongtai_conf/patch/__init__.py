@@ -47,6 +47,7 @@ def patch_point(*args: Unpack[Ts]) -> tuple[Unpack[Ts]]:
 
 
 def patch_point(*args: Any) -> Any:
+    init_patch()
     patch_func = context_func.get()
     patch_id = context_count.get()
     context_count.set(patch_id + 1)
