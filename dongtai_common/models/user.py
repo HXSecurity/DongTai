@@ -68,6 +68,7 @@ class User(AbstractUser, PermissionsMixin):
     deleted = models.BooleanField(default=False)
     failed_login_count = models.IntegerField(default=0)
     failed_login_time = models.DateTimeField(default=timezone.now)
+    totp_secret = models.CharField(max_length=255, blank=True)
 
     objects = SaaSUserManager()
     using_department = None
