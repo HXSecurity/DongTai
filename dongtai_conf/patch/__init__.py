@@ -12,7 +12,7 @@ from typing_extensions import TypeVarTuple, Unpack
 
 from dongtai_conf.settings import BASE_DIR
 
-logger = logging.getLogger("patch")
+logger = logging.getLogger("dongtai.openapi")
 
 
 is_init_patch = False
