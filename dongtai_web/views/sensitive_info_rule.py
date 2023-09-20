@@ -208,10 +208,14 @@ class SensitiveInfoRuleViewSet(UserEndPoint, viewsets.ViewSet):
                 ser.validated_data["status"]
         except ValidationError as e:
             return R.failure(data=e.detail)
-        users = self.get_auth_users(request.user)
-        IastSensitiveInfoRule.objects.filter(pk=pk, user__in=users, system_type=0).update(
-            **ser.validated_data, latest_time=time.time()
-        )
+        obj = IastSensitiveInfoRule.objects.filter(pk=pk).first()
+        if obj is None:
+            return R.success(msg="no such rule")
+        if obj.system_type == 1:
+            obj.status = ser.validated_data["status"]
+            obj.save()
+        else:
+            IastSensitiveInfoRule.objects.filter(pk=pk).update(**ser.validated_data, latest_time=time.time())
         return R.success(msg=_("update success"))
 
     @extend_schema_with_envcheck(
