@@ -65,6 +65,7 @@ class HookStrategy(models.Model):
     untags = models.JSONField(default=list)
     stack_blacklist = models.JSONField(default=list)
     command = models.CharField(max_length=128, blank=True)
+    modified = models.BooleanField(default=False)
 
     class Meta:
         managed = get_managed()
