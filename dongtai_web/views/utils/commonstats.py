@@ -180,7 +180,7 @@ def get_summary_by_project(project_id: int, project_version_id: int):
         if type_summary_total_count == 0:
             type_summary["level_total_percentage"] = 0
             continue
-        type_summary["type_total_percentage"] = type_summary["type_total_percentage"] / type_summary_total_count
+        type_summary["type_total_percentage"] = type_summary["type_count"] / type_summary_total_count
     current_timestamp, a_week_ago_timestamp, days = weeks_ago(week=1)
     daylist = []
     while days >= 0:
