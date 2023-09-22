@@ -177,6 +177,7 @@ class VulsEndPoint(UserEndPoint):
         summary=_("Vulnerability List (with project)"),
         response_schema=_ResponseSerializer,
         description=_("Get the list of vulnerabilities corresponding to the project"),
+        deprecated=True,
     )
     def get(self, request):
         """
