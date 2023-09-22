@@ -39,6 +39,8 @@ class ProjectSummaryVulType(UserEndPoint):
     )
     def get(self, request, id):
         project = request.user.get_projects().filter(id=id).first()
+        if not project:
+            return R.failure(msg="项目不存在")
         ser = _DocumentArgsSerializer(data=request.GET)
         version_id = request.GET.get("version_id", None)
         try:
@@ -52,6 +54,8 @@ class ProjectSummaryVulType(UserEndPoint):
         else:
             current_project_version = get_project_version_by_id(version_id)
         project_version_id = current_project_version.get("version_id", 0)
+        if not project_version_id:
+            return R.failure(msg="项目版本不存在")
         project_id = project.id
         queryset = (
             IastVulnerabilityModel.objects.filter(
