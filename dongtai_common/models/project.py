@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # datetime:2020/11/30 下午5:32
+import os.path
 import string
 import time
 
@@ -11,6 +12,7 @@ from dongtai_common.models.department import Department
 from dongtai_common.models.strategy_user import IastStrategyUser
 from dongtai_common.utils.db import get_timestamp
 from dongtai_common.utils.settings import get_managed
+from dongtai_conf.settings import DOMAIN_VUL
 
 
 class VulValidation(models.IntegerChoices):
@@ -90,6 +92,9 @@ class IastProject(models.Model):
     def update_latest(self):
         self.latest_time = int(time.time())
         self.save(update_fields=["latest_time"])
+
+    def get_url(self):
+        return os.path.join(DOMAIN_VUL, "project/projectDetail", str(self.id))
 
 
 class IastProjectUser(models.Model):
