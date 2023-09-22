@@ -1,5 +1,4 @@
-
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
@@ -33,6 +32,7 @@ _ProjectSummaryResponseSerializer = get_response_serializer(ProjectSummaryDataTy
 
 class ProjectSummaryVulType(UserEndPoint):
     @extend_schema_with_envcheck(
+        [_DocumentArgsSerializer],
         tags=[_("Project")],
         summary=_("项目类型汇总列表"),
         description=_("Get project deatils and its statistics data about vulnerablity."),
@@ -54,37 +54,39 @@ class ProjectSummaryVulType(UserEndPoint):
             current_project_version = get_project_version_by_id(version_id)
         project_version_id = current_project_version.get("version_id", 0)
         project_id = project.id
-        queryset = IastVulnerabilityModel.objects.filter(
-            project_id=project_id, project_version_id=project_version_id, is_del=0
-        ).values("hook_type_id", "strategy_id", "level_id", "latest_time")
-        data = {}
+        queryset = (
+            IastVulnerabilityModel.objects.filter(
+                project_id=project_id, project_version_id=project_version_id, is_del=0
+            )
+            .values("strategy_id")
+            .annotate(vul_count=Count("strategy_id"))
+            .filter(vul_count__gt=0)
+            .order_by("vul_count")
+        )
+        data = {"type_summary": []}
         q = ~Q(hook_type_id=0)
         queryset = queryset.filter(q)
-        _, documents = self.get_paginator(queryset, page, page_size)
+        page_info, queryset = self.get_paginator(queryset, page, page_size)
         typeArr = {}
         typeLevel = {}
         levelCount = {}
-        strategy_ids = queryset.values_list("strategy_id", flat=True).distinct()
+        # strategy_ids = queryset.values_list("strategy_id", flat=True).distinct()
+        strategy_ids = (i["strategy_id"] for i in queryset)
         strategys = {
             strategy["id"]: strategy
-            for strategy in IastStrategyModel.objects.filter(pk__in=strategy_ids).values("id", "vul_name").all()
-        }
-        hook_type_ids = queryset.values_list("hook_type_id", flat=True).distinct()
-        hooktypes = {
-            hooktype["id"]: hooktype
-            for hooktype in HookType.objects.filter(pk__in=hook_type_ids).values("id", "name").all()
+            for strategy in IastStrategyModel.objects.filter(pk__in=strategy_ids)
+            .values("id", "vul_name", "level_id")
+            .all()
         }
         if queryset:
             for one in queryset:
-                hook_type = hooktypes.get(one["hook_type_id"], None)
-                hook_type_name = hook_type["name"] if hook_type else None
+                hook_type_name = ""
                 strategy = strategys.get(one["strategy_id"], None)
                 strategy_name = strategy["vul_name"] if strategy else None
                 type_ = list(filter(lambda x: x is not None, [strategy_name, hook_type_name]))
                 one["type"] = type_[0] if type_ else ""
-                typeArr[one["type"]] = typeArr.get(one["type"], 0) + 1
-                typeLevel[one["type"]] = one["level_id"]
-                levelCount[one["level_id"]] = levelCount.get(one["level_id"], 0) + 1
+                typeArr[one["type"]] = one["vul_count"]
+                typeLevel[one["type"]] = strategy["level_id"]
             typeArrKeys = typeArr.keys()
             data["type_summary"].extend(
                 {
@@ -96,5 +98,5 @@ class ProjectSummaryVulType(UserEndPoint):
             )
         type_summary_total_count = sum(i["type_count"] for i in data["type_summary"])
         for type_summary in data["type_summary"]:
-            type_summary["type_total_percentage"] = type_summary["type_total_percentage"] / type_summary_total_count
-        return R.success()
+            type_summary["type_total_percentage"] = type_summary["type_count"] / type_summary_total_count
+        return R.success(data=data["type_summary"], page=page_info)
