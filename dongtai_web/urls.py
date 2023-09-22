@@ -309,6 +309,7 @@ urlpatterns.extend(
         path("api/v2/agents", AgentListv2.as_view({"get": "pagenation_list"})),
         path("api/v2/agents/summary", AgentListv2.as_view({"get": "summary"})),
         path("api/v2/agents/stat", AgentListv2.as_view({"get": "agent_stat"})),
+        path("api/v2/agents/versions", AgentListv2.as_view({"get": "agent_versions"})),
         # 组件漏洞 汇总
         path("api/v2/app_vul_list_content", GetAppVulsList.as_view()),
         path("api/v2/app_vul_summary", GetAppVulsSummary.as_view()),
