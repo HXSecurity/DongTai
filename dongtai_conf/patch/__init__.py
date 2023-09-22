@@ -12,7 +12,7 @@ from typing_extensions import TypeVarTuple, Unpack
 
 from dongtai_conf.settings import BASE_DIR
 
-logger = logging.getLogger("patch")
+logger = logging.getLogger("dongtai.openapi")
 
 
 is_init_patch = False
@@ -29,6 +29,7 @@ def init_patch() -> None:
         for module_info in pkgutil.iter_modules([str(PATCH_ROOT_PATH.resolve())]):
             if not module_info.name.startswith("_"):
                 importlib.import_module("dongtai_conf.patch." + module_info.name)
+                logger.info(f"load patch dongtai_conf.patch.{module_info.name}")
         is_init_patch = True
 
 
@@ -47,9 +48,11 @@ def patch_point(*args: Unpack[Ts]) -> tuple[Unpack[Ts]]:
 
 
 def patch_point(*args: Any) -> Any:
+    init_patch()
     patch_func = context_func.get()
     patch_id = context_count.get()
     context_count.set(patch_id + 1)
+    logger.debug(f"run patch on function: {patch_func} id: {patch_id}")
     if patch_func in PATCH_HANDLER:
         func = PATCH_HANDLER[patch_func][patch_id]
         return_value = func(*args)

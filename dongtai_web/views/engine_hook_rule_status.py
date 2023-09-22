@@ -69,12 +69,13 @@ class EngineHookRuleEnableEndPoint(UserEndPoint):
             rule = HookStrategy.objects.filter(Q(system_type=0) if enable_status == -1 else Q(), id=strategy_id).first()
             if rule:
                 rule.enable = enable_status
+                rule.modified = True
                 rule.save()
                 return 1
         elif strategy_ids:
             return HookStrategy.objects.filter(
                 Q(system_type=0) if enable_status == -1 else Q(), id__in=strategy_ids
-            ).update(enable=enable_status)
+            ).update(enable=enable_status, modified=True)
         return 0
 
     @staticmethod

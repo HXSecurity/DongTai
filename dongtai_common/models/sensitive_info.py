@@ -27,7 +27,7 @@ class IastSensitiveInfoRule(models.Model):
     user = models.ForeignKey(User, models.DO_NOTHING)
     strategy = models.ForeignKey(IastStrategyModel, models.DO_NOTHING)
     pattern_type = models.ForeignKey(IastPatternType, models.DO_NOTHING)
-    pattern = models.CharField(default=None, max_length=255)
+    pattern = models.TextField(default="")
     status = models.IntegerField(default=None)
     latest_time = models.IntegerField(default=get_timestamp)
     system_type = models.IntegerField(default=0)
