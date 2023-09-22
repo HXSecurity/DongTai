@@ -81,7 +81,7 @@ jobs:
             registry.cn-hongkong.aliyuncs.com/secnium/dongtai-server:${{ steps.version.outputs.GITHUB_REF }}-1.0.${{github.run_number}}
 
       - name: deploy to cluster
-        uses: tscuite/kubectl-helm-action@main
+        uses: HXSecurity/kubectl-helm-action@main
         env:
           MAX: false
           PROJECT: server
