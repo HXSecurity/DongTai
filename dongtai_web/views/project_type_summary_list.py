@@ -1,10 +1,9 @@
-from django.db.models import Q, Count
+from django.db.models import Count, Q
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 
 from dongtai_common.endpoint import R, UserEndPoint
-from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from dongtai_web.base.project_version import (
@@ -69,7 +68,6 @@ class ProjectSummaryVulType(UserEndPoint):
         page_info, queryset = self.get_paginator(queryset, page, page_size)
         typeArr = {}
         typeLevel = {}
-        levelCount = {}
         # strategy_ids = queryset.values_list("strategy_id", flat=True).distinct()
         strategy_ids = (i["strategy_id"] for i in queryset)
         strategys = {
