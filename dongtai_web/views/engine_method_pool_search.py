@@ -391,7 +391,7 @@ def search_generate(
     if "req_header_fs" in search_fields:
         search_fields["req_header_for_search"] = search_fields["req_header_fs"]
         del search_fields["req_header_fs"]
-    search_fields = [(k, v) for k, v in dict(search_fields).items()]
+    search_fields = list(dict(search_fields).items())
     if search_mode == 1:
         should_query = [Q("match", **(dict([search_field]))) for search_field in search_fields]
     elif search_mode == 2:

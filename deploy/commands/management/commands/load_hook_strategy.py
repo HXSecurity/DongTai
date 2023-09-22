@@ -26,7 +26,7 @@ class Command(BaseCommand):
         with open(os.path.join(POLICY_DIR, "vul_strategy.json")) as fp:
             full_strategies = json.load(fp, object_pairs_hook=OrderedDict)
         if os.path.exists(os.path.join(POLICY_DIR, "sensitive_info_strategy.json")):
-            with open(os.path.exists(os.path.join(POLICY_DIR, "sensitive_info_strategy.json"))) as fp:
+            with open(os.path.join(POLICY_DIR, "sensitive_info_strategy.json")) as fp:
                 full_strategies.extend(json.load(fp, object_pairs_hook=OrderedDict))
         strategy_dict = {}
         for strategy in full_strategies:
@@ -115,6 +115,8 @@ class Command(BaseCommand):
                 hooktype_obj.save()
                 hooktype_dict[f"{hook_type['value']}-{hook_type['type']}"] = hooktype_obj
 
+            HookStrategy.objects.filter(language_id=v, system_type=1, modified=False).delete()
+            HookStrategy.objects.filter(language_id=v, system_type=1).update(system_type=0)
             with open(os.path.join(POLICY_DIR, f"{k.lower()}_full_policy.json")) as fp:
                 full_policy = json.load(fp, object_pairs_hook=OrderedDict)
             for policy in full_policy:
@@ -124,18 +126,16 @@ class Command(BaseCommand):
                     policy_strategy = strategy_dict[policy["value"]]
                     for hook_strategy in policy["details"]:
                         if HookStrategy.objects.filter(
-                            value=hook_strategy["value"], type=hook_strategy["type"], language_id=v, system_type=1
-                        ).exists():
-                            # 如果已经存在规则,跳过创建
-                            continue
-                        if HookStrategy.objects.filter(
-                            value=hook_strategy["value"], type=hook_strategy["type"], language_id=v, system_type=0
+                            value=hook_strategy["value"], type=hook_strategy["type"], language_id=v
                         ):
-                            # 如果已经存在用户自定义规则,设置为系统规则,跳过创建
+                            # 如果已经存在规则,设置为系统规则,跳过创建
                             hook_strategy_obj = HookStrategy.objects.filter(
-                                value=hook_strategy["value"], type=hook_strategy["type"], language_id=v, system_type=0
+                                value=hook_strategy["value"],
+                                type=hook_strategy["type"],
+                                language_id=v,
                             ).get()
                             hook_strategy_obj.system_type = 1
+                            hook_strategy_obj.modified = True
                             hook_strategy_obj.save()
                             continue
                         del hook_strategy["language"]
@@ -147,18 +147,16 @@ class Command(BaseCommand):
                     policy_hook_type = hooktype_dict[f"{policy['value']}-{policy['type']}"]
                     for hook_strategy in policy["details"]:
                         if HookStrategy.objects.filter(
-                            value=hook_strategy["value"], type=hook_strategy["type"], language_id=v, system_type=1
-                        ).exists():
-                            # 如果已经存在规则,跳过创建
-                            continue
-                        if HookStrategy.objects.filter(
-                            value=hook_strategy["value"], type=hook_strategy["type"], language_id=v, system_type=0
+                            value=hook_strategy["value"],
+                            type=hook_strategy["type"],
+                            language_id=v,
                         ):
-                            # 如果已经存在用户自定义规则,设置为系统规则,跳过创建
+                            # 如果已经存在规则,设置为系统规则,跳过创建
                             hook_strategy_obj = HookStrategy.objects.filter(
-                                value=hook_strategy["value"], type=hook_strategy["type"], language_id=v, system_type=0
+                                value=hook_strategy["value"], type=hook_strategy["type"], language_id=v
                             ).get()
                             hook_strategy_obj.system_type = 1
+                            hook_strategy_obj.modified = True
                             hook_strategy_obj.save()
                             continue
                         del hook_strategy["language"]
