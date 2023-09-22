@@ -75,6 +75,7 @@ from dongtai_web.views.project_engines import ProjectEngines
 from dongtai_web.views.project_search import ProjectSearch
 from dongtai_web.views.project_summary import ProjectSummary
 from dongtai_web.views.project_token import ProjectToken
+from dongtai_web.views.project_type_summary_list import ProjectSummaryVulType
 from dongtai_web.views.project_version_add import ProjectVersionAdd
 from dongtai_web.views.project_version_current import ProjectVersionCurrent
 from dongtai_web.views.project_version_delete import ProjectVersionDelete
@@ -144,6 +145,7 @@ urlpatterns: list[URLResolver | URLPattern] = [
     path("project/delete", ProjectDel.as_view()),
     path("projects", Projects.as_view()),
     path("projects/summary/<int:id>", ProjectSummary.as_view()),
+    path("projects/summary/<int:id>/type_summary", ProjectSummaryVulType.as_view()),
     path("project/engines/<int:pid>", ProjectEngines.as_view()),
     path("project/search", ProjectSearch.as_view()),
     path("project/version/add", ProjectVersionAdd.as_view()),
