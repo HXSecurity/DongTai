@@ -1,31 +1,18 @@
-import time
 
+from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
+from rest_framework.serializers import ValidationError
 
 from dongtai_common.endpoint import R, UserEndPoint
-from dongtai_common.models.agent import IastAgent
-from dongtai_common.models.project_version import IastProjectVersion
-from dongtai_common.utils import const
+from dongtai_common.models.hook_type import HookType
+from dongtai_common.models.strategy import IastStrategyModel
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from dongtai_web.base.project_version import (
-    ProjectsVersionDataSerializer,
     get_project_version,
     get_project_version_by_id,
 )
-from dongtai_web.serializers.project import ProjectSerializer
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
-from dongtai_web.views.utils.commonstats import get_summary_by_project
-import time
-from collections.abc import Iterable
-
-from django.db.models import Count, Q, Value
-from django.db.models.query import QuerySet
-
-from dongtai_common.models.hook_type import HookType
-from dongtai_common.models.strategy import IastStrategyModel
-from dongtai_common.models.vul_level import IastVulLevel
-from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-from rest_framework.serializers import ValidationError
 
 
 class _DocumentArgsSerializer(serializers.Serializer):

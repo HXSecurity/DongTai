@@ -75,6 +75,7 @@ from dongtai_web.views.project_engines import ProjectEngines
 from dongtai_web.views.project_search import ProjectSearch
 from dongtai_web.views.project_summary import ProjectSummary
 from dongtai_web.views.project_token import ProjectToken
+from dongtai_web.views.project_type_summary_list import ProjectSummaryVulType
 from dongtai_web.views.project_version_add import ProjectVersionAdd
 from dongtai_web.views.project_version_current import ProjectVersionCurrent
 from dongtai_web.views.project_version_delete import ProjectVersionDelete
@@ -126,7 +127,6 @@ from dongtai_web.views.vuls import VulsEndPoint
 from dongtai_web.vul_log.vul_log_view import VulLogViewSet
 from dongtai_web.vul_recheck_payload.vul_recheck_payload import VulReCheckPayloadViewSet
 from static.i18n.views.setlang import LanguageSetting
-from dongtai_web.views.project_type_summary_list import ProjectSummaryVulType
 
 urlpatterns: list[URLResolver | URLPattern] = [
     path("user/<int:user_id>", UserDetailEndPoint.as_view()),
