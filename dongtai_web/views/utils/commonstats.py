@@ -175,7 +175,9 @@ def get_summary_by_project(project_id: int, project_version_id: int):
             }
             for item_type in typeArrKeys
         )
-
+    type_summary_total_count = sum(i["type_count"] for i in data["type_summary"])
+    for type_summary in data["type_summary"]:
+        type_summary["type_total_percentage"] = type_summary["type_total_percentage"] / type_summary_total_count
     current_timestamp, a_week_ago_timestamp, days = weeks_ago(week=1)
     daylist = []
     while days >= 0:
@@ -240,6 +242,9 @@ def get_summary_by_project(project_id: int, project_version_id: int):
                 }
             )
     data["level_count"] = levelNum
+    level_total_count = sum(i["num"] for i in data["level_count"])
+    for level in data["level_count"]:
+        level["level_total_percentage"] = level["num"] / level_total_count
     return data
 
 
