@@ -121,7 +121,7 @@ def check_response_header(method_pool):
         )
 
 
-def save_vul(vul_type, method_pool, position="", data=""):
+def save_vul(vul_type, method_pool, position="", data="", taint_value_position=None):
     if is_strategy_enable(vul_type, method_pool) is False:
         return
     vul_strategy = IastStrategyModel.objects.filter(
@@ -163,6 +163,7 @@ def save_vul(vul_type, method_pool, position="", data=""):
         vul.res_body = method_pool.res_body
         vul.taint_value = data
         vul.taint_position = position
+        vul.taint_value_position = taint_value_position
         vul.context_path = method_pool.context_path
         vul.client_ip = method_pool.clent_ip
         vul.counts = vul.counts + 1
@@ -211,6 +212,7 @@ def save_vul(vul_type, method_pool, position="", data=""):
             bottom_stack="",
             taint_value=data,
             taint_position=position,
+            taint_value_position=taint_value_position,
             agent=method_pool.agent,
             context_path=method_pool.context_path,
             counts=1,

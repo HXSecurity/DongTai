@@ -46,6 +46,7 @@ def check_response_content(method_pool):
                                 method_pool=method_pool,
                                 position=key,
                                 data=result.group(0),
+                                taint_value_position={key: [[result.start(0), result.end(0)]]},
                             )
                     except Exception as e:
                         logger.warning(

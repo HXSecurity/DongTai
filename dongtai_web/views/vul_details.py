@@ -328,6 +328,7 @@ class VulDetail(UserEndPoint):
             "project_id": project_id,
             "is_need_http_detail": is_need_http_detail(strategy_name),
             "has_vul_method_pool": VulMethodPool.objects.filter(vul_id=vul.id).exists(),
+            "taint_value_position": vul.taint_value_position,
         }
 
     def get_strategy(self):
