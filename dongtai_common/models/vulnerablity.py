@@ -50,7 +50,7 @@ class IastVulnerabilityModel(models.Model):
     bottom_stack = models.CharField(max_length=255, blank=True, default="")
     taint_value = models.CharField(max_length=4000, blank=True, default="")
     taint_position = models.CharField(max_length=255, blank=True, default="")
-    taint_value_position = models.JSONField(default={})
+    taint_value_position = models.JSONField(blank=True, null=True, default=dict)
     agent = models.ForeignKey(IastAgent, models.DO_NOTHING, blank=True)
     language = models.CharField(max_length=10, blank=True, default="")
     context_path = models.CharField(max_length=255, blank=True)
