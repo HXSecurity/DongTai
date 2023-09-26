@@ -64,7 +64,7 @@ class ProjectSummaryVulType(UserEndPoint):
             .values("strategy_id")
             .annotate(vul_count=Count("strategy_id"))
             .filter(vul_count__gt=0)
-            .order_by("vul_count")
+            .order_by("-vul_count")
         )
         data = {"type_summary": []}
         q = ~Q(hook_type_id=0)
