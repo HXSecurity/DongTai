@@ -193,3 +193,72 @@ class IastAgentRequestChainsTotalProjectGraphVec(models.Model):
         managed = get_managed()
         db_table = "iast_request_chains_total_project_graph_vec"
         unique_together = (("source_project", "target_project"),)
+
+
+class IastAgentRequestChainsTopoTotalProjectVersionGraph(models.Model):
+    graph_hash = models.CharField(
+        max_length=255,
+        blank=True,
+        unique=True,
+    )
+    dot_string = models.TextField()
+
+    class Meta:
+        managed = get_managed()
+        db_table = "iast_request_chains_topo_total_project_version_graph"
+
+
+class IastAgentRequestChainsTopoTotalProjectVersionGraphVec(models.Model):
+    total_project_version_graph = models.ForeignKey(
+        IastAgentRequestChainsTopoTotalProjectVersionGraph,
+        max_length=255,
+        blank=True,
+        to_field="graph_hash",
+        on_delete=models.CASCADE,
+        db_constraint=False,
+    )
+    source_project_version = models.ForeignKey(
+        IastProjectVersion,
+        models.DO_NOTHING,
+        blank=True,
+        default=-1,
+        db_constraint=False,
+        related_name="total_source_project_version_node",
+    )
+    target_project_version = models.ForeignKey(
+        IastProjectVersion,
+        models.DO_NOTHING,
+        blank=True,
+        default=-1,
+        db_constraint=False,
+        related_name="total_target_project_version_node",
+    )
+
+    class Meta:
+        managed = get_managed()
+        db_table = "iast_request_chains_topo_total_project_version_graph_vec"
+        unique_together = (("total_project_version_graph", "source_project_version", "target_project_version"),)
+
+
+class IastAgentRequestChainsTopoTotalProjectVersionGraphProjectRel(models.Model):
+    total_project_version_graph = models.ForeignKey(
+        IastAgentRequestChainsTopoTotalProjectVersionGraph,
+        max_length=255,
+        blank=True,
+        to_field="graph_hash",
+        on_delete=models.CASCADE,
+        db_constraint=False,
+    )
+    project_version = models.ForeignKey(
+        IastProjectVersion,
+        models.DO_NOTHING,
+        blank=True,
+        default=-1,
+        db_constraint=False,
+        db_index=True,
+    )
+
+    class Meta:
+        managed = get_managed()
+        db_table = "iast_request_chains_topo_total_project_version_graph_rel"
+        unique_together = (("total_project_version_graph", "project_version"),)
