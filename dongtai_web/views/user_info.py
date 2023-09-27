@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 
 from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.utils.request_type import Request
 from dongtai_conf.settings import SCA_SETUP
 
 logger = logging.getLogger("django")
@@ -20,7 +21,7 @@ class UserInfoEndpoint(UserEndPoint):
         summary=_("User Info"),
         tags=[_("User")],
     )
-    def get(self, request):
+    def get(self, request: Request):
         user = request.user
         group = Group.objects.filter(user=user).order_by("-id").first()
 
@@ -37,5 +38,6 @@ class UserInfoEndpoint(UserEndPoint):
                 else 0,
                 "role_name": "" if group is None else group.name,
                 "sca_setup": not SCA_SETUP,
+                "enable_totp": bool(user.totp_secret),
             }
         )
