@@ -995,6 +995,14 @@ DONGTAI_MAX_RATE_LIMIT = 10
 DONGTAI_REDIS_ES_UPDATE_BATCH_SIZE = 500
 DONGTAI_MAX_BATCH_TASK_CONCORRENCY = 5
 
+
+TANTIVY_STATE = config.get("tantivy", "enable") == "true"
+try:
+    TANTIVY_INDEX_PATH = config.get("tantivy", "index_path")
+except Exception:
+    TANTIVY_INDEX_PATH = "/tmp/tantivy/index_path"
+
+
 ELASTICSEARCH_STATE = config.get("elastic_search", "enable") == "true"
 
 
