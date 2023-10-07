@@ -94,6 +94,7 @@ pandas = "~=2.1.0"
 pydot = "*"
 more-itertools = "*"
 pyotp = "~=2.9.0"
+qrcode = "~=7.4"
 
 [dev-packages]
 
