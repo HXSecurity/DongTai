@@ -360,7 +360,6 @@ def heartbeat():
         )
         if resp.status_code == 200:
             logger.info("[dongtai_engine.tasks.heartbeat] send heartbeat data to OpenApi Service Successful.")
-            pass
         logger.info("[dongtai_engine.tasks.heartbeat] send heartbeat data to OpenApi Service Failure.")
     except Exception as e:
         logger.info(f"[dongtai_engine.tasks.heartbeat] send heartbeat data to OpenApi Service Error. reason is {e}")

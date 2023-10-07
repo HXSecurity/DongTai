@@ -37,18 +37,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
-          cache: "pip"
+      - name: Setup Python
+        uses: ./.github/actions/setup-python
       
       - name: Install dependencies
-        run: |
-          sudo apt-get install build-essential cmake ninja-build python3-dev cython3 pybind11-dev libre2-dev -y
-          python -m pip install --upgrade pip
-          pip install wheel
-          pip install coverage
-          pip install -r requirements.txt
+        run: pip install coverage
           
       - name: Django Unit Testing
         run: |
@@ -92,17 +85,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
-          cache: "pip"
+      - name: Setup Python
+        uses: ./.github/actions/setup-python
       
       - name: Install dependencies
         run: |
-          sudo apt-get install build-essential cmake ninja-build python3-dev cython3 pybind11-dev libre2-dev -y
-          python -m pip install --upgrade pip
-          pip install wheel
-          pip install -r requirements.txt
           pip install schemathesis
           pip install httpx
           

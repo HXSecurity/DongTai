@@ -995,6 +995,17 @@ DONGTAI_MAX_RATE_LIMIT = 10
 DONGTAI_REDIS_ES_UPDATE_BATCH_SIZE = 500
 DONGTAI_MAX_BATCH_TASK_CONCORRENCY = 5
 
+
+try:
+    TANTIVY_STATE = config.get("tantivy", "enable") == "true"
+except Exception:
+    TANTIVY_STATE = False
+try:
+    TANTIVY_INDEX_PATH = config.get("tantivy", "index_path")
+except Exception:
+    TANTIVY_INDEX_PATH = "/tmp/tantivy/index_path"
+
+
 ELASTICSEARCH_STATE = config.get("elastic_search", "enable") == "true"
 
 
@@ -1045,7 +1056,6 @@ def is_gevent_monkey_patched() -> bool:
 def set_asyncio_policy():
     state = is_gevent_monkey_patched()
     print(f"is in gevent patched : {state}")
-    pass
 
 
 #   disable until this package update
