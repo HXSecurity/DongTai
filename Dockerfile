@@ -8,16 +8,17 @@ ENV TZ=Asia/Shanghai
 
 RUN apt-get update -y \
     && apt install -y gettext gcc make cmake libmariadb-dev curl libc6-dev libxrender1 libxtst6 libxi6 unzip cron \
-    fonts-wqy-microhei vim build-essential ninja-build cython3 pybind11-dev libre2-dev locales git cargo \
+    fonts-wqy-microhei vim build-essential ninja-build cython3 pybind11-dev libre2-dev locales \
     # htop sysstat net-tools iproute2 procps lsof \
     zip libjpeg62 \
     && sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen \
     && ALIMARCH=`arch` && curl -L https://charts.dongtai.io/apk/${ALIMARCH}/wkhtmltopdf -o /usr/bin/wkhtmltopdf \
-    && chmod +x /usr/bin/wkhtmltopdf
+    && chmod +x /usr/bin/wkhtmltopdf \
+    && curl -L https://github.com/HXSecurity/tantivy-py/releases/download/0.21.0/tantivy-0.20.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl -o /tmp/tantivy-0.20.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
 
 COPY Pipfile .
 COPY Pipfile.lock .
-RUN pip install -U pip && pip install pipenv wheel && python3 -m pipenv sync --system -v
+RUN pip install -U pip && pip install pipenv wheel && python3 -m pipenv sync --system -v && pip install /tmp/tantivy-0.20.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
 
 COPY . /opt/dongtai
 WORKDIR /opt/dongtai
