@@ -1,5 +1,5 @@
 -i https://pypi.org/simple
-aliyun-python-sdk-core==2.13.36
+aliyun-python-sdk-core==2.14.0
 aliyun-python-sdk-core-v3==2.13.33
 aliyun-python-sdk-kms==2.16.2
 amqp==5.1.1; python_version >= '3.6'
@@ -9,26 +9,26 @@ attrs==23.1.0; python_version >= '3.7'
 autopep8==2.0.4; python_version >= '3.6'
 billiard==4.1.0; python_version >= '3.7'
 boto3==1.24.59; python_version >= '3.7'
-boto3-stubs==1.28.52; python_version >= '3.7'
+boto3-stubs==1.28.62; python_version >= '3.7'
 botocore==1.27.91; python_version >= '3.7'
-botocore-stubs==1.31.52; python_version >= '3.7' and python_version < '4.0'
+botocore-stubs==1.31.62; python_version >= '3.7' and python_version < '4.0'
 celery==5.3.0rc1; python_version >= '3.7'
 celery-singleton==0.3.1; python_version >= '3.6' and python_version < '4.0'
 certifi==2023.7.22; python_version >= '3.6'
-cffi==1.15.1
+cffi==1.16.0; python_version >= '3.8'
 chardet==5.2.0; python_version >= '3.7'
-charset-normalizer==3.2.0; python_full_version >= '3.7.0'
+charset-normalizer==3.3.0; python_full_version >= '3.7.0'
 click==8.1.7; python_version >= '3.7'
 click-didyoumean==0.3.0; python_full_version >= '3.6.2' and python_full_version < '4.0.0'
 click-plugins==1.1.1
 click-repl==0.3.0; python_version >= '3.6'
 crcmod==1.7
 cryptography==41.0.4; python_version >= '3.7'
-dataclasses-json==0.6.0; python_version >= '3.7' and python_version < '4.0'
+dataclasses-json==0.6.1; python_version >= '3.7' and python_version < '4.0'
 ddt==1.6.0
 defusedxml==0.7.1; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
 diff-match-patch==20230430; python_version >= '3.7'
-django==3.2.21; python_version >= '3.6'
+django==3.2.22; python_version >= '3.6'
 django-add-default-value==0.10.0
 django-celery-beat==2.2.0
 django-cors-headers==4.2.0; python_version >= '3.8'
@@ -44,8 +44,8 @@ django-ranged-response==0.2.0
 django-redis==5.2.0; python_version >= '3.6'
 django-rest-framework-proxy==1.6.0
 django-seriously==0.4.3; python_version >= '3.6'
-django-silk==5.0.3; python_version >= '3.7'
-django-simple-captcha==0.5.18
+django-silk==5.0.4; python_version >= '3.8'
+django-simple-captcha==0.5.20
 django-stubs[compatible-mypy]==1.15.0; python_version >= '3.7'
 django-stubs-ext==4.2.2; python_version >= '3.8'
 django-timezone-field==4.2.3; python_version >= '3.5'
@@ -64,7 +64,7 @@ et-xmlfile==1.1.0; python_version >= '3.6'
 flower==2.0.1; python_version >= '3.7'
 gevent==22.10.2; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4, 3.5'
 gprof2dot==2022.7.29; python_version >= '2.7'
-greenlet==2.0.2; platform_python_implementation == 'CPython'
+greenlet==3.0.0; platform_python_implementation == 'CPython'
 gunicorn==20.1.0; python_version >= '3.5'
 humanize==4.8.0; python_version >= '3.8'
 id-validator==1.0.20; python_version >= '3'
@@ -103,11 +103,12 @@ pycodestyle==2.11.0; python_version >= '3.8'
 pycparser==2.21
 pycryptodome==3.19.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
 pycryptodomex==3.14.1; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
-pydantic==1.10.12; python_version >= '3.7'
+pydantic==1.10.13; python_version >= '3.7'
 pydot==1.4.2; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
 pymysql==1.0.2; python_version >= '3.6'
 pyotp==2.9.0; python_version >= '3.7'
 pyparsing==3.1.1; python_full_version >= '3.6.8'
+pypng==0.20220715.0
 pyre2==0.3.6; python_version >= '3.6'
 pyrsistent==0.19.1; python_version >= '3.7'
 python-crontab==3.0.0
@@ -116,11 +117,12 @@ python-docx==0.8.11
 python-json-logger==2.0.7; python_version >= '3.6'
 pytz==2022.6
 pyyaml==6.0.1; python_version >= '3.6'
+qrcode==7.4.2; python_version >= '3.7'
 redis==4.4.4; python_version >= '3.7'
 requests==2.31.0; python_version >= '3.7'
 result==0.8.0; python_version >= '3.7'
 s3transfer==0.6.2; python_version >= '3.7'
-scipy==1.11.2; python_version < '3.13' and python_version >= '3.9'
+scipy==1.11.3; python_version < '3.13' and python_version >= '3.9'
 setuptools==65.5.1; python_version >= '3.7'
 shortuuid==1.0.11; python_version >= '3.5'
 simhash==2.1.2
@@ -129,15 +131,15 @@ sqlparse==0.4.4; python_version >= '3.5'
 tablib[html,ods,xls,xlsx,yaml]==3.5.0; python_version >= '3.8'
 tomli==2.0.1; python_version < '3.11'
 tornado==6.3.3; python_version >= '3.8'
-types-awscrt==0.19.1; python_version >= '3.7' and python_version < '4.0'
+types-awscrt==0.19.2; python_version >= '3.7' and python_version < '4.0'
 types-pymysql==1.1.0.1
 types-pyopenssl==23.2.0.2
 types-python-dateutil==2.8.19.14
 types-pytz==2023.3.1.1
-types-pyyaml==6.0.12.11
-types-redis==4.6.0.6
-types-requests==2.31.0.3
-types-s3transfer==0.6.2; python_version >= '3.7' and python_version < '4.0'
+types-pyyaml==6.0.12.12
+types-redis==4.6.0.7
+types-requests==2.31.0.6; python_version >= '3.7'
+types-s3transfer==0.7.0; python_version >= '3.7' and python_version < '4.0'
 types-urllib3==1.26.25.14
 typing-extensions==4.8.0; python_version >= '3.8'
 typing-inspect==0.9.0
@@ -147,8 +149,8 @@ urllib3==1.26.5; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.
 uwsgi==2.0.22
 uwsgitop==0.11
 vine==5.0.0; python_version >= '3.6'
-wcwidth==0.2.6
+wcwidth==0.2.8
 xlrd==2.0.1
 xlwt==1.3.0
 zope.event==5.0; python_version >= '3.7'
-zope.interface==6.0; python_version >= '3.7'
+zope.interface==6.1; python_version >= '3.7'
