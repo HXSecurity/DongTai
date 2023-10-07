@@ -8,8 +8,8 @@ ENV TZ=Asia/Shanghai
 
 RUN apt-get update -y \
     && apt install -y gettext gcc make cmake libmariadb-dev curl libc6-dev libxrender1 libxtst6 libxi6 unzip cron \
-    fonts-wqy-microhei vim build-essential ninja-build cython3 pybind11-dev libre2-dev locales \
-#   htop sysstat net-tools iproute2 procps lsof \
+    fonts-wqy-microhei vim build-essential ninja-build cython3 pybind11-dev libre2-dev locales git \
+    # htop sysstat net-tools iproute2 procps lsof \
     zip libjpeg62 \
     && sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen \
     && ALIMARCH=`arch` && curl -L https://charts.dongtai.io/apk/${ALIMARCH}/wkhtmltopdf -o /usr/bin/wkhtmltopdf \
