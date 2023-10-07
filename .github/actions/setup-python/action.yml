@@ -16,6 +16,7 @@ runs:
         cache: "pip"
 
     - name: Install dependencies
+      shell: bash
       run: |
         sudo apt-get install build-essential cmake ninja-build python3-dev cython3 pybind11-dev libre2-dev -y
         python -m pip install --upgrade pip
