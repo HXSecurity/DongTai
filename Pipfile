@@ -94,6 +94,7 @@ pandas = "~=2.1.0"
 pydot = "*"
 more-itertools = "*"
 pyotp = "~=2.9.0"
+tantivy = {git = "git+https://github.com/HXSecurity/tantivy-py"}
 
 [dev-packages]
 
