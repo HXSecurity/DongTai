@@ -996,7 +996,10 @@ DONGTAI_REDIS_ES_UPDATE_BATCH_SIZE = 500
 DONGTAI_MAX_BATCH_TASK_CONCORRENCY = 5
 
 
-TANTIVY_STATE = config.get("tantivy", "enable") == "true"
+try:
+    TANTIVY_STATE = config.get("tantivy", "enable") == "true"
+except Exception:
+    TANTIVY_STATE = False
 try:
     TANTIVY_INDEX_PATH = config.get("tantivy", "index_path")
 except Exception:

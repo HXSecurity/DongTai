@@ -289,10 +289,6 @@ Create the name of the service account to use
     method_pool_index = dongtai-iast-alias-dongtai-v1-method-pool
     asset_vul_index = dongtai-iast-alias-dongtai-v1-asset-vul
 
-    [tantivy]
-    enable = false 
-    index_path = /tmp/tantivy/index_path/
-
     [other]
     logging_level ={{.Values.logging_level}}
     cache_preheat =True
