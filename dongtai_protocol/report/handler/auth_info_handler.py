@@ -58,7 +58,6 @@ class AuthAddHandler(IReportHandler):
             )
             if len(auth_model):
                 logger.info("权限已存在,忽略")
-                pass
             else:
                 logger.info("新增权限")
                 IastOverpowerUserAuth(

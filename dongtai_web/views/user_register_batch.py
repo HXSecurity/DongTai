@@ -35,7 +35,6 @@ class UserRegisterEndPoint(SystemAdminEndPoint):
             )
         except Exception:
             self.email = None
-            pass
 
     def get(self, request):
         users = self.read_user_data()
@@ -76,7 +75,7 @@ class UserRegisterEndPoint(SystemAdminEndPoint):
                 )
                 logger.info(_("User {} has been created successfully").format(username))
         else:
-            logger.warn(_("Failed to create user, error message: token is incorrect"))
+            logger.warning(_("Failed to create user, error message: token is incorrect"))
         return R.success(msg=_("Account registration successful"))
 
     def read_user_data(self):

@@ -75,7 +75,7 @@ class UserLogin(UserEndPoint):
                         user_login.failed_login_time = timezone.now()
                         user_login.save()
                         return R.failure(msg="密码错误")
-                    logger.warn(
+                    logger.warning(
                         f"user [{username}] login failure, rease: {'user not exist' if user is None else 'user is disable'}"
                     )
                     return R.failure(status=202, msg=_("Login failed"))
