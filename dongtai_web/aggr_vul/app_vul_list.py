@@ -5,7 +5,7 @@ from typing import Any
 
 import pymysql
 from django.core.cache import cache
-from django.db.models import Count, F
+from django.db.models import Case, Count, F, When
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from elasticsearch import Elasticsearch
@@ -188,23 +188,24 @@ class GetAppVulsList(UserEndPoint):
                     es_query["search_keyword"] = keywords
                     tantivy_query["title"] = keywords
                     keywords = pymysql.converters.escape_string(keywords)
-                    order_list = ["-score"]
-                    fields.append("score")
+                    if not TANTIVY_STATE:
+                        order_list = ["-score"]
+                        fields.append("score")
 
-                    queryset = queryset.annotate(
-                        score=SearchLanguageMode(
-                            [
-                                F("search_keywords"),
-                                F("uri"),
-                                F("vul_title"),
-                                F("http_method"),
-                                F("http_protocol"),
-                                F("top_stack"),
-                                F("bottom_stack"),
-                            ],
-                            search_keyword="+" + keywords,
+                        queryset = queryset.annotate(
+                            score=SearchLanguageMode(
+                                [
+                                    F("search_keywords"),
+                                    F("uri"),
+                                    F("vul_title"),
+                                    F("http_method"),
+                                    F("http_protocol"),
+                                    F("top_stack"),
+                                    F("bottom_stack"),
+                                ],
+                                search_keyword="+" + keywords,
+                            )
                         )
-                    )
                 # 排序
                 order_type = APP_VUL_ORDER.get(str(ser.validated_data["order_type"]), "level_id")
                 order_type_desc = "-" if ser.validated_data["order_type_desc"] else ""
@@ -221,6 +222,7 @@ class GetAppVulsList(UserEndPoint):
                     vul_data = get_vul_list_from_elastic_search(projects, page=page, page_size=page_size, **es_query)
                 if TANTIVY_STATE:
                     ids = set()
+                    id_score = []
                     tantivy_query_str = ""
                     for key, value in tantivy_query.items():
                         if isinstance(value, str):
@@ -230,12 +232,20 @@ class GetAppVulsList(UserEndPoint):
                     try:
                         index = tantivy_index()
                         searcher = index.searcher()
-                        query = index.parse_query('"eighty-four days"', VUL_TANTIVY_FIELDS)
-                        for _best_score, best_doc_address in searcher.search(query, 3).hits:
+                        query = index.parse_query(tantivy_query_str, VUL_TANTIVY_FIELDS)
+                        for best_score, best_doc_address in searcher.search(query, 3).hits:
                             best_doc = searcher.doc(best_doc_address)
-                            ids.update(*best_doc["id"])
+                            ids.update(best_doc["id"])
+                            id_score.append((best_doc["id"][0], best_score))
                     except ValueError:
                         logger.exception("field to query in tantivy")
+
+                    preserved = Case(
+                        *(
+                            When(pk=pk, then=pos)
+                            for pos, pk in enumerate(x[0] for x in sorted(id_score, key=lambda x: x[1], reverse=True))
+                        )
+                    )
                     vul_data = (
                         IastVulnerabilityModel.objects.filter(
                             is_del=0,
@@ -244,7 +254,7 @@ class GetAppVulsList(UserEndPoint):
                             id__in=list(ids),
                         )
                         .values(*tuple(fields))
-                        .order_by(*tuple(order_list))[begin_num:end_num]
+                        .order_by(*tuple(order_list), preserved)[begin_num:end_num]
                     )
                 else:
                     vul_data = queryset.values(*tuple(fields)).order_by(*tuple(order_list))[begin_num:end_num]

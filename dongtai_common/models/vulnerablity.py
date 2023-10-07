@@ -220,7 +220,6 @@ def tantivy_schema() -> tantivy.Schema:
 
 
 def tantivy_index() -> tantivy.Index:
-    return tantivy.Index(
-        tantivy_schema(),
-        path=os.path.join(TANTIVY_INDEX_PATH, "vulnerability_index"),
-    )
+    path = os.path.join(TANTIVY_INDEX_PATH, "vulnerability_index")
+    os.makedirs(path, exist_ok=True)
+    return tantivy.Index(tantivy_schema(), path=path)

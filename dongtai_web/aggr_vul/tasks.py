@@ -2,10 +2,13 @@ import tantivy
 from celery import shared_task
 
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel, tantivy_index
+from dongtai_conf.settings import TANTIVY_STATE
 
 
 @shared_task(queue="dongtai-periodic-task")
 def update_vul_tantivy_index():
+    if not TANTIVY_STATE:
+        return
     index = tantivy_index()
     writer = index.writer()
     writer.delete_all_documents()
