@@ -22,3 +22,5 @@ runs:
         python -m pip install --upgrade pip
         pip install wheel maturin
         pip install -r requirements.txt
+        curl -L https://github.com/HXSecurity/tantivy-py/releases/download/0.21.0/tantivy-0.20.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl -o /tmp/tantivy-0.20.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+        pip install /tmp/tantivy-0.20.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
