@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('dongtai_common', '0034_auto_20231007_1200'),
+        ("dongtai_common", "0034_auto_20231007_1200"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='user',
-            name='phone',
+            model_name="user",
+            name="phone",
             field=models.CharField(blank=True, max_length=255),
         ),
     ]
