@@ -1,11 +1,25 @@
 import tantivy
 from celery import shared_task
+from celery_singleton import Singleton
+from django.db.models.signals import m2m_changed, post_delete, post_save
+from django.dispatch import receiver
 
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel, tantivy_index
 from dongtai_conf.settings import TANTIVY_STATE
 
 
-@shared_task(queue="dongtai-periodic-task")
+@receiver(post_delete, sender=IastVulnerabilityModel, dispatch_uid="update_vul_tantivy_index")
+@receiver(post_save, sender=IastVulnerabilityModel, dispatch_uid="update_vul_tantivy_index")
+@receiver(m2m_changed, sender=IastVulnerabilityModel, dispatch_uid="update_vul_tantivy_index")
+def update_vul_tantivy_index_receiver(sender, instance, **kwargs):
+    update_vul_tantivy_index.apply_async(countdown=120)
+
+
+@shared_task(
+    queue="dongtai-periodic-task",
+    base=Singleton,
+    lock_expiry=20,
+)
 def update_vul_tantivy_index():
     if not TANTIVY_STATE:
         return
