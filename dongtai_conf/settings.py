@@ -1090,3 +1090,14 @@ if os.getenv("DJANGOSILK", None) == "TRUE":
         "signature",
     }
     SILKY_PYTHON_PROFILER_BINARY = True
+
+
+# Baseline configuration.
+AUTH_LDAP_SERVER_URI = config.get("ldap", "server_uri", fallback="")
+
+AUTH_LDAP_BIND_DN = config.get("ldap", "ldap_bind_dn", fallback="")
+AUTH_LDAP_BIND_PASSWORD = config.get("ldap", "ldap_bind_password", fallback="")
+
+AUTH_LDAP_ALWAYS_UPDATE_USER = False
+
+AUTH_LDAP_READY = AUTH_LDAP_SERVER_URI != ""

@@ -95,6 +95,7 @@ pydot = "*"
 more-itertools = "*"
 pyotp = "~=2.9.0"
 qrcode = "~=7.4"
+django-auth-ldap = "==4.6.0"
 
 [dev-packages]
 
