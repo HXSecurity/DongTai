@@ -61,14 +61,15 @@ class SaaSUserManager(UserManager):
 class User(AbstractUser, PermissionsMixin):
     id = models.BigAutoField(primary_key=True)
     is_superuser = models.IntegerField(default=0)
-    phone = models.CharField(max_length=15, blank=True)
+    phone = models.CharField(blank=True, max_length=255)
     default_language = models.CharField(max_length=15, blank=True)
-    role = models.ForeignKey(IastRoleV2, models.DO_NOTHING, default=1, db_constraint=False)
+    role = models.ForeignKey(IastRoleV2, models.DO_NOTHING, default=2, db_constraint=False)
     is_global_permission = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
     failed_login_count = models.IntegerField(default=0)
     failed_login_time = models.DateTimeField(default=timezone.now)
     totp_secret = models.CharField(max_length=255, blank=True)
+    ldap_dn = models.CharField(max_length=1024, blank=True)
 
     objects = SaaSUserManager()
     using_department = None
