@@ -1003,7 +1003,7 @@ except Exception:
 try:
     TANTIVY_INDEX_PATH = config.get("tantivy", "index_path")
 except Exception:
-    TANTIVY_INDEX_PATH = urljoin(TMP_COMMON_PATH, "tantivy")
+    TANTIVY_INDEX_PATH = os.path.join(TMP_COMMON_PATH, "tantivy")
 
 
 ELASTICSEARCH_STATE = config.get("elastic_search", "enable") == "true"

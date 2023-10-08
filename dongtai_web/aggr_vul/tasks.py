@@ -1,3 +1,5 @@
+import logging
+
 import tantivy
 from celery import shared_task
 from celery_singleton import Singleton
@@ -6,6 +8,8 @@ from django.dispatch import receiver
 
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel, tantivy_index
 from dongtai_conf.settings import TANTIVY_STATE
+
+logger = logging.getLogger("dongtai-core")
 
 
 @receiver(post_delete, sender=IastVulnerabilityModel, dispatch_uid="update_vul_tantivy_index")
@@ -21,6 +25,7 @@ def update_vul_tantivy_index_receiver(sender, instance, **kwargs):
     lock_expiry=20,
 )
 def update_vul_tantivy_index():
+    logger.info("Start update vul tantivy index")
     if not TANTIVY_STATE:
         return
     index = tantivy_index()
@@ -60,3 +65,5 @@ def update_vul_tantivy_index():
         )
 
     writer.commit()
+
+    logger.info("Update vul tantivy index success!")
