@@ -999,11 +999,11 @@ DONGTAI_MAX_BATCH_TASK_CONCORRENCY = 5
 try:
     TANTIVY_STATE = config.get("tantivy", "enable") == "true"
 except Exception:
-    TANTIVY_STATE = False
+    TANTIVY_STATE = True
 try:
     TANTIVY_INDEX_PATH = config.get("tantivy", "index_path")
 except Exception:
-    TANTIVY_INDEX_PATH = "/tmp/tantivy/index_path"
+    TANTIVY_INDEX_PATH = urljoin(TMP_COMMON_PATH, "tantivy")
 
 
 ELASTICSEARCH_STATE = config.get("elastic_search", "enable") == "true"
