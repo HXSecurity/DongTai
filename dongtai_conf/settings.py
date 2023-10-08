@@ -1056,7 +1056,6 @@ def is_gevent_monkey_patched() -> bool:
 def set_asyncio_policy():
     state = is_gevent_monkey_patched()
     print(f"is in gevent patched : {state}")
-    pass
 
 
 #   disable until this package update
