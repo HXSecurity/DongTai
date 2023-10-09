@@ -1003,7 +1003,7 @@ except Exception:
 try:
     TANTIVY_INDEX_PATH = config.get("tantivy", "index_path")
 except Exception:
-    TANTIVY_INDEX_PATH = os.path.join(TMP_COMMON_PATH, "tantivy")
+    TANTIVY_INDEX_PATH = urljoin(TMP_COMMON_PATH, "tantivy")
 
 
 ELASTICSEARCH_STATE = config.get("elastic_search", "enable") == "true"
@@ -1099,5 +1099,6 @@ AUTH_LDAP_BIND_DN = config.get("ldap", "ldap_bind_dn", fallback="")
 AUTH_LDAP_BIND_PASSWORD = config.get("ldap", "ldap_bind_password", fallback="")
 
 AUTH_LDAP_ALWAYS_UPDATE_USER = False
-
 AUTH_LDAP_READY = AUTH_LDAP_SERVER_URI != ""
+# useless
+AUTH_LDAP_USER_DN_TEMPLATE = "uid=%(user)s,ou=users,dc=example,dc=com"
