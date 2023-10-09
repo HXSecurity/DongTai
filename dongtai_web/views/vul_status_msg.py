@@ -6,15 +6,8 @@ import logging
 from django.utils.translation import gettext_lazy as _
 
 from dongtai_common.endpoint import R, UserEndPoint
-from dongtai_common.models.vulnerablity import (
-    IastVulnerabilityModel,
-    IastVulnerabilityStatus,
-)
-from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
-from dongtai_web.vul_log.vul_log import log_change_status
 from dongtai_common.models.iast_vul_log import IastVulLog, MessageTypeChoices
-from rest_framework import serializers
-
+from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 
 logger = logging.getLogger("dongtai-webapi")
 

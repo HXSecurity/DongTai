@@ -14,7 +14,6 @@ from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.heartbeat import IastHeartbeat
 from dongtai_common.models.project import VulValidation
 from dongtai_common.models.replay_queue import IastReplayQueue
-from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from dongtai_common.utils import const
 from dongtai_common.utils.systemsettings import get_vul_validate
 from dongtai_protocol.report.handler.report_handler_interface import IReportHandler

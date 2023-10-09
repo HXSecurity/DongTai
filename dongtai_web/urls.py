@@ -119,6 +119,7 @@ from dongtai_web.views.vul_list_for_plugin import VulListEndPoint
 from dongtai_web.views.vul_method_pool_download import VulMethodPoolDownload
 from dongtai_web.views.vul_request_replay import RequestReplayEndPoint
 from dongtai_web.views.vul_status import VulStatus
+from dongtai_web.views.vul_status_msg import VulStatusMsg
 from dongtai_web.views.vul_summary import VulSummary
 from dongtai_web.views.vul_summary_project import VulSummaryProject
 from dongtai_web.views.vul_summary_type import VulSummaryType
@@ -127,7 +128,6 @@ from dongtai_web.views.vuls import VulsEndPoint
 from dongtai_web.vul_log.vul_log_view import VulLogViewSet
 from dongtai_web.vul_recheck_payload.vul_recheck_payload import VulReCheckPayloadViewSet
 from static.i18n.views.setlang import LanguageSetting
-from dongtai_web.views.vul_status_msg import VulStatusMsg
 
 urlpatterns: list[URLResolver | URLPattern] = [
     path("user/<int:user_id>", UserDetailEndPoint.as_view()),
