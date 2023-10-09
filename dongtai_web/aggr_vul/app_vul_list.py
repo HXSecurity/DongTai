@@ -220,12 +220,12 @@ class GetAppVulsList(UserEndPoint):
                 es_query["order"] = order_type_desc + order_type
                 if ELASTICSEARCH_STATE:
                     vul_data = get_vul_list_from_elastic_search(projects, page=page, page_size=page_size, **es_query)
-                if TANTIVY_STATE:
+                if TANTIVY_STATE and keywords:
                     ids = set()
                     id_score = []
                     tantivy_query_str = ""
                     for key, value in tantivy_query.items():
-                        if isinstance(value, str):
+                        if isinstance(value, (str, int)):
                             tantivy_query_str += f'+{key}:"{value}" '
                         elif isinstance(value, list):
                             tantivy_query_str += f"+{key}: IN [{' '.join(map(str, value))}] "
