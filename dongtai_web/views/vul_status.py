@@ -31,7 +31,7 @@ class VulStatusChangeArgsSerializer(serializers.Serializer):
         required=False, child=serializers.IntegerField(), default=[], help_text=_("Page index")
     )
     status_id = serializers.IntegerField(required=True, help_text=_("Document's corresponding programming language"))
-    addtional_msg = serializers.CharField(default=None, help_text=_("Document's corresponding programming language"))
+    addtional_msg = serializers.CharField(default="", help_text=_("Document's corresponding programming language"))
 
 
 class VulStatus(UserEndPoint):
