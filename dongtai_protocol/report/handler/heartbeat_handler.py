@@ -163,7 +163,6 @@ class HeartBeatHandler(IReportHandler):
                     success_vul_ids,
                     "验证中",
                 )
-                IastVulnerabilityModel.objects.filter(id__in=failure_vul_ids).update(latest_time=timestamp, status_id=1)
                 logger.info(_("Reproduction request issued successfully"))
                 logger.debug([i["id"] for i in replay_requests])
             except Exception as e:

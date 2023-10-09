@@ -12,6 +12,8 @@ from dongtai_common.models.vulnerablity import (
 )
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from dongtai_web.vul_log.vul_log import log_change_status
+from rest_framework import serializers
+
 
 logger = logging.getLogger("dongtai-webapi")
 
@@ -23,36 +25,20 @@ _ResponseSerializer = get_response_serializer(
 )
 
 
+class VulStatusChangeArgsSerializer(serializers.Serializer):
+    vul_id = serializers.IntegerField(help_text=_("Vul id"), required=False)
+    vul_ids = serializers.ListField(
+        required=False, child=serializers.IntegerField(), default=[], help_text=_("Page index")
+    )
+    status_id = serializers.IntegerField(required=True, help_text=_("Document's corresponding programming language"))
+    addtional_msg = serializers.CharField(default=None, help_text=_("Document's corresponding programming language"))
+
+
 class VulStatus(UserEndPoint):
     name = "api-v1-vuln-status"
     description = _("Modify the vulnerability status")
 
     @extend_schema_with_envcheck(
-        [],
-        [
-            {
-                "name": _("Update with status_id"),
-                "description": _("Update vulnerability status with status id."),
-                "value": {"id": 1, "status_id": 1},
-            },
-            {
-                "name": _("Update with status name(Not recommended)"),
-                "description": _("Update vulnerability status with status name."),
-                "value": {"id": 1, "status": "str"},
-            },
-        ],
-        [
-            {
-                "name": _("Get data sample"),
-                "description": _(
-                    "The aggregation results are programming language, risk level, vulnerability type, project"
-                ),
-                "value": {
-                    "status": 201,
-                    "msg": "Vulnerability status is modified to Confirmed",
-                },
-            }
-        ],
         tags=[_("Vulnerability")],
         summary=_("Vulnerability Status Modify"),
         description=_(
@@ -62,11 +48,14 @@ class VulStatus(UserEndPoint):
         Both can be obtained from the vulnerability status list API, and status_id is preferred."""
         ),
         response_schema=_ResponseSerializer,
+        request=VulStatusChangeArgsSerializer,
     )
     def post(self, request):
         vul_id = request.data.get("vul_id")
         vul_ids = request.data.get("vul_ids")
         status_id = request.data.get("status_id")
+        addtional_msg = request.data.get("addtional_msg", "")
+
         user = request.user
         user_id = user.id
         projects = request.user.get_projects()
@@ -85,5 +74,5 @@ class VulStatus(UserEndPoint):
                 ids.append(vul.id)
 
             #     queryset.filter(id__in=vul_ids).values_list('id', flat=True))
-            log_change_status(user_id, request.user.username, ids, vul_status.name)
+            log_change_status(user_id, request.user.username, ids, vul_status.name, addtional_msg)
         return R.success()
