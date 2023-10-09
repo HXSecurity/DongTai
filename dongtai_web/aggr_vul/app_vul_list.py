@@ -233,7 +233,9 @@ class GetAppVulsList(UserEndPoint):
                         index = tantivy_index()
                         searcher = index.searcher()
                         query = index.parse_query(tantivy_query_str, VUL_TANTIVY_FIELDS)
-                        for best_score, best_doc_address in searcher.search(query, 3).hits:
+                        for best_score, best_doc_address in searcher.search(
+                            query, limit=page_size, offset=begin_num
+                        ).hits:
                             best_doc = searcher.doc(best_doc_address)
                             ids.update(best_doc["id"])
                             id_score.append((best_doc["id"][0], best_score))
