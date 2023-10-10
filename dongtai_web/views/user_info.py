@@ -37,7 +37,10 @@ class UserInfoEndpoint(UserEndPoint):
                 if group.name == "system_admin"
                 else 0,
                 "role_name": "" if group is None else group.name,
+                "role_id": user.role_id,
                 "sca_setup": not SCA_SETUP,
                 "enable_totp": bool(user.totp_secret),
+                "is_wait_binding": user.role_id == 11,
+                "is_bind_ldap": bool(user.ldap_dn),
             }
         )
