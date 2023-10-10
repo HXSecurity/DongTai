@@ -4,6 +4,7 @@ from itertools import groupby
 from typing import Any
 
 import pymysql
+import tantivy
 from django.core.cache import cache
 from django.db.models import Case, Count, F, When
 from django.utils.translation import gettext_lazy as _
@@ -233,9 +234,21 @@ class GetAppVulsList(UserEndPoint):
                         index = tantivy_index()
                         searcher = index.searcher()
                         query = index.parse_query(tantivy_query_str, VUL_TANTIVY_FIELDS)
-                        for best_score, best_doc_address in searcher.search(
-                            query, limit=page_size, offset=begin_num
-                        ).hits:
+
+                        if ser.validated_data["order_type"]:
+                            result = searcher.search(
+                                query,
+                                limit=page_size,
+                                offset=begin_num,
+                                order_by_field=order_type,
+                                order=tantivy.Order.Desc
+                                if ser.validated_data["order_type_desc"]
+                                else tantivy.Order.Asc,
+                            )
+                        else:
+                            result = searcher.search(query, limit=page_size, offset=begin_num)
+
+                        for best_score, best_doc_address in result.hits:
                             best_doc = searcher.doc(best_doc_address)
                             ids.update(best_doc["id"])
                             id_score.append((best_doc["id"][0], best_score))

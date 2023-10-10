@@ -1,5 +1,6 @@
 import logging
 import os.path
+import shutil
 import uuid
 
 import tantivy
@@ -208,18 +209,26 @@ VUL_TANTIVY_FIELDS = [
 
 def tantivy_schema() -> tantivy.Schema:
     schema_builder = tantivy.SchemaBuilder()
-    schema_builder.add_integer_field("id", stored=True, indexed=True)
+    schema_builder.add_unsigned_field("id", stored=True, indexed=True, fast=True)
     schema_builder.add_text_field("title", stored=True, tokenizer_name="jieba")
-    schema_builder.add_integer_field("project_id", stored=True, indexed=True)
-    schema_builder.add_integer_field("project_version_id", stored=True, indexed=True)
+    schema_builder.add_unsigned_field("project_id", stored=True, indexed=True, fast=True)
+    schema_builder.add_unsigned_field("project_version_id", stored=True, indexed=True, fast=True)
     schema_builder.add_text_field("uri", stored=True, tokenizer_name="raw")
-    schema_builder.add_integer_field("strategy_id", stored=True, indexed=True)
-    schema_builder.add_integer_field("level_id", stored=True, indexed=True)
-    schema_builder.add_integer_field("status_id", stored=True, indexed=True)
+    schema_builder.add_unsigned_field("strategy_id", stored=True, indexed=True, fast=True)
+    schema_builder.add_unsigned_field("level_id", stored=True, indexed=True, fast=True)
+    schema_builder.add_unsigned_field("status_id", stored=True, indexed=True, fast=True)
+    schema_builder.add_unsigned_field("first_time", stored=True, indexed=True, fast=True)
+    schema_builder.add_unsigned_field("latest_time", stored=True, indexed=True, fast=True)
     return schema_builder.build()
 
 
 def tantivy_index() -> tantivy.Index:
     path = os.path.join(TANTIVY_INDEX_PATH, "vulnerability_index")
     os.makedirs(path, exist_ok=True)
-    return tantivy.Index(tantivy_schema(), path=path)
+    try:
+        return tantivy.Index(tantivy_schema(), path=path)
+    except Exception:
+        logger.exception("can not get open tantivy index, try remove index file and reopen")
+        shutil.rmtree(path)
+        os.makedirs(path, exist_ok=True)
+        return tantivy.Index(tantivy_schema(), path=path)
