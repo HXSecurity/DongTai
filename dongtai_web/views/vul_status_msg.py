@@ -29,7 +29,7 @@ class VulStatusMsg(UserEndPoint):
         response_schema=_ResponseSerializer,
     )
     def get(self, request, vul_id):
-        latest_log_msg = IastVulLog.objects.filter(msg_type=MessageTypeChoices.CHANGE_STATUS).first()
+        latest_log_msg = IastVulLog.objects.filter(vul_id=vul_id, msg_type=MessageTypeChoices.CHANGE_STATUS).last()
         if not latest_log_msg or "addtional_msg" not in latest_log_msg.meta_data:
             return R.success(data="")
         return R.success(data=latest_log_msg.meta_data["addtional_msg"])
