@@ -12,6 +12,7 @@ from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.utils.validate import save_hook_stratefile_sha1sum
 from dongtai_conf.settings import BASE_DIR
 from dongtai_protocol.views.hook_profiles import LANGUAGE_DICT
+from tqdm import tqdm
 
 
 class Command(BaseCommand):
@@ -29,7 +30,7 @@ class Command(BaseCommand):
             with open(os.path.join(POLICY_DIR, "sensitive_info_strategy.json")) as fp:
                 full_strategies.extend(json.load(fp, object_pairs_hook=OrderedDict))
         strategy_dict = {}
-        for strategy in full_strategies:
+        for strategy in tqdm(full_strategies, desc="strategy"):
             if IastStrategyModel.objects.filter(
                 vul_type=strategy["vul_type"],
                 system_type=1,
@@ -85,7 +86,7 @@ class Command(BaseCommand):
             with open(os.path.join(POLICY_DIR, f"{k.lower()}_hooktype.json")) as fp:
                 hooktypes = json.load(fp, object_pairs_hook=OrderedDict)
             hooktype_dict = {}
-            for hook_type in hooktypes:
+            for hook_type in tqdm(hooktypes, desc="hook_type"):
                 if HookType.objects.filter(
                     value=hook_type["value"],
                     type=hook_type["type"],
@@ -119,7 +120,7 @@ class Command(BaseCommand):
             HookStrategy.objects.filter(language_id=v, system_type=1).update(system_type=0)
             with open(os.path.join(POLICY_DIR, f"{k.lower()}_full_policy.json")) as fp:
                 full_policy = json.load(fp, object_pairs_hook=OrderedDict)
-            for policy in full_policy:
+            for policy in tqdm(full_policy, desc="policy"):
                 if policy["type"] == 4:
                     if policy["value"] not in strategy_dict:
                         continue
@@ -189,4 +190,17 @@ class Command(BaseCommand):
                 )
                 sensitive_info_rule_ids.append(obj.pk)
         IastSensitiveInfoRule.objects.filter(~Q(id__in=sensitive_info_rule_ids), system_type=1).delete()
+        update_fix_vul_dict = {}
+        if os.path.exists(os.path.join(POLICY_DIR, "vul_fix_extend.json")):
+            with open(os.path.join(POLICY_DIR, "vul_fix_extend.json")) as fp:
+                update_fix_vul_dict = json.load(fp, object_pairs_hook=OrderedDict)
+        need_update_fix_vul_strategies = IastStrategyModel.objects.filter(
+            vul_type__in=list(update_fix_vul_dict.keys()), system_type=1
+        ).all()
+        for strategy in tqdm(need_update_fix_vul_strategies, desc="vul_fix"):
+            if strategy.vul_type in update_fix_vul_dict:
+                update_content = update_fix_vul_dict[strategy.vul_type]
+                strategy.vul_fix = update_content["vul_fix"]
+                strategy.vul_fix_zh = update_content["vul_fix"]
+                strategy.vul_fix_en = update_content["vul_fix"]
         self.stdout.write(self.style.SUCCESS("Successfully load strategy ."))
