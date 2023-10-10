@@ -1,13 +1,12 @@
+from django.db.models import Q
 from django.forms.models import model_to_dict
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
-from rest_framework import viewsets
+from rest_framework import serializers, viewsets
 
 from dongtai_common.endpoint import R, UserEndPoint
-from dongtai_common.models.iast_vul_log import IastVulLog, MessageTypeChoices
-from django.db.models import Q
+from dongtai_common.models.iast_vul_log import IastVulLog
 from dongtai_web.common import VulType
-from rest_framework import serializers
 
 
 class VulLogListArgsSerializer(serializers.Serializer):
