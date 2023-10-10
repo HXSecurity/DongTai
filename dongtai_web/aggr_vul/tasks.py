@@ -16,6 +16,8 @@ logger = logging.getLogger("dongtai-core")
 @receiver(post_save, sender=IastVulnerabilityModel, dispatch_uid="update_vul_tantivy_index")
 @receiver(m2m_changed, sender=IastVulnerabilityModel, dispatch_uid="update_vul_tantivy_index")
 def update_vul_tantivy_index_receiver(sender, instance, **kwargs):
+    if not TANTIVY_STATE:
+        return
     update_vul_tantivy_index.apply_async(countdown=120)
 
 
