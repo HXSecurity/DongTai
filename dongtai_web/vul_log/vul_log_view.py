@@ -11,8 +11,8 @@ from dongtai_web.common import VulType
 
 
 class VulLogListArgsSerializer(serializers.Serializer):
-    vul_type = serializers.IntegerField(help_text="漏洞类型")
-    msg_type = serializers.IntegerField(required=False, help_text="消息类型")
+    vul_type = serializers.IntegerField(min_value=1, max_value=2, help_text="漏洞类型")
+    msg_type = serializers.IntegerField(min_value=1, max_value=5, required=False, help_text="消息类型")
 
 
 class VulLogViewSet(UserEndPoint, viewsets.ViewSet):
