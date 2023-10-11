@@ -3,6 +3,7 @@ from django.forms.models import model_to_dict
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from rest_framework import serializers, viewsets
+from rest_framework.serializers import ValidationError
 
 from dongtai_common.endpoint import R, UserEndPoint
 from dongtai_common.models.iast_vul_log import IastVulLog
@@ -10,8 +11,8 @@ from dongtai_web.common import VulType
 
 
 class VulLogListArgsSerializer(serializers.Serializer):
-    vul_type = serializers.IntegerField(help_text="漏洞类型")
-    msg_type = serializers.IntegerField(required=False, help_text="消息类型")
+    vul_type = serializers.IntegerField(min_value=1, max_value=2, help_text="漏洞类型")
+    msg_type = serializers.IntegerField(min_value=1, max_value=5, required=False, help_text="消息类型")
 
 
 class VulLogViewSet(UserEndPoint, viewsets.ViewSet):
@@ -25,6 +26,12 @@ class VulLogViewSet(UserEndPoint, viewsets.ViewSet):
     )
     def list(self, request, vul_id):
         data = []
+        ser = VulLogListArgsSerializer(data=request.GET)
+        try:
+            if ser.is_valid(True):
+                pass
+        except ValidationError as e:
+            return R.failure(data=e.detail)
         auth_users = self.get_auth_users(request.user)
         vul_type = VulType(int(request.query_params.get("vul_type", 1)))
         msg_type = int(request.query_params.get("msg_type", 1))
