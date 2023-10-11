@@ -4,6 +4,7 @@ from collections import OrderedDict
 
 from django.core.management.base import BaseCommand
 from django.db.models import Q
+from tqdm import tqdm
 
 from dongtai_common.models.hook_strategy import HookStrategy
 from dongtai_common.models.hook_type import HookType
@@ -12,7 +13,6 @@ from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.utils.validate import save_hook_stratefile_sha1sum
 from dongtai_conf.settings import BASE_DIR
 from dongtai_protocol.views.hook_profiles import LANGUAGE_DICT
-from tqdm import tqdm
 
 
 class Command(BaseCommand):
