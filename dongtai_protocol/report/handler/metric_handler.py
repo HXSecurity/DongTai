@@ -2,28 +2,15 @@
 # datetime:2020/10/23 11:56
 import logging
 import time
-from typing import Any
-
-from celery import shared_task
-from celery_singleton import Singleton
-from django.core.cache import cache
-from django.db.models import Q, QuerySet
-from django.utils.translation import gettext_lazy as _
 
 from dongtai_common.models.agent import (
     IastAgent,
     IastAgentDiskList,
 )
-from dongtai_common.models.heartbeat import IastHeartbeat
-from dongtai_common.models.project import VulValidation
-from dongtai_common.models.replay_queue import IastReplayQueue
 from dongtai_common.utils import const
-from dongtai_common.utils.systemsettings import get_vul_validate
+from dongtai_protocol.report.handler.heartbeat_handler import update_heartbeat
 from dongtai_protocol.report.handler.report_handler_interface import IReportHandler
 from dongtai_protocol.report.report_handler_factory import ReportHandler
-from dongtai_web.vul_log.vul_log import log_recheck_vul
-from dongtai_protocol.report.handler.heartbeat_handler import update_heartbeat
-from dongtai_common.models.agent import IastAgentDiskList
 
 logger = logging.getLogger("dongtai.openapi")
 

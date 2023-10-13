@@ -5,28 +5,30 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('dongtai_common', '0035_alter_user_phone'),
+        ("dongtai_common", "0035_alter_user_phone"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='iastagent',
-            name='jvm_user_dir',
-            field=models.CharField(default='', max_length=1024),
+            model_name="iastagent",
+            name="jvm_user_dir",
+            field=models.CharField(default="", max_length=1024),
         ),
         migrations.CreateModel(
-            name='IastAgentDiskList',
+            name="IastAgentDiskList",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('create_at', models.DateTimeField(auto_now_add=True, null=True)),
-                ('data', models.JSONField(default=dict)),
-                ('agent', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='dongtai_common.iastagent')),
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("create_at", models.DateTimeField(auto_now_add=True, null=True)),
+                ("data", models.JSONField(default=dict)),
+                (
+                    "agent",
+                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="dongtai_common.iastagent"),
+                ),
             ],
             options={
-                'db_table': 'iast_agent_disk_list',
-                'managed': True,
+                "db_table": "iast_agent_disk_list",
+                "managed": True,
             },
         ),
     ]

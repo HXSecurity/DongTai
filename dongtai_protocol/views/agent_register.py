@@ -252,7 +252,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             version_name = param.get("projectVersion", "V1.0")
             version_name = version_name if version_name else "V1.0"
             template_id = param.get("projectTemplateId", None)
-            jvm_user_dir = param.get("jvmUserDirectory", "")
+            param.get("jvmUserDirectory", "")
             if template_id is not None:
                 template = IastProjectTemplate.objects.filter(pk=template_id).first()
                 if not template:
