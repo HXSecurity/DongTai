@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # datetime:2020/10/23 11:56
 import logging
+import os
 import time
 
 from dongtai_common.models.agent import (
@@ -11,7 +12,6 @@ from dongtai_common.utils import const
 from dongtai_protocol.report.handler.heartbeat_handler import update_heartbeat
 from dongtai_protocol.report.handler.report_handler_interface import IReportHandler
 from dongtai_protocol.report.report_handler_factory import ReportHandler
-import os
 
 logger = logging.getLogger("dongtai.openapi")
 
