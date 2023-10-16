@@ -71,7 +71,7 @@ class ReportHandler:
                 host = settings.config.get("log_service", "host")
                 port = settings.config.getint("log_service", "port")
                 if not host or not port:
-                    logger.error("log service must config host and post")
+                    logger.info("log service must config host and post")
                     cls.log_service_disabled = True
                 srv = LogService(host, port)
                 if srv.create_socket():

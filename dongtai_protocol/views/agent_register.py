@@ -332,7 +332,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
 
             return R.success(data={"id": agent_id, "coreAutoStart": core_auto_start})
         except Exception as e:
-            logger.error(f"探针注册失败,原因:{e}", exc_info=True)
+            logger.info(f"探针注册失败,原因:{e}", exc_info=True)
             return R.failure(msg="探针注册失败")
 
     @staticmethod
@@ -407,7 +407,7 @@ def get_ipaddress(network: str):
     except KeyError:
         return ""
     except Exception as e:
-        logger.error(e, exc_info=True)
+        logger.info(e, exc_info=True)
         return ""
     else:
         return res
