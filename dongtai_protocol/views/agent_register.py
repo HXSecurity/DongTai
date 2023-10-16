@@ -43,7 +43,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
     description = "引擎注册"
 
     @staticmethod
-    def register_agent(token, version, language, project_name, user, project_version):
+    def register_agent(token, version, language, project_name, user, project_version, jvm_user_dir=""):
         project = IastProject.objects.values("id").filter(name=project_name).first()
         is_audit = AgentRegisterEndPoint.get_is_audit()
         project_id = -1
@@ -76,6 +76,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                 language=language,
                 is_audit=is_audit,
                 allow_report=allow_report,
+                jvm_user_dir=jvm_user_dir,
             )
         else:
             IastAgent.objects.filter(pk=agent_id).update(
@@ -252,7 +253,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             version_name = param.get("projectVersion", "V1.0")
             version_name = version_name if version_name else "V1.0"
             template_id = param.get("projectTemplateId", None)
-            param.get("jvmUserDirectory", "")
+            jvm_user_dir = param.get("jvmUserDirectory", "")
             if template_id is not None:
                 template = IastProjectTemplate.objects.filter(pk=template_id).first()
                 if not template:
@@ -294,6 +295,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                     version=version,
                     project_version=project_version,
                     user=user,
+                    jvm_user_dir=jvm_user_dir,
                 )
             else:
                 agent_id = self.register_agent(
@@ -303,6 +305,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                     version=version,
                     user=user,
                     project_version=None,
+                    jvm_user_dir=jvm_user_dir,
                 )
 
             self.register_server(
@@ -367,6 +370,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
         language,
         is_audit,
         allow_report,
+        jvm_user_dir="",
     ):
         if exist_project:
             IastAgent.objects.filter(
@@ -390,6 +394,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             is_audit=is_audit,
             allow_report=allow_report,
             department_id=1,
+            jvm_user_dir=jvm_user_dir,
         )
         return agent.id
 
