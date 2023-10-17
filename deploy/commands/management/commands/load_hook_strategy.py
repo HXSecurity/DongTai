@@ -154,7 +154,10 @@ class Command(BaseCommand):
                         ):
                             # 如果已经存在规则,设置为系统规则,跳过创建
                             hook_strategy_obj = HookStrategy.objects.filter(
-                                value=hook_strategy["value"], type=hook_strategy["type"], language_id=v
+                                value=hook_strategy["value"],
+                                type=hook_strategy["type"],
+                                language_id=v,
+                                enable__in=(0, 1),  # 兼容假删除
                             ).get()
                             hook_strategy_obj.system_type = 1
                             hook_strategy_obj.modified = True
