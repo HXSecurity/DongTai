@@ -235,7 +235,7 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
             ~Q(enable=const.DELETE),
             language_id=ser.validated_data["language_id"],
             type=type_,
-            value=rule_value,
+            value__contains=rule_value,
         ).exists():
             return R.failure(msg="Already exists same rule")
 
