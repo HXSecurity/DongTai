@@ -352,6 +352,26 @@
                 "command": "",
                 "ignore_blacklist": false,
                 "ignore_internal": false,
+                "inherit": "all",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "com.greenpineyu.fel.parser.AntlrParser.parse(java.lang.String)"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "Fel\u8868\u8fbe\u5f0f\u6ce8\u5165"
+    },
+    {
+        "details": [
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "true",
                 "source": "P1",
                 "stack_blacklist": [],
@@ -560,6 +580,59 @@
                 "command": "",
                 "ignore_blacklist": false,
                 "ignore_internal": false,
+                "inherit": "all",
+                "source": "P3",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "R",
+                "track": "false",
+                "untags": [],
+                "value": "org.apache.commons.jexl3.internal.Engine.createScript(org.apache.commons.jexl3.JexlFeatures,org.apache.commons.jexl3.JexlInfo,java.lang.String,java.lang.String[])"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "Jexl\u8868\u8fbe\u5f0f\u6ce8\u5165"
+    },
+    {
+        "details": [
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "O",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "org.apache.commons.jexl3.internal.Script.execute(org.apache.commons.jexl3.JexlContext)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "O",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "org.apache.commons.jexl3.internal.Script.execute(org.apache.commons.jexl3.JexlContext,java.lang.Object[])"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "Jexl\u8868\u8fbe\u5f0f\u6ce8\u5165"
+    },
+    {
+        "details": [
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "O",
                 "stack_blacklist": [],
@@ -586,6 +659,39 @@
         "enable": 1,
         "type": 1,
         "value": "Kafka\u4f20\u64ad"
+    },
+    {
+        "details": [
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "P2",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "O|R",
+                "track": "false",
+                "untags": [],
+                "value": "org.apache.logging.log4j.spi.AbstractLogger.info(java.lang.String,java.lang.Object)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "P5",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "O|R",
+                "track": "false",
+                "untags": [],
+                "value": "org.apache.logging.log4j.spi.AbstractLogger.logIfEnabled(java.lang.String,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.String,java.lang.Object)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "Log4j"
     },
     {
         "details": [
@@ -796,6 +902,26 @@
         "enable": 1,
         "type": 1,
         "value": "Propagator:Hessian"
+    },
+    {
+        "details": [
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "com.ql.util.express.ExpressRunner.parseInstructionSet(java.lang.String)"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "QLExpress\u7ec4\u4ef6\u8868\u8fbe\u5f0f\u6ce8\u5165"
     },
     {
         "details": [
@@ -2718,19 +2844,6 @@
                 "value": "java.lang.StringBuilder.substring(int,int)"
             },
             {
-                "command": "SUBSET(P1,P2)",
-                "ignore_blacklist": false,
-                "ignore_internal": false,
-                "inherit": "false",
-                "source": "O",
-                "stack_blacklist": [],
-                "tags": [],
-                "target": "R",
-                "track": "false",
-                "untags": [],
-                "value": "java.lang.StringBuilder.substring(int,int)"
-            },
-            {
                 "command": "KEEP()",
                 "ignore_blacklist": false,
                 "ignore_internal": false,
@@ -3305,41 +3418,7 @@
                 "untags": [
                     "url-decoded"
                 ],
-                "value": "javax.servlet.http.HttpServletResponse.encodeRedirectUrl(java.lang.String)"
-            },
-            {
-                "command": "",
-                "ignore_blacklist": false,
-                "ignore_internal": false,
-                "inherit": "true",
-                "source": "P1",
-                "stack_blacklist": [],
-                "tags": [
-                    "url-encoded"
-                ],
-                "target": "R",
-                "track": "false",
-                "untags": [
-                    "url-decoded"
-                ],
                 "value": "javax.servlet.http.HttpServletResponse.encodeURL(java.lang.String)"
-            },
-            {
-                "command": "",
-                "ignore_blacklist": false,
-                "ignore_internal": false,
-                "inherit": "true",
-                "source": "P1",
-                "stack_blacklist": [],
-                "tags": [
-                    "url-encoded"
-                ],
-                "target": "R",
-                "track": "false",
-                "untags": [
-                    "url-decoded"
-                ],
-                "value": "javax.servlet.http.HttpServletResponse.encodeUrl(java.lang.String)"
             },
             {
                 "command": "",
