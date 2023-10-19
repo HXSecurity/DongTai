@@ -4878,6 +4878,29 @@
                 "untags": [
                     "url-decoded"
                 ],
+                "value": "javax.servlet.http.HttpServletResponse.encodeRedirectUrl(java.lang.String)"
+            },
+            {
+                "command": "",
+                "created_by": 1,
+                "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "language": 1,
+                "modified": false,
+                "source": "P1",
+                "stack_blacklist": [],
+                "system_type": 1,
+                "tags": [
+                    "url-encoded"
+                ],
+                "target": "R",
+                "track": "false",
+                "type": 1,
+                "untags": [
+                    "url-decoded"
+                ],
                 "value": "javax.servlet.http.HttpServletResponse.encodeURL(java.lang.String)"
             },
             {

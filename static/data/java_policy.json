@@ -3418,6 +3418,23 @@
                 "untags": [
                     "url-decoded"
                 ],
+                "value": "javax.servlet.http.HttpServletResponse.encodeRedirectUrl(java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [
+                    "url-encoded"
+                ],
+                "target": "R",
+                "track": "false",
+                "untags": [
+                    "url-decoded"
+                ],
                 "value": "javax.servlet.http.HttpServletResponse.encodeURL(java.lang.String)"
             },
             {
