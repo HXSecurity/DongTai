@@ -14,7 +14,7 @@ class VulLogListArgsSerializer(serializers.Serializer):
     vul_type = serializers.IntegerField(min_value=1, max_value=2, help_text="漏洞类型")
     msg_type = serializers.IntegerField(min_value=1, max_value=5, required=False, help_text="消息类型")
     start_time = serializers.IntegerField(required=False, help_text="开始时间")
-    end_time = serializers.IntegerField(required=False,  help_text="结束时间")
+    end_time = serializers.IntegerField(required=False, help_text="结束时间")
 
 
 class VulLogViewSet(UserEndPoint, viewsets.ViewSet):
@@ -44,8 +44,8 @@ class VulLogViewSet(UserEndPoint, viewsets.ViewSet):
             q = q & Q(asset_vul_id=vul_id)
         if "msg_type" in request.query_params and msg_type:
             q = q & Q(msg_type=msg_type)
-        if "start_time" in request.query_params and "end_time" in request.query_params :
-            q = q & Q(datetime__gt=request.query_params["start_time"],datetime__lt=request.query_params["end_time"])
+        if "start_time" in request.query_params and "end_time" in request.query_params:
+            q = q & Q(datetime__gt=request.query_params["start_time"], datetime__lt=request.query_params["end_time"])
         data = IastVulLog.objects.filter(q).all()
 
         return R.success([model_to_dict(i) for i in data])

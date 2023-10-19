@@ -236,6 +236,7 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
             language_id=ser.validated_data["language_id"],
             type=type_,
             value__contains=rule_value,
+            value=rule_value,
         ).exists():
             return R.failure(msg="Already exists same rule")
 
