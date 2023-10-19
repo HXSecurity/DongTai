@@ -364,19 +364,6 @@
                 "target": "R",
                 "track": "false",
                 "untags": [],
-                "value": "builtins.str.fstring"
-            },
-            {
-                "command": "",
-                "ignore_blacklist": false,
-                "ignore_internal": false,
-                "inherit": "false",
-                "source": "P",
-                "stack_blacklist": [],
-                "tags": [],
-                "target": "R",
-                "track": "false",
-                "untags": [],
                 "value": "builtins.str.join"
             },
             {
