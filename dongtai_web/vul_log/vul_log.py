@@ -12,7 +12,7 @@ def log_change_status(user_id: int, user_name: str, vul_id: list, vul_status: st
         del kwargs["kwargs"]
     msg = (
         f"id为{user_id}的用户{user_name}修改漏洞状态为{vul_status}"
-        if addtional_msg
+        if not addtional_msg
         else f"id为{user_id}的用户{user_name}修改漏洞状态为{vul_status} 评论: {addtional_msg}"
     )
 
