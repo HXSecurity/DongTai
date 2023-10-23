@@ -203,7 +203,7 @@ def update_admin_role(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("dongtai_common", "0026_auto_20230918_1413"),
+        ("dongtai_common", "0035_alter_user_phone"),
     ]
 
     operations = [
