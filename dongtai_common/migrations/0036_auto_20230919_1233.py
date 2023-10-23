@@ -197,8 +197,8 @@ def update_admin_role(apps, schema_editor):
             {"id": 56, "label": "消息通知"},
         ],
     }
-    IastRoleV2.object.filter(name="管理员", is_admin=True).update(permission=new_admin_permission)
-    IastRoleV2.object.filter(name="普通用户", is_admin=True).update(permission=new_user_permission)
+    IastRoleV2.objects.filter(name="管理员", is_admin=True).update(permission=new_admin_permission)
+    IastRoleV2.objects.filter(name="普通用户", is_admin=True).update(permission=new_user_permission)
 
 
 class Migration(migrations.Migration):
