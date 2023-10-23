@@ -202,7 +202,7 @@ def update_admin_role(apps, schema_editor):
     IastRoleV2.objects.filter(id=2).update(permission=new_user_permission)
     IastRoleV2.objects.create(
         id=-1,
-        name="empty_permission",
+        name="empty",
         is_preset=True,
         status=1,
         permission=empty_permission,
