@@ -76,9 +76,9 @@ jobs:
           context: .
           push: true
           platforms: linux/amd64
-          tags: | 
-            registry.cn-hongkong.aliyuncs.com/secnium/dongtai-server:${{ steps.version.outputs.GITHUB_REF }}-latest
-            registry.cn-hongkong.aliyuncs.com/secnium/dongtai-server:${{ steps.version.outputs.GITHUB_REF }}-1.0.${{github.run_number}}
+          tags: |
+            hktingyun.tencentcloudcr.com/dongtai/dongtai-server:${{ steps.version.outputs.GITHUB_REF }}-latest
+            hktingyun.tencentcloudcr.com/dongtai/dongtai-server:${{ steps.version.outputs.GITHUB_REF }}-1.0.${{github.run_number}}
 
       - name: deploy to cluster
         uses: HXSecurity/kubectl-helm-action@main

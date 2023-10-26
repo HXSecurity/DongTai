@@ -19,6 +19,7 @@ healthcheck: true
 logstash: "true"
 migrate: true
 
+imagePullSecrets: aliyun-registry-secret
 nodeSelector:
   kubernetes.io/os: linux
   kubernetes.io/arch: amd64
