@@ -64,25 +64,33 @@ jobs:
           username: ${{ secrets.ALIYUN_DOCKERHUB_USER }}
           password: ${{ secrets.ALIYUN_DOCKERHUB_PASSWORD }}
           
-      - name: Setup Ossutil
-        uses: manyuanrong/setup-ossutil@v2.0
-        with:
-          endpoint: ${{ secrets.ALIYUN_OSS_ENDPOINT }}
-          access-key-id: ${{ secrets.ALIYUN_OSS_KEY_ID }}
-          access-key-secret: ${{ secrets.ALIYUN_OSS_KEY_SECRET }}
       - run: |
-          echo "${{ github.event.repository.name }},version,${{ env.iast_version }}" >> version.txt && \
-          echo "${{ github.event.repository.name }},commit_hash,${GITHUB_SHA}" >> version.txt && \
-          cat version.txt
-          ossutil cp -rf version.txt oss://huoqi-public/iast/release-version/${{ github.event.repository.name }}/${{ env.iast_version }}/version.txt
-          ossutil cp oss://dongtai/agent/java/${{ inputs.agent_version }}/ ./ --include "*.jar" -r
-          [ ! -f ./dongtai-agent.jar ] && echo "$FILE does not exist."
-          [ ! -f ./dongtai-agent.jar ] && ossutil cp oss://dongtai/agent/java/latest/ ./ --include "*.jar" -r
-          [ ! -f ./dongtai-agent.jar ] && echo "$FILE does not exist."
-          ossutil cp oss://dongtai/agent/python/ ./  --include "*.tar.gz" -r
-          ossutil cp oss://dongtai/agent/php/ ./  --include "*.tar.gz" -r
           echo "REPLACE INTO project_version_control (version, component_name, component_version_hash) VALUES('${{ env.iast_version }}', '${{ github.event.repository.name }}', '${GITHUB_SHA}');" >> ./deploy/docker/version.sql
 
+      - name: Upload COS java
+        uses: zkqiang/tencent-cos-action@v0.1.0
+        with:
+          args: download -rs /agent/java/latest/ ./ --include "*.jar"
+          secret_id: ${{ secrets.TENSECRET_ID }}
+          secret_key: ${{ secrets.TENSECRET_KEY }}
+          bucket: dongtai-helm-charts-1251882848
+          region: ap-hongkong
+      - name: Upload COS python
+        uses: zkqiang/tencent-cos-action@v0.1.0
+        with:
+          args: download -rs /agent/python/ ./ --include "*.tar.gz"
+          secret_id: ${{ secrets.TENSECRET_ID }}
+          secret_key: ${{ secrets.TENSECRET_KEY }}
+          bucket: dongtai-helm-charts-1251882848
+          region: ap-hongkong
+      - name: Upload COS php
+        uses: zkqiang/tencent-cos-action@v0.1.0
+        with:
+          args: download -rs /agent/php/ ./ --include "*.tar.gz"
+          secret_id: ${{ secrets.TENSECRET_ID }}
+          secret_key: ${{ secrets.TENSECRET_KEY }}
+          bucket: dongtai-helm-charts-1251882848
+          region: ap-hongkong
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v2
       - name: Setup Docker Buildx
@@ -136,24 +144,32 @@ jobs:
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
         
-      - name: Setup ossutil
-        uses: manyuanrong/setup-ossutil@v2.0
-        with:
-          endpoint: ${{ secrets.CHART_OSS_ENDPOINT }}
-          access-key-id: ${{ secrets.CHART_OSS_ACCESS_KEY_ID }}
-          access-key-secret: ${{ secrets.CHART_OSS_ACCESS_KEY_SECRET }}
 
       - name: Download existed repo files
         run: |
           sed -i "s#tag: latest#tag: ${{ env.iast_version }}#g" deploy/kubernetes/helm/values.yaml
-          ossutil cp -rf  oss://dongtai-helm-charts/iast/ ~/helm/repo/  --include dongtai-iast-*.tgz --exclude "index.yaml"
+      - name: Upload COS php
+        uses: zkqiang/tencent-cos-action@v0.1.0
+        with:
+          args: download -rs /iast/ ~/helm/repo/ --include dongtai-iast-*.tgz --ignore "index.yaml"
+          secret_id: ${{ secrets.TENSECRET_ID }} 
+          secret_key: ${{ secrets.TENSECRET_KEY }}
+          bucket: dongtai-helm-charts-1251882848
+          region: ap-hongkong
 
       - name: Create helm package
         run: |
           helm package deploy/kubernetes/helm  -d ~/helm/repo --app-version ${{ env.iast_version }} --version ${{ env.iast_version }}
           helm repo index ~/helm/repo/ --url ${{ secrets.DONGTAI_IAST_CHART_REPO_URL }}
 
-      - name: Push helm chart to repo
-        run: |
-          ossutil cp -rf ~/helm/repo/dongtai-iast-${{ env.iast_version }}.tgz  oss://dongtai-helm-charts/iast/
-          ossutil cp -rf ~/helm/repo/index.yaml  oss://dongtai-helm-charts/iast/
+
+      - name: Upload COS 2
+        uses: zkqiang/tencent-cos-action@v0.1.0
+        with:
+          args: upload -rs ~/helm/repo/dongtai-iast-${{ env.iast_version }}.tgz /iast/ && upload -rs ~/helm/repo/index.yaml /iast/
+          secret_id: ${{ secrets.TENSECRET_ID }}
+          secret_key: ${{ secrets.TENSECRET_KEY }}
+          bucket: dongtai-helm-charts-1251882848
+          region: ap-hongkong
+
+          
