@@ -46,25 +46,24 @@ jobs:
           #bash .github/workflows/config_update.sh
           #bash .github/workflows/config_update.sh "${{ steps.release.outputs.VERSION }}"
 
-      - name: Setup Ossutil
-        uses: manyuanrong/setup-ossutil@v2.0
+      - name: Upload COS
+        if: ${{ steps.version.outputs.GITHUB_REF }} == develop
+        uses: zkqiang/tencent-cos-action@v0.1.0
         with:
-          endpoint: ${{ secrets.CHART_OSS_ENDPOINT }}
-          access-key-id: ${{ secrets.CHART_OSS_ACCESS_KEY_ID }}
-          access-key-secret: ${{ secrets.CHART_OSS_ACCESS_KEY_SECRET }}
-          
-      - name: Download Agent dev
-#        if: ${{ steps.version.outputs.GITHUB_REF }} == develop || ${{ steps.version.outputs.GITHUB_REF }} == beta || ${{ steps.version.outputs.GITHUB_REF }} == main
-        run: |
-          if [ ${{ steps.version.outputs.GITHUB_REF }} = develop ] ; then ossutil cp oss://dongtai-helm-charts/agent_test/java/latest/ ./ --include "*.jar" -r
-          else  ossutil cp oss://dongtai-helm-charts/agent_${{ steps.version.outputs.GITHUB_REF }}/java/latest/ ./ --include "*.jar" -r
-          fi
-
-      - name: Download Agent  ${{ inputs.agent_version }}
-        if: ${{ inputs.agent_version }}
-        run: |
-          ossutil cp oss://dongtai/agent/java/${{ inputs.agent_version }}/ ./ --include "*.jar" -r
-
+          args: download -rs /agent_test/java/latest/ ./ --include "*.jar"
+          secret_id: ${{ secrets.TENSECRET_ID }}
+          secret_key: ${{ secrets.TENSECRET_KEY }}
+          bucket: dongtai-helm-charts-1251882848
+          region: ap-hongkong
+      - name: Upload COS bets
+        if: ${{ steps.version.outputs.GITHUB_REF }} == beta || ${{ steps.version.outputs.GITHUB_REF }} == main
+        uses: zkqiang/tencent-cos-action@v0.1.0
+        with:
+          args: download -rs /agent_${{ steps.version.outputs.GITHUB_REF }}/java/latest/ ./ --include "*.jar"
+          secret_id: ${{ secrets.TENSECRET_ID }}
+          secret_key: ${{ secrets.TENSECRET_KEY }}
+          bucket: dongtai-helm-charts-1251882848
+          region: ap-hongkong
       - name: Generate version file
         run: |
           echo "REPLACE INTO project_version_control (version, component_name, component_version_hash) VALUES('${{ github.run_number }}.0.0', '${{ github.event.repository.name }}', '${GITHUB_SHA}');" >> ./deploy/docker/version.sql
