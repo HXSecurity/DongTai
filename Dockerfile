@@ -16,7 +16,7 @@ RUN apt-get update -y \
   && ALIMARCH=`arch` && curl -L https://charts.dongtai.io/apk/${ALIMARCH}/wkhtmltopdf -o /usr/bin/wkhtmltopdf \
   && chmod +x /usr/bin/wkhtmltopdf \
   && if [ "aarch64" = "$ALIMARCH" ] ; then curl -L https://github.com/HXSecurity/tantivy-py/releases/download/0.21.0/tantivy-0.20.1-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl -o /tmp/tantivy-0.20.1-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl; \
-  && else curl -L https://github.com/HXSecurity/tantivy-py/releases/download/0.21.0/tantivy-0.20.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl -o /tmp/tantivy-0.20.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl; fi
+  else curl -L https://github.com/HXSecurity/tantivy-py/releases/download/0.21.0/tantivy-0.20.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl -o /tmp/tantivy-0.20.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl; fi
 
 COPY Pipfile .
 COPY Pipfile.lock .
