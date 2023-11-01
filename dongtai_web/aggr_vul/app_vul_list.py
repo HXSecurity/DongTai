@@ -1,10 +1,12 @@
+import logging
 from collections import defaultdict
 from itertools import groupby
 from typing import Any
 
 import pymysql
+import tantivy
 from django.core.cache import cache
-from django.db.models import Count, F
+from django.db.models import Case, Count, F, When
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from elasticsearch import Elasticsearch
@@ -18,15 +20,17 @@ from dongtai_common.models import APP_LEVEL_RISK, APP_VUL_ORDER
 from dongtai_common.models.agent_method_pool import VulMethodPool
 from dongtai_common.models.dast_integration import IastDastIntegrationRelation
 from dongtai_common.models.vulnerablity import (
+    VUL_TANTIVY_FIELDS,
     IastVulnerabilityDocument,
     IastVulnerabilityModel,
     IastVulnerabilityStatus,
+    tantivy_index,
 )
 from dongtai_common.utils.const import OPERATE_GET
 from dongtai_common.utils.db import SearchLanguageMode
 from dongtai_conf import settings
 from dongtai_conf.patch import patch_point, to_patch
-from dongtai_conf.settings import ELASTICSEARCH_STATE
+from dongtai_conf.settings import ELASTICSEARCH_STATE, TANTIVY_STATE
 from dongtai_engine.elatic_search.data_correction import data_correction_interpetor
 from dongtai_web.aggregation.aggregation_common import turnIntListOfStr
 from dongtai_web.serializers.aggregation import AggregationArgsSerializer
@@ -34,6 +38,8 @@ from dongtai_web.serializers.vul import VulSerializer
 from dongtai_web.utils import get_response_serializer
 
 INT_LIMIT: int = 2**64 - 1
+
+logger = logging.getLogger("dongtai-webapi")
 
 
 class AppVulSerializer(serializers.ModelSerializer):
@@ -124,32 +130,39 @@ class GetAppVulsList(UserEndPoint):
                     return R.failure()
                 keywords = ser.validated_data.get("keywords", "")
                 es_query = {}
+                tantivy_query = {}
                 # 从项目列表进入 绑定项目id
                 if ser.validated_data.get("bind_project_id", 0):
                     queryset = queryset.filter(project_id=ser.validated_data.get("bind_project_id"))
                     es_query["bind_project_id"] = ser.validated_data.get("bind_project_id")
+                    tantivy_query["project_id"] = ser.validated_data.get("bind_project_id")
                 # 项目版本号
                 if ser.validated_data.get("project_version_id", 0):
                     queryset = queryset.filter(project_version_id=ser.validated_data.get("project_version_id"))
                     es_query["project_version_id"] = ser.validated_data.get("project_version_id")
+                    tantivy_query["project_version_id"] = ser.validated_data.get("project_version_id")
                 ser, queryset, es_query = patch_point(ser, queryset, es_query)
                 if ser.validated_data.get("uri", ""):
                     queryset = queryset.filter(uri=ser.validated_data.get("uri", ""))
+                    tantivy_query["uri"] = ser.validated_data.get("uri")
                 # 漏洞类型筛选
                 if ser.validated_data.get("hook_type_id_str", ""):
                     vul_type_list = turnIntListOfStr(ser.validated_data.get("hook_type_id_str", ""))
                     queryset = queryset.filter(strategy_id__in=vul_type_list)
                     es_query["strategy_ids"] = vul_type_list
+                    tantivy_query["strategy_id"] = vul_type_list
                 # 漏洞等级筛选
                 if ser.validated_data.get("level_id_str", ""):
                     level_id_list = turnIntListOfStr(ser.validated_data.get("level_id_str", ""))
                     queryset = queryset.filter(level_id__in=level_id_list)
                     es_query["level_ids"] = level_id_list
+                    tantivy_query["level_id"] = level_id_list
                 # 按状态筛选
                 if ser.validated_data.get("status_id_str", ""):
                     status_id_list = turnIntListOfStr(ser.validated_data.get("status_id_str", ""))
                     queryset = queryset.filter(status_id__in=status_id_list)
                     es_query["status_ids"] = status_id_list
+                    tantivy_query["status_id"] = status_id_list
 
                 order_list = []
                 fields = [
@@ -174,24 +187,26 @@ class GetAppVulsList(UserEndPoint):
                 ]
                 if keywords:
                     es_query["search_keyword"] = keywords
+                    tantivy_query["title"] = keywords
                     keywords = pymysql.converters.escape_string(keywords)
-                    order_list = ["-score"]
-                    fields.append("score")
+                    if not TANTIVY_STATE:
+                        order_list = ["-score"]
+                        fields.append("score")
 
-                    queryset = queryset.annotate(
-                        score=SearchLanguageMode(
-                            [
-                                F("search_keywords"),
-                                F("uri"),
-                                F("vul_title"),
-                                F("http_method"),
-                                F("http_protocol"),
-                                F("top_stack"),
-                                F("bottom_stack"),
-                            ],
-                            search_keyword="+" + keywords,
+                        queryset = queryset.annotate(
+                            score=SearchLanguageMode(
+                                [
+                                    F("search_keywords"),
+                                    F("uri"),
+                                    F("vul_title"),
+                                    F("http_method"),
+                                    F("http_protocol"),
+                                    F("top_stack"),
+                                    F("bottom_stack"),
+                                ],
+                                search_keyword="+" + keywords,
+                            )
                         )
-                    )
                 # 排序
                 order_type = APP_VUL_ORDER.get(str(ser.validated_data["order_type"]), "level_id")
                 order_type_desc = "-" if ser.validated_data["order_type_desc"] else ""
@@ -206,6 +221,56 @@ class GetAppVulsList(UserEndPoint):
                 es_query["order"] = order_type_desc + order_type
                 if ELASTICSEARCH_STATE:
                     vul_data = get_vul_list_from_elastic_search(projects, page=page, page_size=page_size, **es_query)
+                if TANTIVY_STATE and keywords:
+                    ids = set()
+                    id_score = []
+                    tantivy_query_str = ""
+                    for key, value in tantivy_query.items():
+                        if isinstance(value, (str, int)):
+                            tantivy_query_str += f'+{key}:"{value}" '
+                        elif isinstance(value, list):
+                            tantivy_query_str += f"+{key}: IN [{' '.join(map(str, value))}] "
+                    try:
+                        index = tantivy_index()
+                        searcher = index.searcher()
+                        query = index.parse_query(tantivy_query_str, VUL_TANTIVY_FIELDS)
+
+                        if ser.validated_data["order_type"]:
+                            result = searcher.search(
+                                query,
+                                limit=page_size,
+                                offset=begin_num,
+                                order_by_field=order_type,
+                                order=tantivy.Order.Desc
+                                if ser.validated_data["order_type_desc"]
+                                else tantivy.Order.Asc,
+                            )
+                        else:
+                            result = searcher.search(query, limit=page_size, offset=begin_num)
+
+                        for best_score, best_doc_address in result.hits:
+                            best_doc = searcher.doc(best_doc_address)
+                            ids.update(best_doc["id"])
+                            id_score.append((best_doc["id"][0], best_score))
+                    except ValueError:
+                        logger.exception("field to query in tantivy")
+
+                    preserved = Case(
+                        *(
+                            When(pk=pk, then=pos)
+                            for pos, pk in enumerate(x[0] for x in sorted(id_score, key=lambda x: x[1], reverse=True))
+                        )
+                    )
+                    vul_data = (
+                        IastVulnerabilityModel.objects.filter(
+                            is_del=0,
+                            project_id__gt=0,
+                            project__in=projects,
+                            id__in=list(ids),
+                        )
+                        .values(*tuple(fields))
+                        .order_by(*tuple(order_list), preserved)[begin_num:end_num]
+                    )
                 else:
                     vul_data = queryset.values(*tuple(fields)).order_by(*tuple(order_list))[begin_num:end_num]
         except ValidationError as e:

@@ -1,7 +1,6 @@
 #!/usr/local/env python
 import logging
 import time
-from datetime import timedelta
 
 from captcha.models import CaptchaStore
 from django.contrib.auth import authenticate, login
@@ -12,6 +11,7 @@ from drf_spectacular.utils import extend_schema
 from dongtai_common.endpoint import R, UserEndPoint
 from dongtai_common.models.user import User
 from dongtai_common.utils.request_type import Request
+from dongtai_conf.patch import patch_point, to_patch
 
 logger = logging.getLogger("dongtai-webapi")
 
@@ -26,6 +26,7 @@ class UserLogin(UserEndPoint):
         summary=_("User login"),
         tags=[_("User")],
     )
+    @to_patch
     def post(self, request: Request):
         """{
         'username': "",
@@ -46,16 +47,9 @@ class UserLogin(UserEndPoint):
                     password = request.data["password"]
                     user: User | None = authenticate(username=username, password=password)  # type: ignore
                     if user is not None:
-                        current_time = timezone.now()
-                        delta = current_time - user.failed_login_time
-                        if (
-                            (user.failed_login_count == 6 and delta < timedelta(minutes=1))
-                            or (user.failed_login_count == 7 and delta < timedelta(minutes=5))
-                            or (user.failed_login_count == 8 and delta < timedelta(minutes=15))
-                            or (user.failed_login_count == 9 and delta < timedelta(minutes=60))
-                            or user.failed_login_count >= 10
-                        ):
-                            return R.failure(status=206, msg="账号已被锁定")
+                        user, login_result = patch_point(user, None)
+                        if login_result is not None:
+                            return login_result
                         user.failed_login_count = 0
                         user.save()
                         login(request, user)
@@ -81,7 +75,7 @@ class UserLogin(UserEndPoint):
                         user_login.failed_login_time = timezone.now()
                         user_login.save()
                         return R.failure(msg="密码错误")
-                    logger.warn(
+                    logger.warning(
                         f"user [{username}] login failure, rease: {'user not exist' if user is None else 'user is disable'}"
                     )
                     return R.failure(status=202, msg=_("Login failed"))

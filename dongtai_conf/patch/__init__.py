@@ -92,6 +92,14 @@ def to_patch(to_patch_func: Callable[..., Any]):
 
 
 def patch(patch_func: Callable[..., Any], patch_id: int = 0):
+    @overload
+    def wrapper(func: Callable[[Unpack[tuple[T]]], T]):
+        ...
+
+    @overload
+    def wrapper(func: Callable[[Unpack[Ts]], tuple[Unpack[Ts]]]):
+        ...
+
     def wrapper(func: Callable[..., Any]):
         to_patch_func = getattr(patch_func, "to_patch_func", None)
         if to_patch_func is None:

@@ -24,6 +24,10 @@ spec:
         app: {{ template "dongtai.fullname" . }}-worker-es
         {{- include "dongtai.labels" .  | nindent 8 }}
     spec:
+{{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      - name: {{ .Values.imagePullSecrets }}
+  {{- end }}
 {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}

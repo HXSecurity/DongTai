@@ -75,6 +75,7 @@ from dongtai_web.views.project_engines import ProjectEngines
 from dongtai_web.views.project_search import ProjectSearch
 from dongtai_web.views.project_summary import ProjectSummary
 from dongtai_web.views.project_token import ProjectToken
+from dongtai_web.views.project_type_summary_list import ProjectSummaryVulType
 from dongtai_web.views.project_version_add import ProjectVersionAdd
 from dongtai_web.views.project_version_current import ProjectVersionCurrent
 from dongtai_web.views.project_version_delete import ProjectVersionDelete
@@ -118,6 +119,7 @@ from dongtai_web.views.vul_list_for_plugin import VulListEndPoint
 from dongtai_web.views.vul_method_pool_download import VulMethodPoolDownload
 from dongtai_web.views.vul_request_replay import RequestReplayEndPoint
 from dongtai_web.views.vul_status import VulStatus
+from dongtai_web.views.vul_status_msg import VulStatusMsg
 from dongtai_web.views.vul_summary import VulSummary
 from dongtai_web.views.vul_summary_project import VulSummaryProject
 from dongtai_web.views.vul_summary_type import VulSummaryType
@@ -144,6 +146,7 @@ urlpatterns: list[URLResolver | URLPattern] = [
     path("project/delete", ProjectDel.as_view()),
     path("projects", Projects.as_view()),
     path("projects/summary/<int:id>", ProjectSummary.as_view()),
+    path("projects/summary/<int:id>/type_summary", ProjectSummaryVulType.as_view()),
     path("project/engines/<int:pid>", ProjectEngines.as_view()),
     path("project/search", ProjectSearch.as_view()),
     path("project/version/add", ProjectVersionAdd.as_view()),
@@ -158,6 +161,7 @@ urlpatterns: list[URLResolver | URLPattern] = [
     path("vuln/summary_project", VulSummaryProject.as_view()),
     path("vuln/<int:id>", VulDetail.as_view()),
     path("vuln/status", VulStatus.as_view()),
+    path("vuln/<int:vul_id>/statusmsg", VulStatusMsg.as_view()),
     path("vuln/delete/<int:id>", VulDelete.as_view()),
     path("vuln/<int:id>/method_pool", VulMethodPoolDownload.as_view()),
     path("vul/status_list", VulnerabilityStatusView.as_view()),
@@ -309,6 +313,7 @@ urlpatterns.extend(
         path("api/v2/agents", AgentListv2.as_view({"get": "pagenation_list"})),
         path("api/v2/agents/summary", AgentListv2.as_view({"get": "summary"})),
         path("api/v2/agents/stat", AgentListv2.as_view({"get": "agent_stat"})),
+        path("api/v2/agents/versions", AgentListv2.as_view({"get": "agent_versions"})),
         # 组件漏洞 汇总
         path("api/v2/app_vul_list_content", GetAppVulsList.as_view()),
         path("api/v2/app_vul_summary", GetAppVulsSummary.as_view()),

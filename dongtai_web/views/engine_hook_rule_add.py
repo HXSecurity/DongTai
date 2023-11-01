@@ -2,6 +2,7 @@
 import logging
 import time
 
+from django.db.models import Q
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
@@ -231,7 +232,11 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
         )
 
         if HookStrategy.objects.filter(
-            language_id=ser.validated_data["language_id"], type=type_, value=rule_value
+            ~Q(enable=const.DELETE),
+            language_id=ser.validated_data["language_id"],
+            type=type_,
+            value__contains=rule_value,
+            value=rule_value,
         ).exists():
             return R.failure(msg="Already exists same rule")
 

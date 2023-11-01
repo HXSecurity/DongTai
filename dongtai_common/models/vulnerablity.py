@@ -1,6 +1,9 @@
 import logging
+import os.path
+import shutil
 import uuid
 
+import tantivy
 from django.core.cache import cache
 from django.db import models
 from django_elasticsearch_dsl import Document, fields
@@ -15,7 +18,7 @@ from dongtai_common.models.server import IastServer
 from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.models.vul_level import IastVulLevel
 from dongtai_common.utils.settings import get_managed
-from dongtai_conf.settings import VULNERABILITY_INDEX
+from dongtai_conf.settings import TANTIVY_INDEX_PATH, VULNERABILITY_INDEX
 
 logger = logging.getLogger("dongtai-core")
 
@@ -190,3 +193,42 @@ class IastVulnerabilityDocument(Document):
         auto_refresh = False
 
         ignore_signals = False
+
+
+VUL_TANTIVY_FIELDS = [
+    "id",
+    "title",
+    "project_id",
+    "project_version_id",
+    "uri",
+    "strategy_id",
+    "level_id",
+    "status_id",
+]
+
+
+def tantivy_schema() -> tantivy.Schema:
+    schema_builder = tantivy.SchemaBuilder()
+    schema_builder.add_unsigned_field("id", stored=True, indexed=True, fast=True)
+    schema_builder.add_text_field("title", stored=True, tokenizer_name="jieba")
+    schema_builder.add_unsigned_field("project_id", stored=True, indexed=True, fast=True)
+    schema_builder.add_unsigned_field("project_version_id", stored=True, indexed=True, fast=True)
+    schema_builder.add_text_field("uri", stored=True, tokenizer_name="raw")
+    schema_builder.add_unsigned_field("strategy_id", stored=True, indexed=True, fast=True)
+    schema_builder.add_unsigned_field("level_id", stored=True, indexed=True, fast=True)
+    schema_builder.add_unsigned_field("status_id", stored=True, indexed=True, fast=True)
+    schema_builder.add_unsigned_field("first_time", stored=True, indexed=True, fast=True)
+    schema_builder.add_unsigned_field("latest_time", stored=True, indexed=True, fast=True)
+    return schema_builder.build()
+
+
+def tantivy_index() -> tantivy.Index:
+    path = os.path.join(TANTIVY_INDEX_PATH, "vulnerability_index")
+    os.makedirs(path, exist_ok=True)
+    try:
+        return tantivy.Index(tantivy_schema(), path=path)
+    except Exception:
+        logger.exception("can not get open tantivy index, try remove index file and reopen")
+        shutil.rmtree(path)
+        os.makedirs(path, exist_ok=True)
+        return tantivy.Index(tantivy_schema(), path=path)

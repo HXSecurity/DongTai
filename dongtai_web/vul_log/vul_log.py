@@ -5,12 +5,17 @@ from dongtai_common.models.iast_vul_log import IastVulLog, MessageTypeChoices
 logger = logging.getLogger("dongtai-webapi")
 
 
-def log_change_status(user_id: int, user_name: str, vul_id: list, vul_status: str):
+def log_change_status(user_id: int, user_name: str, vul_id: list, vul_status: str, addtional_msg: str = ""):
     kwargs = locals()
     logger.debug(kwargs)
     if "kwargs" in kwargs:
         del kwargs["kwargs"]
-    msg = f"id为{user_id}的用户{user_name}修改漏洞状态为{vul_status}"
+    msg = (
+        f"id为{user_id}的用户{user_name}修改漏洞状态为{vul_status}"
+        if not addtional_msg
+        else f"id为{user_id}的用户{user_name}修改漏洞状态为{vul_status} 评论: {addtional_msg}"
+    )
+
     IastVulLog.objects.bulk_create(
         [
             IastVulLog(

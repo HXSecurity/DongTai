@@ -1,0 +1,26 @@
+name: Setup Python
+description: Setup Python
+
+inputs:
+  python-version:
+    description: Python version
+    required: false
+    default: "3.10"
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-python@v4
+      with:
+        python-version: ${{ inputs.python-version }}
+        cache: "pip"
+
+    - name: Install dependencies
+      shell: bash
+      run: |
+        sudo apt-get install build-essential cmake ninja-build python3-dev cython3 pybind11-dev libre2-dev libsasl2-dev python3-dev libldap2-dev libssl-dev -y
+        python -m pip install --upgrade pip
+        pip install wheel maturin
+        pip install -r requirements.txt
+        curl -L https://github.com/HXSecurity/tantivy-py/releases/download/0.21.0/tantivy-0.20.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl -o /tmp/tantivy-0.20.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+        pip install /tmp/tantivy-0.20.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl

@@ -4,6 +4,7 @@ from collections import OrderedDict
 
 from django.core.management.base import BaseCommand
 from django.db.models import Q
+from tqdm import tqdm
 
 from dongtai_common.models.hook_strategy import HookStrategy
 from dongtai_common.models.hook_type import HookType
@@ -29,7 +30,7 @@ class Command(BaseCommand):
             with open(os.path.join(POLICY_DIR, "sensitive_info_strategy.json")) as fp:
                 full_strategies.extend(json.load(fp, object_pairs_hook=OrderedDict))
         strategy_dict = {}
-        for strategy in full_strategies:
+        for strategy in tqdm(full_strategies, desc="strategy"):
             if IastStrategyModel.objects.filter(
                 vul_type=strategy["vul_type"],
                 system_type=1,
@@ -85,7 +86,7 @@ class Command(BaseCommand):
             with open(os.path.join(POLICY_DIR, f"{k.lower()}_hooktype.json")) as fp:
                 hooktypes = json.load(fp, object_pairs_hook=OrderedDict)
             hooktype_dict = {}
-            for hook_type in hooktypes:
+            for hook_type in tqdm(hooktypes, desc="hook_type"):
                 if HookType.objects.filter(
                     value=hook_type["value"],
                     type=hook_type["type"],
@@ -119,7 +120,7 @@ class Command(BaseCommand):
             HookStrategy.objects.filter(language_id=v, system_type=1).update(system_type=0)
             with open(os.path.join(POLICY_DIR, f"{k.lower()}_full_policy.json")) as fp:
                 full_policy = json.load(fp, object_pairs_hook=OrderedDict)
-            for policy in full_policy:
+            for policy in tqdm(full_policy, desc="policy"):
                 if policy["type"] == 4:
                     if policy["value"] not in strategy_dict:
                         continue
@@ -153,7 +154,10 @@ class Command(BaseCommand):
                         ):
                             # 如果已经存在规则,设置为系统规则,跳过创建
                             hook_strategy_obj = HookStrategy.objects.filter(
-                                value=hook_strategy["value"], type=hook_strategy["type"], language_id=v
+                                value=hook_strategy["value"],
+                                type=hook_strategy["type"],
+                                language_id=v,
+                                enable__in=(0, 1),  # 兼容假删除
                             ).get()
                             hook_strategy_obj.system_type = 1
                             hook_strategy_obj.modified = True
@@ -189,4 +193,17 @@ class Command(BaseCommand):
                 )
                 sensitive_info_rule_ids.append(obj.pk)
         IastSensitiveInfoRule.objects.filter(~Q(id__in=sensitive_info_rule_ids), system_type=1).delete()
+        update_fix_vul_dict = {}
+        if os.path.exists(os.path.join(POLICY_DIR, "vul_fix_extend.json")):
+            with open(os.path.join(POLICY_DIR, "vul_fix_extend.json")) as fp:
+                update_fix_vul_dict = json.load(fp, object_pairs_hook=OrderedDict)
+        need_update_fix_vul_strategies = IastStrategyModel.objects.filter(
+            vul_type__in=list(update_fix_vul_dict.keys()), system_type=1
+        ).all()
+        for strategy in tqdm(need_update_fix_vul_strategies, desc="vul_fix"):
+            if strategy.vul_type in update_fix_vul_dict:
+                update_content = update_fix_vul_dict[strategy.vul_type]
+                strategy.vul_fix = update_content["vul_fix"]
+                strategy.vul_fix_zh = update_content["vul_fix"]
+                strategy.vul_fix_en = update_content["vul_fix"]
         self.stdout.write(self.style.SUCCESS("Successfully load strategy ."))
