@@ -151,7 +151,7 @@ jobs:
       - name: Upload COS php
         uses: zkqiang/tencent-cos-action@v0.1.0
         with:
-          args: download -rs /iast/ ~/helm/repo/ --include dongtai-iast-*.tgz --ignore "index.yaml"
+          args: download -rs iast/ ~/helm/repo/  --ignore "index.yaml"
           secret_id: ${{ secrets.TENSECRET_ID }} 
           secret_key: ${{ secrets.TENSECRET_KEY }}
           bucket: dongtai-helm-charts-1251882848
