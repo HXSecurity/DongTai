@@ -133,7 +133,7 @@ def get_response_serializer(data_serializer=None, msg_list=None, status_msg_keyp
     msg_list = ["success"] if msg_list is None else msg_list
     status_list = [201] if status_list is None else status_list
     return type(
-        str(uuid.uuid1()),
+        str(uuid.uuid4()),
         (serializers.Serializer,),
         {
             "status": serializers.IntegerField(

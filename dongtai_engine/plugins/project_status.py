@@ -3,10 +3,14 @@ from time import time
 
 from celery import shared_task
 from celery.apps.worker import logger
+from django.db.models import Q
 
 from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.message import IastMessage, IastMessageType
 from dongtai_common.models.profile import IastProfile
 from dongtai_common.models.project import IastProject, ProjectStatus
+from dongtai_common.models.user import User
+from dongtai_engine.signals import send_notify
 
 PROJECT_WARNING_TIME_KEY = "project_warning_time"
 DEFAULT_PROJECT_WARNING_TIME = {"error_time": 2 * 7, "offline_time": 3 * 30}
@@ -52,6 +56,26 @@ def update_project_status() -> None:
             project.save(update_fields=("status", "last_has_online_agent_time"))
 
         if old_status != project.status:
+            send_notify.send_robust(sender=update_project_status, project_id=project.id)
+
+            authed_user_ids = User.objects.filter(
+                Q(deleted=False)
+                & (
+                    Q(is_global_permission=True)
+                    | Q(iastprojectgroup__projects=project.id)
+                    | Q(auth_projects=project.id)
+                )
+            ).values_list("id", flat=True)
+            IastMessage.objects.bulk_create(
+                IastMessage(
+                    message=f"{project.name}】项目状态变更为【{ProjectStatus.names[project.status]}】",
+                    relative_url=project.get_url(),
+                    create_time=time(),
+                    message_type=IastMessageType.objects.get(pk=2),
+                    to_user_id=user_id,
+                )
+                for user_id in authed_user_ids
+            )
             logger.info(f"update project status: {project} from {old_status} to {project.status}")
 
     logger.info("检测项目状态更新结束")

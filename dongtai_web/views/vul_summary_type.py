@@ -109,6 +109,7 @@ class VulSummaryType(UserEndPoint):
             "Use the following conditions to view the statistics of the number of vulnerabilities in the project."
         ),
         response_schema=_ResponseSerializer,
+        deprecated=True,
     )
     def get(self, request):
         """

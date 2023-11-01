@@ -48,10 +48,9 @@ class ProjectVersionCurrent(UserEndPoint):
             if not version_id or not project_id:
                 return R.failure(status=202, msg=_("Parameter error"))
 
-            users = self.get_auth_users(request.user)
-            users_id = [user.id for user in users]
+            projects = request.user.get_projects()
             version = IastProjectVersion.objects.filter(
-                project_id=project_id, id=version_id, user_id__in=users_id
+                project_id=project_id, id=version_id, project__in=projects
             ).first()
             if version:
                 version.current_version = 1

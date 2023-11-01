@@ -68,7 +68,6 @@ class AgentsDeleteEndPoint(UserEndPoint):
                     result.append(True)
                 else:
                     result.append(False)
-                    pass
             except Exception as e:
                 result.append(False)
                 logger.warning(f"user_id:{request.user.id} msg:{e}")

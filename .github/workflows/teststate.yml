@@ -55,17 +55,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
-          cache: "pip"
+      - name: Setup Python
+        uses: ./.github/actions/setup-python
       
       - name: Install dependencies
         run: |
-          sudo apt-get install build-essential cmake ninja-build python3-dev cython3 pybind11-dev libre2-dev -y
-          python -m pip install --upgrade pip
-          pip install wheel
-          pip install -r requirements.txt
           pip install schemathesis
           pip install httpx
           
@@ -124,18 +118,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
-          cache: "pip"
-      
-      - name: Install dependencies
-        run: |
-          sudo apt-get install build-essential cmake ninja-build python3-dev cython3 pybind11-dev libre2-dev -y
-          python -m pip install --upgrade pip
-          pip install wheel
-          pip install -r requirements.txt
-          
+      - name: Setup Python
+        uses: ./.github/actions/setup-python
       - name: Django Unit Testing
         run: |
           mypy --show-error-codes --ignore-missing-imports  --no-incremental --show-error-codes --check-untyped-defs --disable-error-code var-annotated  --disable-error-code  list-item  --disable-error-code attr-defined --disable-error-code assignment --disable-error-code misc --disable-error-code union-attr --disable-error-code index --disable-error-code call-overload  --disable-error-code dict-item  --disable-error-code truthy-function --disable-error-code operator --disable-error-code name-defined .
@@ -168,18 +152,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
-          cache: "pip"
+      - name: Setup Python
+        uses: ./.github/actions/setup-python
       
       - name: Install dependencies
-        run: |
-          sudo apt-get install build-essential cmake ninja-build python3-dev cython3 pybind11-dev libre2-dev -y
-          python -m pip install --upgrade pip
-          pip install wheel
-          pip install -r requirements.txt
-          pip install bandit
+        run: pip install bandit
       - name: Django Unit Testing
         run: |
           bandit -iii -lll -r .
@@ -215,18 +192,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
-          cache: "pip"
+      - name: Setup Python
+        uses: ./.github/actions/setup-python
       
       - name: Install dependencies
-        run: |
-          sudo apt-get install build-essential cmake ninja-build python3-dev cython3 pybind11-dev libre2-dev -y
-          python -m pip install --upgrade pip
-          pip install wheel
-          pip install coverage
-          pip install -r requirements.txt
+        run: pip install coverage
           
       - name: Django Unit Testing
         run: |
@@ -246,18 +216,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
-          cache: "pip"
-
-      - name: Install dependencies
-        run: |
-          sudo apt-get install build-essential cmake ninja-build python3-dev cython3 pybind11-dev libre2-dev -y
-          python -m pip install --upgrade pip
-          pip install wheel
-          pip install coverage
-          pip install -r requirements.txt
+      - name: Setup Python
+        uses: ./.github/actions/setup-python
 
       - name: Check Schema
         run: python3 manage.py check_schema

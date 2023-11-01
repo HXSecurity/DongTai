@@ -995,6 +995,17 @@ DONGTAI_MAX_RATE_LIMIT = 10
 DONGTAI_REDIS_ES_UPDATE_BATCH_SIZE = 500
 DONGTAI_MAX_BATCH_TASK_CONCORRENCY = 5
 
+
+try:
+    TANTIVY_STATE = config.get("tantivy", "enable") == "true"
+except Exception:
+    TANTIVY_STATE = True
+try:
+    TANTIVY_INDEX_PATH = config.get("tantivy", "index_path")
+except Exception:
+    TANTIVY_INDEX_PATH = os.path.join(TMP_COMMON_PATH, "tantivy")
+
+
 ELASTICSEARCH_STATE = config.get("elastic_search", "enable") == "true"
 
 
@@ -1045,7 +1056,6 @@ def is_gevent_monkey_patched() -> bool:
 def set_asyncio_policy():
     state = is_gevent_monkey_patched()
     print(f"is in gevent patched : {state}")
-    pass
 
 
 #   disable until this package update
@@ -1080,3 +1090,15 @@ if os.getenv("DJANGOSILK", None) == "TRUE":
         "signature",
     }
     SILKY_PYTHON_PROFILER_BINARY = True
+
+
+# Baseline configuration.
+AUTH_LDAP_SERVER_URI = config.get("ldap", "server_uri", fallback="")
+
+AUTH_LDAP_BIND_DN = config.get("ldap", "ldap_bind_dn", fallback="")
+AUTH_LDAP_BIND_PASSWORD = config.get("ldap", "ldap_bind_password", fallback="")
+
+AUTH_LDAP_ALWAYS_UPDATE_USER = False
+AUTH_LDAP_READY = AUTH_LDAP_SERVER_URI != ""
+# useless
+AUTH_LDAP_USER_DN_TEMPLATE = "uid=%(user)s,ou=users,dc=example,dc=com"

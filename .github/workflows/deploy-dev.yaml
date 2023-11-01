@@ -37,33 +37,24 @@ jobs:
       - name: Login to Aliyun Registry
         uses: docker/login-action@v1
         with:
-          registry: ${{ secrets.ALIYUN_REGISTRY_HONGKONG }}
-          username: ${{ secrets.ALIYUN_DOCKERHUB_USER }}
-          password: ${{ secrets.ALIYUN_DOCKERHUB_PASSWORD }}
+          registry: ${{ secrets.TEN_REGISTRY }}
+          username: ${{ secrets.TEN_DOCKERHUB_USER }}
+          password: ${{ secrets.TEN_DOCKERHUB_PASSWORD }}
 
       - name: Generate version file
         run: |
           #bash .github/workflows/config_update.sh
           #bash .github/workflows/config_update.sh "${{ steps.release.outputs.VERSION }}"
 
-      - name: Setup Ossutil
-        uses: manyuanrong/setup-ossutil@v2.0
+      - name: Upload COS
+        if: ${{ steps.version.outputs.GITHUB_REF }} == develop
+        uses: zkqiang/tencent-cos-action@v0.1.0
         with:
-          endpoint: ${{ secrets.CHART_OSS_ENDPOINT }}
-          access-key-id: ${{ secrets.CHART_OSS_ACCESS_KEY_ID }}
-          access-key-secret: ${{ secrets.CHART_OSS_ACCESS_KEY_SECRET }}
-          
-      - name: Download Agent dev
-#        if: ${{ steps.version.outputs.GITHUB_REF }} == develop || ${{ steps.version.outputs.GITHUB_REF }} == beta || ${{ steps.version.outputs.GITHUB_REF }} == main
-        run: |
-          if [ ${{ steps.version.outputs.GITHUB_REF }} = develop ] ; then ossutil cp oss://dongtai-helm-charts/agent_test/java/latest/ ./ --include "*.jar" -r
-          else  ossutil cp oss://dongtai-helm-charts/agent_${{ steps.version.outputs.GITHUB_REF }}/java/latest/ ./ --include "*.jar" -r
-          fi
-
-      - name: Download Agent  ${{ inputs.agent_version }}
-        if: ${{ inputs.agent_version }}
-        run: |
-          ossutil cp oss://dongtai/agent/java/${{ inputs.agent_version }}/ ./ --include "*.jar" -r
+          args: download -rs /agent_test/java/latest/ ./ --include "*.jar"
+          secret_id: ${{ secrets.TENSECRET_ID }}
+          secret_key: ${{ secrets.TENSECRET_KEY }}
+          bucket: dongtai-helm-charts-1251882848
+          region: ap-hongkong
 
       - name: Generate version file
         run: |
@@ -76,12 +67,12 @@ jobs:
           context: .
           push: true
           platforms: linux/amd64
-          tags: | 
-            registry.cn-hongkong.aliyuncs.com/secnium/dongtai-server:${{ steps.version.outputs.GITHUB_REF }}-latest
-            registry.cn-hongkong.aliyuncs.com/secnium/dongtai-server:${{ steps.version.outputs.GITHUB_REF }}-1.0.${{github.run_number}}
+          tags: |
+            wukong.tencentcloudcr.com/dongtai/dongtai-server:${{ steps.version.outputs.GITHUB_REF }}-latest
+            wukong.tencentcloudcr.com/dongtai/dongtai-server:${{ steps.version.outputs.GITHUB_REF }}-1.0.${{github.run_number}}
 
       - name: deploy to cluster
-        uses: tscuite/kubectl-helm-action@main
+        uses: HXSecurity/kubectl-helm-action@main
         env:
           MAX: false
           PROJECT: server

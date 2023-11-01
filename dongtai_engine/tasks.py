@@ -214,7 +214,7 @@ def search_vul_from_method_pool(self, method_pool_sign, agent_id, retryable=Fals
         else:
             logger.info(f"漏洞检测超过最大重试次数,错误原因:{e}")
     except Exception as e:
-        logger.error(f"漏洞检测出错,方法池 {method_pool_sign}. 错误原因:{e}", exc_info=e)
+        logger.info(f"漏洞检测出错,方法池 {method_pool_sign}. 错误原因:{e}", exc_info=e)
 
 
 @shared_task(queue="dongtai-replay-vul-scan")
@@ -237,7 +237,7 @@ def search_vul_from_replay_method_pool(method_pool_id):
             search_and_save_vul(engine, method_pool_model, None, strategy)
         logger.info("重放数据漏洞检测成功")
     except Exception as e:
-        logger.error(f"重放数据漏洞检测出错,方法池 {method_pool_id}. 错误原因:{e}")
+        logger.info(f"重放数据漏洞检测出错,方法池 {method_pool_id}. 错误原因:{e}")
 
 
 # def load_methods_from_strategy(strategy_id):
@@ -360,7 +360,6 @@ def heartbeat():
         )
         if resp.status_code == 200:
             logger.info("[dongtai_engine.tasks.heartbeat] send heartbeat data to OpenApi Service Successful.")
-            pass
         logger.info("[dongtai_engine.tasks.heartbeat] send heartbeat data to OpenApi Service Failure.")
     except Exception as e:
         logger.info(f"[dongtai_engine.tasks.heartbeat] send heartbeat data to OpenApi Service Error. reason is {e}")
@@ -379,7 +378,7 @@ def clear_error_log():
         count = IastErrorlog.objects.filter(dt__lt=(timestamp - out_date_timestamp)).delete()
         logger.info(f"日志清理成功,共{count}条")
     except Exception as e:
-        logger.error(f"日志清理失败,错误详情:{e}")
+        logger.warning(f"日志清理失败,错误详情:{e}")
 
 
 @shared_task(queue="dongtai-periodic-task")
@@ -524,7 +523,7 @@ def vul_recheck():
                         try:
                             headers = base64.b64encode("\n".join(header_raw).encode("raw_unicode_escape"))
                         except Exception:
-                            logger.error(f'请求头解析失败,漏洞ID: {vulnerability["id"]}')
+                            logger.warning(f'请求头解析失败,漏洞ID: {vulnerability["id"]}')
 
                     elif position == "PATH" and taint_value:
                         # 检查path,替换

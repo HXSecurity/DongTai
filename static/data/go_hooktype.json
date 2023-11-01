@@ -3,6 +3,17 @@
         "created_by": 1,
         "enable": 1,
         "language": 4,
+        "name": "Fel\u8868\u8fbe\u5f0f\u6ce8\u5165",
+        "name_en": null,
+        "name_zh": "Fel\u8868\u8fbe\u5f0f\u6ce8\u5165",
+        "system_type": 1,
+        "type": 4,
+        "value": "Fel\u8868\u8fbe\u5f0f\u6ce8\u5165"
+    },
+    {
+        "created_by": 1,
+        "enable": 1,
+        "language": 4,
         "name": "\u6587\u4ef6\u5199\u5165",
         "name_en": null,
         "name_zh": "\u6587\u4ef6\u5199\u5165",
@@ -64,6 +75,39 @@
         "system_type": 1,
         "type": 3,
         "value": "JNDI\u6ce8\u5165"
+    },
+    {
+        "created_by": 1,
+        "enable": 1,
+        "language": 4,
+        "name": "Jexl\u8868\u8fbe\u5f0f\u6ce8\u5165",
+        "name_en": null,
+        "name_zh": "Jexl\u8868\u8fbe\u5f0f\u6ce8\u5165",
+        "system_type": 1,
+        "type": 4,
+        "value": "Jexl\u8868\u8fbe\u5f0f\u6ce8\u5165"
+    },
+    {
+        "created_by": 1,
+        "enable": 1,
+        "language": 4,
+        "name": "Log4j",
+        "name_en": null,
+        "name_zh": "Log4j",
+        "system_type": 1,
+        "type": 4,
+        "value": "Log4j"
+    },
+    {
+        "created_by": 1,
+        "enable": 1,
+        "language": 4,
+        "name": "QLExpress\u7ec4\u4ef6\u8868\u8fbe\u5f0f\u6ce8\u5165",
+        "name_en": null,
+        "name_zh": "QLExpress\u7ec4\u4ef6\u8868\u8fbe\u5f0f\u6ce8\u5165",
+        "system_type": 1,
+        "type": 4,
+        "value": "QLExpress\u7ec4\u4ef6\u8868\u8fbe\u5f0f\u6ce8\u5165"
     },
     {
         "created_by": 1,

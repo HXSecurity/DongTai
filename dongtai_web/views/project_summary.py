@@ -26,6 +26,7 @@ class ProjectSummaryDataTypeSummarySerializer(serializers.Serializer):
     type_name = serializers.CharField(help_text=_("Name of vulnerability"))
     type_count = serializers.IntegerField(help_text=_("Count of thi vulnerablity type"))
     type_level = serializers.IntegerField(help_text=_("Level of vulnerability"))
+    type_total_percentage = serializers.FloatField(help_text="该类型在总漏洞的数量占比")
 
 
 class ProjectSummaryDataDayNumSerializer(serializers.Serializer):
@@ -37,6 +38,7 @@ class ProjectSummaryDataLevelCountSerializer(serializers.Serializer):
     level_name = serializers.CharField(help_text=_("Level name of vulnerability"))
     level_id = serializers.IntegerField(help_text=_("Level id of vulnerability"))
     num = serializers.IntegerField(help_text=_("The number of vulnerabilities corresponding to the level"))
+    level_total_percentage = serializers.FloatField(help_text="该等级在总漏洞的数量占比")
 
 
 class _ProjectSummaryDataSerializer(serializers.Serializer):
