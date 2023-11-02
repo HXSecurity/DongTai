@@ -149,14 +149,25 @@ jobs:
         run: |
           sed -i "s#tag: latest#tag: ${{ env.iast_version }}#g" deploy/kubernetes/helm/values.yaml
           mkdir  -p /home/runner/work/cos
-      - name: Upload COS php
-        uses: zkqiang/tencent-cos-action@v0.1.0
-        with:
-          args: download -rs iast/ /home/runner/work/cos --ignore "*.yaml"
-          secret_id: ${{ secrets.TENSECRET_ID }} 
-          secret_key: ${{ secrets.TENSECRET_KEY }}
-          bucket: dongtai-helm-charts-1251882848
-          region: ap-hongkong
+#      - name: Upload COS php
+#        uses: zkqiang/tencent-cos-action@v0.1.0
+#        with:
+#          args: download -rs iast/ /home/runner/work/cos --ignore "*.yaml"
+#          secret_id: ${{ secrets.TENSECRET_ID }} 
+#          secret_key: ${{ secrets.TENSECRET_KEY }}
+#          bucket: dongtai-helm-charts-1251882848
+#          region: ap-hongkong
+      - name: install deploy
+        run: sudo pip install coscmd
+      - name: 配置COS
+        env:
+          SECRET_ID: ${{ secrets.TENSECRET_ID }} 
+          SECRET_KEY: ${{ secrets.TENSECRET_KEY }}
+          BUCKET: dongtai-helm-charts-1251882848
+          REGION: ap-hongkong
+        run: |
+          coscmd config -a $SECRET_ID -s $SECRET_KEY -b $BUCKET -r $REGION   
+          coscmd download -rs iast/ /home/runner/work/cos --ignore "*.yaml"
 
       - name: Create helm package
         run: |
