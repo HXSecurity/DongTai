@@ -160,10 +160,10 @@ jobs:
           
       - name: Create helm package
         run: |
-          ls /github/workspace/cos
-          helm package deploy/kubernetes/helm  -d /github/workspace/cos --app-version ${{ env.iast_version }} --version ${{ env.iast_version }}
-          ls /github/workspace/cos
-          helm repo index /github/workspace/cos --url ${{ secrets.DONGTAI_IAST_CHART_REPO_URL }}
+          ls  /home/runner/work/DongTai/DongTai/cos
+          helm package deploy/kubernetes/helm  -d /home/runner/work/DongTai/DongTai/cos --app-version ${{ env.iast_version }} --version ${{ env.iast_version }}
+          ls /home/runner/work/DongTai/DongTai/cos
+          helm repo index /home/runner/work/DongTai/DongTai/cos --url ${{ secrets.DONGTAI_IAST_CHART_REPO_URL }}
 
 
       - name: Upload COS 2
