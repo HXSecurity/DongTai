@@ -148,7 +148,7 @@ jobs:
       - name: Download existed repo files
         run: |
           sed -i "s#tag: latest#tag: ${{ env.iast_version }}#g" deploy/kubernetes/helm/values.yaml
-          mkdir  -p /github/workspace/cos
+
       - name: Upload COS php
         uses: zkqiang/tencent-cos-action@v0.1.0
         with:
