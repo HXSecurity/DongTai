@@ -160,6 +160,7 @@ jobs:
       - name: Create helm package
         run: |
           helm package deploy/kubernetes/helm  -d ~/helm/repo --app-version ${{ env.iast_version }} --version ${{ env.iast_version }}
+          ls ~/helm/repo
           helm repo index ~/helm/repo/ --url ${{ secrets.DONGTAI_IAST_CHART_REPO_URL }}
 
 
