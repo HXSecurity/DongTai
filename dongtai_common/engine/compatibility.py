@@ -24,6 +24,10 @@ def method_pool_3_to_2(dic: dict) -> dict:
         dic["taintPosition"]["target"] = []
     for pv in dic["parameterValues"]:
         pdict[pv["index"]] = pv["value"]
+    if "objValue" not in dic:
+        dic["objValue"] = ""
+    if "retValue" not in dic:
+        dic["retValue"] = ""
     sourceValues = []
     targetValues = []
     for position in dic["taintPosition"]["source"]:
