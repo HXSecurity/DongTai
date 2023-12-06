@@ -13,7 +13,6 @@ from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.utils.validate import save_hook_stratefile_sha1sum
 from dongtai_conf.settings import BASE_DIR
 from dongtai_protocol.views.hook_profiles import LANGUAGE_DICT
-from tqdm import tqdm
 
 
 class Command(BaseCommand):
