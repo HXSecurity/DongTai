@@ -22,7 +22,7 @@ def update_vul_tantivy_index_receiver(sender, instance, **kwargs):
 
 
 @shared_task(
-    queue="dongtai-periodic-task",
+    queue="dongtai-export-report-task",
     base=Singleton,
     lock_expiry=20,
 )

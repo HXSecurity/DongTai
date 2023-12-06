@@ -146,7 +146,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
         try:
             port = int(server_port)
         except Exception:
-            logger.exception(_("The server port does not exist, has been set to the default: 0"))
+            logger.info(_("The server port does not exist, has been set to the default: 0"))
             port = 0
 
         server_id = agent.server_id

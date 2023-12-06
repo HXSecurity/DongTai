@@ -210,7 +210,7 @@ def get_summary_by_project(project_id: int, project_version_id: int):
         else:
             day_num_dict[i["day_label"]] = [i]
     day_num_data = []
-    last_timestamp: int = 0
+    last_timestamp: int = current_timestamp - 60 * 60 * 24 * 7
     for day_label_i in range(len(daylist)):
         timestamp, day_label = daylist[day_label_i]
         if day_label in day_num_dict:

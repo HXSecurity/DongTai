@@ -1,6 +1,8 @@
 import logging
 import socket
 
+from dongtai_conf.settings import LOG_SERVICE_TIMEOUT
+
 logger = logging.getLogger("dongtai.openapi")
 
 
@@ -16,10 +18,9 @@ class LogService:
             return None
 
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.settimeout(5)
+        sock.settimeout(LOG_SERVICE_TIMEOUT)
         try:
             sock.connect((self.host, self.port))
-            sock.setblocking(False)
             self.socket = sock
         except OSError:
             logger.exception(f"failed to connect log service {self.host}:{self.port}")
@@ -39,7 +40,7 @@ class LogService:
             if not self.socket:
                 self.create_socket()
             if self.socket:
-                self.socket.sendall(bytes(message + "\n", encoding="utf-8"), socket.MSG_DONTWAIT)
+                self.socket.sendall(bytes(message + "\n", encoding="utf-8"))
                 return True
         except Exception as e:
             logger.exception("failed to send message to log service", exc_info=e)

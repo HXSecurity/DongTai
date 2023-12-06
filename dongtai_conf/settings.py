@@ -1102,3 +1102,10 @@ AUTH_LDAP_ALWAYS_UPDATE_USER = False
 AUTH_LDAP_READY = AUTH_LDAP_SERVER_URI != ""
 # useless
 AUTH_LDAP_USER_DN_TEMPLATE = "uid=%(user)s,ou=users,dc=example,dc=com"
+
+
+# report upload throttle
+REPORT_UPLOAD_THROTTLE = config.get("throttle", "report_upload", fallback="")
+
+# log service timeout
+LOG_SERVICE_TIMEOUT = config.getint("log_service", "port", fallback=10)
