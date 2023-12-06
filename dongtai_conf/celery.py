@@ -152,6 +152,11 @@ configs["task_routes"] = {
         "exchange": "dongtai-periodic-task",
         "routing_key": "dongtai-periodic-task",
     },
+    # dongtai-export-report-task 的 /tmp/logstash 目录和 server 共享
+    "dongtai_web.aggr_vul.tasks.update_vul_tantivy_index": {
+        "exchange": "dongtai-export-report-task",
+        "routing_key": "dongtai-export-report-task",
+    },
 }
 configs["CELERY_ENABLE_UTC"] = False
 configs["timezone"] = settings.TIME_ZONE

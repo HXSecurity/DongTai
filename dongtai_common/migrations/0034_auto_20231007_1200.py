@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RunSQL(
             """
-UPDATE auth_user  SET phone = "" WHERE phone IS NULL;
+UPDATE auth_user SET phone = 15000000000 WHERE phone IS NULL;
 ALTER TABLE `auth_user` MODIFY `phone` varchar(255) DEFAULT '' NOT  NULL;
 
             """

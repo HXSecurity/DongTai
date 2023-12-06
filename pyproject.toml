@@ -47,6 +47,7 @@ ignore = [
     "TRY003",  # Avoid specifying long messages outside the exception class
     "TRY301",  # Abstract raise to an inner function
     "PERF203", # try-except within a loop incurs performance overhead
+    "RUF001",  # String contains ambiguous
 ]
 # target version is python 3.9 because Cython not support some python 3.10 feature
 target-version = "py39"
@@ -56,3 +57,6 @@ target-version = "py39"
 "**/tests.py" = ["T201"]
 "deploy/*.py" = ["T201"]
 "dongtai_conf/*.py" = ["T201"]
+
+[tool.pyright]
+ignore = [".venv", "**/urls.py"]
