@@ -100,7 +100,7 @@ def update_admin_role(apps, schema_editor):
             {"id": 56, "label": "消息通知"},
         ],
     }
-     new_user_permission = {
+    new_user_permission = {
         "routes": [
             "dashboard",
             "Dashboard",
