@@ -94,6 +94,8 @@ class UserLogin(UserEndPoint):
             url = request.GET.get("url", "/")
             token = request.GET.get("token")
             token_obj = Token.objects.filter(key=token).first()
+            if not url.startswith("/"):
+                url = "/"
             if token_obj is not None:
                 login(request, token_obj.user)
                 return HttpResponseRedirect(url)
