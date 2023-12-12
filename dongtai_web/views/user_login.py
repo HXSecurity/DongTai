@@ -4,14 +4,17 @@ import time
 
 from captcha.models import CaptchaStore
 from django.contrib.auth import authenticate, login
+from django.http import HttpResponseRedirect
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
+from rest_framework.authtoken.models import Token
 
 from dongtai_common.endpoint import R, UserEndPoint
 from dongtai_common.models.user import User
 from dongtai_common.utils.request_type import Request
 from dongtai_conf.patch import patch_point, to_patch
+from dongtai_conf.settings import TOKEN_LOGIN
 
 logger = logging.getLogger("dongtai-webapi")
 
@@ -84,3 +87,14 @@ class UserLogin(UserEndPoint):
         except Exception as e:
             logger.exception("uncatched exception: ", exc_info=e)
             return R.failure(status=202, msg=_("Login failed"))
+
+    if TOKEN_LOGIN:
+
+        def get(self, request: Request):
+            url = request.GET.get("url", "/")
+            token = request.GET.get("token")
+            token_obj = Token.objects.filter(key=token).first()
+            if token_obj is not None:
+                login(request, token_obj.user)
+                return HttpResponseRedirect(url)
+            return HttpResponseRedirect("/login")

@@ -1109,3 +1109,6 @@ REPORT_UPLOAD_THROTTLE = config.get("throttle", "report_upload", fallback="")
 
 # log service timeout
 LOG_SERVICE_TIMEOUT = config.getint("log_service", "port", fallback=10)
+
+# enable token login
+TOKEN_LOGIN = config.getboolean("other", "token_login", fallback=False)
