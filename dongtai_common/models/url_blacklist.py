@@ -17,6 +17,7 @@ class TargetOperator(IntegerChoices):
     NOT_CONTAIN = 4, _("不包含")
     EXISTS = 5, _("存在")
     NOT_EXISTS = 6, _("不存在")
+    EXISTS_KEY_AND_VALUE = 7, _("存在 Key 和 Value")
 
 
 class TargetType(IntegerChoices):
