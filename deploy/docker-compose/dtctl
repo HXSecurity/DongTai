@@ -18,7 +18,7 @@ MYSQL_USERNAME='root'
 MYSQL_PASSWORD='dongtai-iast'
 MYSQL_DATABASES='dongtai_webapi'
 
-DONGTAI_API="https://www.huoxian.cn"
+DONGTAI_API="https://www.tingyun.com"
 # DONGTAI_API="google.com"
 DONGTAI_API_ACCESSABLE=true
 
@@ -215,7 +215,7 @@ function get_image_registry() {
   if [ "$1" == 0 ]; then
     registry_url="dongtai"
   elif [ "$1" == 1 ]; then
-    registry_url="registry.cn-beijing.aliyuncs.com/huoxian_pub"
+    registry_url="dongtai"
   else
     registry_url=$(docker ps  --filter "label=com.docker.compose.project=$PROJECT_NAME" | grep "dongtai-web:" | awk 'i=index($2,"dongtai-web:") {print substr($2,0,i-2)}')
   fi
