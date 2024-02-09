@@ -2,12 +2,12 @@
 aliyun-python-sdk-core==2.14.0
 aliyun-python-sdk-core-v3==2.13.33
 aliyun-python-sdk-kms==2.16.2
-amqp==5.1.1 ; python_version >= '3.6'
+amqp==5.1.1; python_version >= '3.6'
 asgiref==3.7.2
-async-timeout==4.0.3 ; python_version >= '3.7'
-attrs==23.1.0 ; python_version >= '3.7'
-autopep8==2.0.4 ; python_version >= '3.6'
-billiard==4.1.0 ; python_version >= '3.7'
+async-timeout==4.0.3; python_version >= '3.7'
+attrs==23.1.0; python_version >= '3.7'
+autopep8==2.0.4; python_version >= '3.6'
+billiard==4.1.0; python_version >= '3.7'
 boto3==1.24.59
 boto3-stubs==1.28.62
 botocore==1.27.91
@@ -17,17 +17,17 @@ celery-singleton==0.3.1
 certifi==2023.7.22
 cffi==1.16.0
 chardet==5.2.0
-charset-normalizer==3.3.0 ; python_full_version >= '3.7.0'
-click==8.1.7 ; python_version >= '3.7'
-click-didyoumean==0.3.0 ; python_full_version >= '3.6.2' and python_full_version < '4.0.0'
+charset-normalizer==3.3.0; python_full_version >= '3.7.0'
+click==8.1.7; python_version >= '3.7'
+click-didyoumean==0.3.0; python_full_version >= '3.6.2' and python_full_version < '4.0.0'
 click-plugins==1.1.1
-click-repl==0.3.0 ; python_version >= '3.6'
+click-repl==0.3.0; python_version >= '3.6'
 crcmod==1.7
-cryptography==41.0.4 ; python_version >= '3.7'
+cryptography==41.0.4; python_version >= '3.7'
 dataclasses-json==0.6.1
 ddt==1.6.0
-defusedxml==0.7.1 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
-diff-match-patch==20230430 ; python_version >= '3.7'
+defusedxml==0.7.1; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
+diff-match-patch==20230430; python_version >= '3.7'
 django==3.2.22
 django-add-default-value==0.10.0
 django-auth-ldap==4.6.0
@@ -48,8 +48,8 @@ django-seriously==0.4.3
 django-silk==5.0.4
 django-simple-captcha==0.5.20
 django-stubs[compatible-mypy]==1.15.0
-django-stubs-ext==4.2.2 ; python_version >= '3.8'
-django-timezone-field==4.2.3 ; python_version >= '3.5'
+django-stubs-ext==4.2.2; python_version >= '3.8'
+django-timezone-field==4.2.3; python_version >= '3.5'
 django-utils==0.0.2
 django-utils-six==2.0
 django-xff==1.4.0
@@ -60,83 +60,83 @@ docxcompose==1.3.4
 docxtpl==0.16.0
 drf-spectacular==0.22.1
 elasticsearch==7.17.7
-elasticsearch-dsl==7.4.1 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
-et-xmlfile==1.1.0 ; python_version >= '3.6'
+elasticsearch-dsl==7.4.1; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
+et-xmlfile==1.1.0; python_version >= '3.6'
 flower==2.0.1
 gevent==23.9.1
-gprof2dot==2022.7.29 ; python_version >= '2.7'
-greenlet==3.0.0 ; python_version < '3.11' and platform_python_implementation == 'CPython'
+gprof2dot==2022.7.29; python_version >= '2.7'
+greenlet==3.0.0; python_version < '3.11' and platform_python_implementation == 'CPython'
 gunicorn==20.1.0
-humanize==4.8.0 ; python_version >= '3.8'
+humanize==4.8.0; python_version >= '3.8'
 id-validator==1.0.20
 idna==2.10
-inflection==0.5.1 ; python_version >= '3.5'
-jinja2==3.1.2 ; python_version >= '3.7'
-jmespath==0.10.0 ; python_version >= '2.6' and python_version not in '3.0, 3.1, 3.2, 3.3'
+inflection==0.5.1; python_version >= '3.5'
+jinja2==3.1.2; python_version >= '3.7'
+jmespath==0.10.0; python_version >= '2.6' and python_version not in '3.0, 3.1, 3.2, 3.3'
 jq==1.3.0
 jsonlog==4.0.0
 jsonschema==4.17.0
-kombu==5.3.2 ; python_version >= '3.8'
+kombu==5.3.2; python_version >= '3.8'
 lxml==4.9.1
 marisa-trie==0.8.0
 markuppy==1.14
-markupsafe==2.1.3 ; python_version >= '3.7'
-marshmallow==3.20.1 ; python_version >= '3.8'
-mock==5.1.0 ; python_version >= '3.6'
-model-bakery==1.15.0 ; python_version >= '3'
+markupsafe==2.1.3; python_version >= '3.7'
+marshmallow==3.20.1; python_version >= '3.8'
+mock==5.1.0; python_version >= '3.6'
+model-bakery==1.15.0; python_version >= '3'
 more-itertools==10.1.0
 mypy==1.0.1
-mypy-extensions==1.0.0 ; python_version >= '3.5'
+mypy-extensions==1.0.0; python_version >= '3.5'
 mysqlclient==2.2.0
 networkit==10.1
 networkx[all]==3.1
-numpy==1.26.0 ; python_version < '3.13' and python_version >= '3.9'
+numpy==1.26.0; python_version < '3.13' and python_version >= '3.9'
 odfpy==1.4.1
 openpyxl==3.0.9
 oss2==2.13.1
 packaging==21.3
 pandas==2.1.1
 pep8==1.7.1
-pillow==10.0.1
-prometheus-client==0.17.1 ; python_version >= '3.6'
-prompt-toolkit==3.0.39 ; python_full_version >= '3.7.0'
-pyasn1==0.5.0 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4, 3.5'
-pyasn1-modules==0.3.0 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4, 3.5'
-pycodestyle==2.11.0 ; python_version >= '3.8'
+pillow==10.2.0; python_version >= '3.8'
+prometheus-client==0.17.1; python_version >= '3.6'
+prompt-toolkit==3.0.39; python_full_version >= '3.7.0'
+pyasn1==0.5.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4, 3.5'
+pyasn1-modules==0.3.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4, 3.5'
+pycodestyle==2.11.0; python_version >= '3.8'
 pycparser==2.21
-pycryptodome==3.19.0 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
+pycryptodome==3.19.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
 pycryptodomex==3.14.1
-pydantic==1.10.13 ; python_version >= '3.7'
+pydantic==1.10.13; python_version >= '3.7'
 pydot==1.4.2
 pymysql==1.0.2
 pyotp==2.9.0
-pyparsing==3.1.1 ; python_full_version >= '3.6.8'
+pyparsing==3.1.1; python_full_version >= '3.6.8'
 pypng==0.20220715.0
 pyre2==0.3.6
 pyrsistent==0.19.1
 python-crontab==3.0.0
-python-dateutil==2.8.2 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
+python-dateutil==2.8.2; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
 python-docx==0.8.11
 python-json-logger==2.0.7
-python-ldap==3.4.3 ; python_version >= '3.6'
+python-ldap==3.4.3; python_version >= '3.6'
 pytz==2022.6
-pyyaml==6.0.1 ; python_version >= '3.6'
+pyyaml==6.0.1; python_version >= '3.6'
 qrcode==7.4.2
 redis==4.4.4
 requests==2.31.0
 result==0.8.0
-s3transfer==0.6.2 ; python_version >= '3.7'
-scipy==1.11.3 ; python_version < '3.13' and python_version >= '3.9'
+s3transfer==0.6.2; python_version >= '3.7'
+scipy==1.11.3; python_version < '3.13' and python_version >= '3.9'
 setuptools==65.5.1
 shortuuid==1.0.11
 simhash==2.1.2
 six==1.15.0
-sqlparse==0.4.4 ; python_version >= '3.5'
-tablib[html,ods,xls,xlsx,yaml]==3.5.0 ; python_version >= '3.8'
-tomli==2.0.1 ; python_version < '3.11'
-tornado==6.3.3 ; python_version >= '3.8'
+sqlparse==0.4.4; python_version >= '3.5'
+tablib[html,ods,xls,xlsx,yaml]==3.5.0; python_version >= '3.8'
+tomli==2.0.1; python_version < '3.11'
+tornado==6.3.3; python_version >= '3.8'
 tqdm==4.66.1
-types-awscrt==0.19.2 ; python_version >= '3.7' and python_version < '4.0'
+types-awscrt==0.19.2; python_version >= '3.7' and python_version < '4.0'
 types-pymysql==1.1.0.1
 types-pyopenssl==23.2.0.2
 types-python-dateutil==2.8.19.14
@@ -144,18 +144,18 @@ types-pytz==2023.3.1.1
 types-pyyaml==6.0.12.12
 types-redis==4.6.0.7
 types-requests==2.31.0.6
-types-s3transfer==0.7.0 ; python_version >= '3.7' and python_version < '4.0'
+types-s3transfer==0.7.0; python_version >= '3.7' and python_version < '4.0'
 types-urllib3==1.26.25.14
 typing-extensions==4.8.0
 typing-inspect==0.9.0
-tzdata==2023.3 ; python_version >= '2'
-uritemplate==4.1.1 ; python_version >= '3.6'
+tzdata==2023.3; python_version >= '2'
+uritemplate==4.1.1; python_version >= '3.6'
 urllib3==1.26.17
 uwsgi==2.0.22
 uwsgitop==0.11
-vine==5.0.0 ; python_version >= '3.6'
+vine==5.0.0; python_version >= '3.6'
 wcwidth==0.2.8
 xlrd==2.0.1
 xlwt==1.3.0
-zope.event==5.0 ; python_version >= '3.7'
-zope.interface==6.1 ; python_version >= '3.7'
+zope.event==5.0; python_version >= '3.7'
+zope.interface==6.1; python_version >= '3.7'
