@@ -50,6 +50,7 @@ class IastAgent(models.Model):
     events = models.JSONField(default=get_events)
     department = models.ForeignKey(Department, models.DO_NOTHING)
     allow_report = models.IntegerField(default=1)
+    jvm_user_dir = models.CharField(max_length=1024, default="")
 
     class Meta:
         managed = get_managed()
@@ -91,6 +92,11 @@ class IastAgentEvent(models.Model):
         db_table = "iast_agent_event"
 
 
-# class IastAgent(models.Model):
-#
-#    class Meta:
+class IastAgentDiskList(models.Model):
+    agent = models.ForeignKey(IastAgent, on_delete=models.CASCADE)
+    create_at = models.DateTimeField(blank=True, null=True, auto_now_add=True)
+    data = models.JSONField(default=dict)
+
+    class Meta:
+        managed = get_managed()
+        db_table = "iast_agent_disk_list"
